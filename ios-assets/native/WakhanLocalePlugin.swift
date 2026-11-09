@@ -21,7 +21,8 @@ public class WakhanLocalePlugin: CAPPlugin, CAPBridgedPlugin {
         guard hex.count == 6, let n = UInt32(hex, radix: 16) else { call.reject("bad colour"); return }
         let c = UIColor(red: CGFloat((n >> 16) & 255) / 255, green: CGFloat((n >> 8) & 255) / 255, blue: CGFloat(n & 255) / 255, alpha: 1)
         DispatchQueue.main.async {
-            self.bridge?.viewController?.view.backgroundColor = c
+            let vc = self.bridge?.viewController
+            (vc?.parent?.view ?? vc?.view)?.backgroundColor = c
             call.resolve()
         }
     }
