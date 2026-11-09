@@ -8,7 +8,7 @@ let lastX=null,lastW=null,fromX=null,fromW=null,dragging=false,fired=false,block
 const css=`
 #nav.tb2{--tb2-h:64px;position:fixed!important;left:12px!important;right:12px!important;width:auto!important;max-width:560px!important;margin:0 auto!important;
  bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;height:var(--tb2-h)!important;padding:5px!important;border-radius:999px!important;
- border:1px solid rgba(255,255,255,.14)!important;background:rgba(22,18,40,.80)!important;
+ border:1px solid rgba(255,255,255,.14)!important;background:rgba(22,18,40,.88)!important;
  backdrop-filter:blur(22px) saturate(1.6)!important;-webkit-backdrop-filter:blur(22px) saturate(1.6)!important;
  box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.10)!important;overflow:visible!important;touch-action:none;transform:none!important}
 html.wk-light #nav.tb2,body.light #nav.tb2{background:rgba(255,255,255,.72)!important;border-color:rgba(0,0,0,.08)!important}
@@ -30,6 +30,7 @@ html.wk-light .tb2-lens,body.light .tb2-lens{background:rgba(0,0,0,.07)}
 body.tb2-on .fade{animation:tb2-in .16s ease-out!important}
 @keyframes tb2-in{from{opacity:0;transform:translateY(4px)}}
 body.tb2-on{--wm72-nav:70px}
+body.tb2-on #mini:not(.show){opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 @media (prefers-reduced-motion:reduce){.tb2-lens{transition:none}body.tb2-on .fade{animation:none!important}}`;
 try{const st=document.createElement('style');st.id='tb2-css';st.textContent=css;document.head.appendChild(st)}catch(e){}
 

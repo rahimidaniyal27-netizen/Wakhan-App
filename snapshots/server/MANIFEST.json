@@ -1,6 +1,6 @@
 {
  "origin": "https://music.kabulcafe.uk",
- "index_sha256": "58faf96455803f9178515c542a08c600397cab3aba8060f06e224dc8645bfba1",
+ "index_sha256": "8adb795caa97406ac56c6269128a4b200e89e3daaebea82d4d7082b9af0864f9",
  "assets": {
   "/s/app.css?v=81": {
    "file": "s/app.css",
@@ -96,11 +96,6 @@
    "file": "s/fix47.js",
    "sha256": "97ba2be6c3d46298be887820c11d94cdf852cb837a163067cf83c95c7cc423ec",
    "bytes": 6397
-  },
-  "/s/hall2.js?v=81": {
-   "file": "s/hall2.js",
-   "sha256": "70ca400a7228cf393f804cacf5ff0fd791e53843de4fecc3476203dd5d1a71e0",
-   "bytes": 54023
   },
   "/s/hall51.js?v=81": {
    "file": "s/hall51.js",
@@ -327,10 +322,15 @@
    "sha256": "74d94fa61df7a7163db535a4b0da8172df96e88f38e3f1e70bb9285aeb241ac1",
    "bytes": 3399
   },
-  "/s/tabs2.js?v=99": {
+  "/s/hall2.js?v=100": {
+   "file": "s/hall2.js",
+   "sha256": "278ef35f45e3791ff1201ca34461811d3fd38d3fab3f278d4488291d8ca69c9f",
+   "bytes": 82143
+  },
+  "/s/tabs2.js?v=100": {
    "file": "s/tabs2.js",
-   "sha256": "33e34f407b3b20a472227925429faf69666bc8bf02cdd8c076912ce1c2e76c13",
-   "bytes": 6519
+   "sha256": "3c3dd60f1a0ee804883c173b43fad1779eca4263fd4925df2331e65ea50ded44",
+   "bytes": 6627
   }
  }
 }
