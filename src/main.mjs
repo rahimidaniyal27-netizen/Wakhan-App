@@ -17,7 +17,9 @@ import {welcomeMarkup,helpMarkup} from './auth-view.mjs';
 import {chooseLocale,applyLocale,languageInfo,setManualLocale,useSystemLocale} from './locale.mjs';
 const NativeLocale=registerPlugin('WakhanLocale');
 const Vault=registerPlugin('WakhanVault'),localOrigin=location.origin,rawFetch=window.fetch.bind(window),native=Capacitor.isNativePlatform(),memory=new Map();
-const store=native?{get:async key=>(await Vault.get({key})).value??null,set:(key,value)=>Vault.set({key,value}),remove:key=>Vault.remove({key})}:{get:async key=>memory.get(key)||null,set:async(key,v)=>memory.set(key,v),remove:async key=>memory.delete(key)};
+/* phone storage for the sign-in: the encrypted Android vault; on iPhone (until its own vault exists) the app's private storage */
+const ls={get:async key=>{try{return localStorage.getItem('wkv_'+key)}catch{return memory.get(key)||null}},set:async(key,v)=>{try{localStorage.setItem('wkv_'+key,v)}catch{memory.set(key,v)}},remove:async key=>{try{localStorage.removeItem('wkv_'+key)}catch{}memory.delete(key)}};
+const store=native&&Capacitor.isPluginAvailable('WakhanVault')?{get:async key=>(await Vault.get({key})).value??null,set:(key,value)=>Vault.set({key,value}),remove:key=>Vault.remove({key})}:native?ls:{get:async key=>memory.get(key)||null,set:async(key,v)=>memory.set(key,v),remove:async key=>memory.delete(key)};
 const broker=new SessionBroker({origin:'https://music.kabulcafe.uk',store,fetch:rawFetch});
 
 let lang='en',preferredLanguages=[],config={},busy=false,timer=0,pollBusy=false,activePending=null,email='',inApp=false,linking=false,compat=null,languageReady=false;
