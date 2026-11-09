@@ -1,0 +1,150 @@
+Home|হোম
+Music|সঙ্গীত
+Cinema|সিনেমা
+Chats|চ্যাট
+Me|আমার
+Account|অ্যাকাউন্ট
+Library|লাইব্রেরি
+Search|খুঁজুন
+Settings|সেটিংস
+Language|ভাষা
+App language|অ্যাপের ভাষা
+Choose your preferred language|আপনার পছন্দের ভাষা বেছে নিন
+Selected|নির্বাচিত
+App colors|অ্যাপের রং
+Appearance|চেহারা
+Profile|প্রোফাইল
+Edit profile|প্রোফাইল সম্পাদনা
+Friends|বন্ধু
+Groups|গ্রুপ
+Your groups|আপনার গ্রুপ
+Favorites|পছন্দের
+Recently played|সম্প্রতি চালানো
+Recent searches|সাম্প্রতিক অনুসন্ধান
+Play|চালান
+Pause|বিরতি
+Next|পরবর্তী
+Previous|আগের
+Repeat|আবার চালান
+Shuffle|এলোমেলো চালান
+Queue|সারি
+Volume|ভলিউম
+Back|ফিরে যান
+Close|বন্ধ করুন
+Cancel|বাতিল
+Confirm|নিশ্চিত করুন
+Continue|চালিয়ে যান
+Save|সংরক্ষণ
+Done|সম্পন্ন
+Retry|আবার চেষ্টা
+Try again|আবার চেষ্টা করুন
+Copy|কপি
+Send|পাঠান
+Send message|বার্তা পাঠান
+Write a message…|একটি বার্তা লিখুন…
+Loading…|লোড হচ্ছে…
+Searching…|খোঁজা হচ্ছে…
+No results found|কোনো ফল পাওয়া যায়নি
+Nothing found|কিছু পাওয়া যায়নি
+Nothing is playing|কিছু চলছে না
+Now playing|এখন চলছে
+Wallet|ওয়ালেট
+Balance|ব্যালেন্স
+Top up|টপ আপ
+Plans|পরিকল্পনা
+Purchases|কেনাকাটা
+Membership|সদস্যতা
+Help & support|সাহায্য ও সহায়তা
+Invite friends|বন্ধুদের আমন্ত্রণ
+Add friend|বন্ধু যোগ করুন
+Remove friend|বন্ধু সরান
+Requests|অনুরোধ
+Messages|বার্তা
+Gift|উপহার
+Gifts for friends|বন্ধুদের জন্য উপহার
+Hall|রুম
+Seats|আসন
+Take a seat|আসন নিন
+Take a seat first|আগে একটি আসন নিন
+Leave hall|রুম থেকে বের হন
+Leave seat|আসন ছেড়ে দিন
+Room code|রুমের কোড
+Copy room code|রুমের কোড কপি করুন
+Join|যোগ দিন
+Join and watch|যোগ দিয়ে দেখুন
+Enter cinema|সিনেমায় প্রবেশ করুন
+Enter my cinema|আমার সিনেমায় প্রবেশ করুন
+My cinema|আমার সিনেমা
+Wakhan Cinema|Wakhan সিনেমা
+Choose a film|একটি চলচ্চিত্র বেছে নিন
+No film selected yet|এখনো কোনো চলচ্চিত্র বাছাই করা হয়নি
+Search a film or song|চলচ্চিত্র বা গান খুঁজুন
+Search films or songs|চলচ্চিত্র বা গান খুঁজুন
+Microphone on|মাইক্রোফোন চালু
+Microphone off|মাইক্রোফোন বন্ধ
+Conversation audio on|কথোপকথনের শব্দ চালু
+Conversation audio off|কথোপকথনের শব্দ বন্ধ
+Message the hall…|রুমে বার্তা লিখুন…
+Live hall chat|রুমের লাইভ চ্যাট
+History|ইতিহাস
+Cinema history|সিনেমার ইতিহাস
+Change cinema code|সিনেমার কোড বদলান
+Join a friend’s cinema|বন্ধুর সিনেমায় যোগ দিন
+Friend’s cinema code|বন্ধুর সিনেমার কোড
+Cinema password|সিনেমার পাসওয়ার্ড
+Forgot your password?|পাসওয়ার্ড ভুলে গেছেন?
+Show password|পাসওয়ার্ড দেখান
+Hide password|পাসওয়ার্ড লুকান
+Welcome to Wakhan|Wakhan-এ স্বাগতম
+Hello,|হ্যালো,
+What sounds good today?|আজ কী শুনতে চান?
+Explore music|সঙ্গীত খুঁজে দেখুন
+Discover|আবিষ্কার
+For you|আপনার জন্য
+Liked tracks|পছন্দের গান
+Add to queue|সারিতে যোগ করুন
+Add to playlist|প্লেলিস্টে যোগ করুন
+New playlist|নতুন প্লেলিস্ট
+Play all|সব চালান
+Payment method|পেমেন্ট পদ্ধতি
+Choose a payment method|পেমেন্ট পদ্ধতি বেছে নিন
+Pay with Stars|Stars দিয়ে পরিশোধ করুন
+Buy a subscription|সদস্যতা কিনুন
+View plans|পরিকল্পনা দেখুন
+Personal subscription|ব্যক্তিগত সদস্যতা
+Group subscription|গ্রুপ সদস্যতা
+Wakhan Coins|Wakhan কয়েন
+Wakhan wallet|Wakhan ওয়ালেট
+Your balance|আপনার ব্যালেন্স
+Halos & frames|আভা ও ফ্রেম
+Account details|অ্যাকাউন্টের তথ্য
+Username|ব্যবহারকারীর নাম
+Name|নাম
+Edit|সম্পাদনা
+Delete playlist|প্লেলিস্ট মুছুন
+Rename|নাম বদলান
+Track removed|গান সরানো হয়েছে
+Added to playlist|প্লেলিস্টে যোগ করা হয়েছে
+Your library|আপনার লাইব্রেরি
+Your favorites|আপনার পছন্দের
+Source|উৎস
+Results|ফলাফল
+Search results|অনুসন্ধানের ফল
+Live|লাইভ
+Player|প্লেয়ার
+Audio|অডিও
+Video quality|ভিডিওর মান
+Fullscreen|পূর্ণ পর্দা
+Exit fullscreen|পূর্ণ পর্দা থেকে বের হন
+Open|খুলুন
+More|আরও
+More options|আরও বিকল্প
+View all|সব দেখুন
+Song, artist or link…|গান, শিল্পী বা লিংক…
+Find your next track|আপনার পরের গান খুঁজুন
+Your space. Your rhythm.|আপনার জায়গা। আপনার ছন্দ।
+Recently watched|সম্প্রতি দেখা
+Wakhan account|Wakhan অ্যাকাউন্ট
+Wallet & coins|ওয়ালেট ও কয়েন
+Plans & purchases|পরিকল্পনা ও কেনাকাটা
+Library & playlists|লাইব্রেরি ও প্লেলিস্ট

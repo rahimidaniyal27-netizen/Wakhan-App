@@ -1,0 +1,34 @@
+/* WAKHAN APP — sign-in screen (only outside Telegram) */
+html.wka-on,html.wka-on body{overflow:hidden!important}
+#wka{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(24px + env(safe-area-inset-top,0px)) 18px calc(18px + env(safe-area-inset-bottom,0px));
+ color:#fff;font-family:Vazirmatn,system-ui,-apple-system,sans-serif;overflow-y:auto;
+ background:radial-gradient(120% 70% at 50% 0%,#3b2a7a 0%,#141a33 50%,#070912 100%)}
+#wka *{box-sizing:border-box}
+.wka-card{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:26px 20px 22px;border-radius:28px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.wka-logo{width:76px;height:76px;margin-bottom:4px;filter:drop-shadow(0 10px 22px rgba(124,92,255,.45))}
+#wka h1{margin:0;font-size:24px;font-weight:900;text-align:center}
+#wka h2{margin:4px 0 0;font-size:20px;font-weight:800;text-align:center}
+.wka-sub{margin:0 0 6px;color:rgba(255,255,255,.72);font-size:13.5px;line-height:1.8;text-align:center}
+.wka-sub b{color:#fff}
+.wka-btns{width:100%;display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.wka-g{width:100%;min-height:44px;display:flex;justify-content:center}
+.wka-b,.wka-main{width:100%;height:50px;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:25px;font:800 15px inherit;color:#fff;cursor:pointer}
+.wka-b{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16)}
+.wka-b.tg,.wka-main.tg{background:#2aabee;border-color:transparent}
+.wka-main{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 10px 24px rgba(124,58,237,.35)}
+.wka-b:disabled,.wka-main:disabled{opacity:.55}
+.wka-ic{display:grid;place-items:center;width:22px;font-size:18px}
+.wka-form{width:100%;display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.wka-form input{width:100%;height:52px;padding:0 16px;border-radius:16px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:#fff;font:600 16px inherit;outline:0;text-align:center}
+.wka-form input:focus{border-color:#8b5cf6}
+.wka-code{letter-spacing:12px;font-size:24px!important;font-weight:800!important}
+.wka-back{align-self:flex-start;border:0;background:none;color:rgba(255,255,255,.75);font:700 13.5px inherit;padding:0 2px 4px;cursor:pointer}
+.wka-link{border:0;background:none;color:#a78bfa;font:700 13px inherit;padding:6px;cursor:pointer}
+.wka-msg{margin:4px 0 0;padding:8px 12px;border-radius:12px;background:rgba(251,113,133,.14);color:#fecdd3;font-size:13px;text-align:center}
+.wka-msg[hidden]{display:none}
+.wka-terms{max-width:400px;margin:0;color:rgba(255,255,255,.45);font-size:11.5px;text-align:center}
+.wka-spin{width:34px;height:34px;margin:6px 0 10px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:#2aabee;animation:wkaspin 1s linear infinite}
+@keyframes wkaspin{to{transform:rotate(360deg)}}
+.wka-langs{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border-radius:18px;background:rgba(0,0,0,.25);direction:ltr}
+.wka-langs button{height:30px;padding:0 12px;border:0;border-radius:14px;background:none;color:rgba(255,255,255,.7);font:700 12.5px inherit;cursor:pointer}
+.wka-langs button.on{background:rgba(255,255,255,.16);color:#fff}

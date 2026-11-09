@@ -1,0 +1,49 @@
+/* Restore whole-app palette inheritance. Media pixels, photos and approved artwork are untouched. */
+body.wm84-theme{background:var(--bg)!important;color:var(--txt);color-scheme:normal}
+body.wm84-theme.wm72-product:before{background:var(--bg)!important}
+body.wm84-theme header,body.wm84-theme #mini,body.wm84-theme #nav{background:var(--bg2);color:var(--txt)}
+body.wm84-theme :is(.sheet,#sheet,#wc23-panel,#af24-panel,#wm-finance-panel){background:var(--bg2);color:var(--txt)}
+body.wm84-theme #wc23-panel.wm73-wallet{background:var(--bg);color:var(--txt)}
+body.wm84-theme .wm72-feature,body.wm84-theme .wm72-cinema-feature,body.wm84-theme.wm72-lite .wm72-feature,body.wm84-theme.wm72-lite .wm72-cinema-feature{background:var(--bg2);background:linear-gradient(125deg,var(--wm84-hero-start),var(--wm84-hero-end));color:var(--txt);border-color:var(--ln)}
+body.wm84-theme .wm72-feature :is(h2,small),body.wm84-theme .wm72-cinema-copy :is(b,small,em){color:var(--txt)}
+body.wm84-theme .wm72-feature p,body.wm84-theme .wm72-cinema-copy>span{color:var(--mut)}
+body.wm84-theme .wm72-light-button{background:var(--txt);color:var(--wm84-text-ink)}
+body.wm84-theme .wn-settings-list{background:var(--bg2);border-color:var(--ln)}
+body.wm84-theme .wn-settings-list>button{color:var(--txt)}
+body.wm84-theme :is(.wn-primary,.gbtn,.wp-pay,.cb-primary,.wc23-submit,.af24-submit,.op31-primary,.wm75-primary){background:var(--a1)!important;color:var(--wm84-primary-ink)!important}
+body.wm84-theme #view .wm82-lobby .wm75-friend .wm75-code-form>.wm75-primary{background:var(--bg2)!important;color:var(--txt)!important}
+body.wm84-theme #nav.wm83-navigation>button.on{background:transparent!important}
+body.wm84-theme .wm70-compose button,body.wm84-theme .wm70-live-compose button,body.wm84-theme #wm78-send{color:var(--wm84-primary-ink)}
+/* Keep the personal player's layout/seek/media nodes; restore its selected app colors. */
+body.wm84-theme #fp.wm74-player{background:var(--bg);color:var(--txt);color-scheme:normal}
+body.wm84-theme #fp.wm74-player .wm74-track h1{color:var(--txt)}
+body.wm84-theme #fp.wm74-player :is(.wm74-top small,.wm74-track p,.wm74-times,.wm74-actions>button,.wm74-status,.wm74-cover-fallback){color:var(--mut)}
+body.wm84-theme #fp.wm74-player #wm74-like:not(.is-liked){color:var(--txt)}
+body.wm84-theme #fp.wm74-player .wm74-controls>button{color:var(--mut)}
+body.wm84-theme #fp.wm74-player .wm74-controls :is(#wm74-previous,#wm74-next){color:var(--txt)}
+body.wm84-theme #fp.wm74-player .wm74-controls>.wm74-main-play{background:var(--txt);color:var(--wm84-text-ink)}
+body.wm84-theme #fp.wm74-player .wm74-controls>button.is-on{color:var(--a1)}
+body.wm84-theme #fp.wm74-player .wm74-cover{background:var(--bg2)}
+body.wm84-theme #fp.wm74-player .wm74-rail{background:var(--ln)}
+body.wm84-theme #fp.wm74-player #wm74-buffer{background:var(--mut)}
+body.wm84-theme #fp.wm74-player #wm74-progress{background:var(--txt)}
+body.wm84-theme #fp.wm74-player #wm74-seek::-webkit-slider-thumb{background:var(--txt)}
+body.wm84-theme #fp.wm74-player #wm74-seek::-moz-range-thumb{background:var(--txt)}
+body.wm84-theme #fp.wm74-player .wm74-preview{background:var(--txt);color:var(--wm84-text-ink)}
+body.wm84-theme #fp.wm74-player .wm74-actions .wm74-fx.is-on{color:var(--txt)}
+body.wm84-theme #fp.wm74-player .wm74-fx.is-on bdi{color:var(--a1);border-color:var(--a1)}
+body.wm84-theme #fp.wm74-player .wm74-actions{border-top-color:var(--ln)}
+/* The original three-column native picker, with the existing custom-color input retained. */
+#sheet .wm84-colors h3{display:flex;align-items:center;gap:10px;margin:3px 0 10px;color:var(--txt);font-size:18px;line-height:1.8}
+.wm84-palette-icon{width:27px;height:27px;flex:none;vertical-align:middle}
+#sheet .wm84-colors .wm-theme-sub{text-align:center;color:var(--mut);font-size:12px;margin-bottom:18px;line-height:1.8}
+#sheet .wm84-colors .wm-theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 10px;direction:inherit;padding:4px}
+#sheet .wm84-colors .wm-theme-choice{display:block;min-width:0;margin:0;padding:0;border:0;background:transparent;color:var(--txt);text-align:center;font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none}
+#sheet .wm84-colors .wm-theme-swatch{display:block;position:relative;aspect-ratio:1.5;border-radius:18px;background:var(--wm-sw);box-shadow:0 0 0 1px #ffffff33;transition:box-shadow .18s,transform .18s}
+#sheet .wm84-colors .wm-theme-choice[aria-pressed=true] .wm-theme-swatch{box-shadow:0 0 0 3px #e6c27a,0 6px 18px #e6c27a55}
+#sheet .wm84-colors .wm-theme-label{display:block;margin-top:9px;font-size:12px;font-weight:700;line-height:1.7;overflow-wrap:anywhere}
+#sheet .wm84-colors .wm-theme-tick{position:absolute;right:6px;bottom:6px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#e6c27a;color:#2a1c00;font-size:15px;font-family:system-ui,sans-serif;font-weight:900}
+#sheet .wm84-custom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 4px 0;padding:13px;border:1px solid var(--ln);border-radius:13px;background:var(--card);font-size:12px;color:var(--txt)}
+#sheet .wm84-custom input{display:block;appearance:auto;-webkit-appearance:auto;flex:none;width:49px;height:43px;min-height:43px;padding:2px;border:1px solid var(--ln);border-radius:9px;background:var(--bg2);cursor:pointer}
+#sheet .wm84-save-hint{display:block;margin:12px 4px 0;color:var(--mut);font-size:11px;line-height:1.8}
+@media(prefers-reduced-motion:reduce){#sheet .wm84-colors .wm-theme-swatch{transition:none}}

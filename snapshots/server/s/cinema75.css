@@ -1,0 +1,87 @@
+/* Cinema brand and a single lobby surface. Themes remain user-selectable. */
+.wm75-art{display:inline-flex;position:relative;align-items:center;justify-content:center;width:32px;height:32px;flex:none;vertical-align:middle;line-height:0;isolation:isolate}
+.wm75-art>img{display:block;width:100%;height:100%;object-fit:contain;filter:none;transform:none;pointer-events:none}
+.wm75-art [hidden]{display:none!important}
+.wm75-art-fallback{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--txt,#ddd)}
+.wm75-icon{display:inline-block;width:21px;height:21px;flex:none;vertical-align:middle;pointer-events:none;filter:none;animation:none;transform:none}
+.wm75-brand{display:flex;align-items:center;gap:9px;font-size:17px}
+#nav button>.wm75-art{width:35px;height:35px}#nav .wm72-nav-art>.wm75-art{width:100%;height:100%}
+.wn-shortcut>.wm75-art{width:50px;height:50px}.wn-banner>.wm75-art{width:46px;height:46px}.wm72-shortcut>.wm75-art{width:52px;height:52px}
+body.wm75-lobby-mode>#cback{display:none!important}
+#view .wm75-page{width:100%;max-width:640px;margin:0 auto;padding:6px 0 24px;color:var(--txt);font:inherit;animation:none}
+#view .wm75-page *{box-sizing:border-box}
+#view .wm75-page button{display:inline-flex;align-items:center;justify-content:center;gap:8px;appearance:none;-webkit-appearance:none;min-height:44px;margin:0;padding:10px 14px;border:0;border-radius:12px;background:transparent;color:inherit;box-shadow:none;cursor:pointer;font:inherit;line-height:1.6;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#view .wm75-page button:disabled{opacity:.5;cursor:default}
+#view .wm75-page button:active{opacity:.78}
+#view .wm75-page button:focus-visible,#view .wm75-page input:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+#view .wm75-heading,.wm75-heading{position:relative;top:auto;inset-inline:auto;z-index:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;height:auto;min-height:68px;padding:5px 0 15px;margin:0;background:transparent;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;color:var(--txt);direction:ltr;box-shadow:none}
+#view .wm75-heading>div{flex:1;min-width:0;text-align:center;direction:rtl}
+#view .wm75-heading h1{margin:2px 0 0;font-size:20px;font-weight:800;line-height:1.6;color:var(--txt);text-shadow:none;letter-spacing:0}
+#view .wm75-heading small{display:block;font:600 9px/1.5 system-ui,sans-serif;color:var(--mut);letter-spacing:1.6px}
+#view .wm75-heading>button{width:44px;height:44px;flex:none;padding:10px}
+#view .wm75-heading-art{width:47px;height:47px}
+#view .wm75-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:0 0 18px;padding:4px;background:var(--bg2);border:1px solid var(--ln);border-radius:14px}
+#view .wm75-tabs button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:8px 4px;border:0;border-radius:10px;background:transparent;color:var(--mut);font-family:inherit;font-size:13px;font-weight:600;line-height:1.6;cursor:pointer}
+#view .wm75-tabs button.is-active{background:var(--card2,var(--card));color:var(--txt);box-shadow:0 1px 5px #0001}
+#view .wm75-tabs .wm75-icon{width:18px;height:18px}
+#view .wm75-lobby{display:block;padding:22px;border:1px solid var(--ln);border-radius:22px;background:var(--card);box-shadow:none}
+#view .wm75-intro{display:flex;align-items:center;gap:15px;margin:0 0 25px}
+#view .wm75-lobby-art{width:76px;height:82px;flex:none}
+#view .wm75-intro>div{min-width:0;flex:1}
+#view .wm75-lobby h2{margin:0;font-size:18px;font-weight:750;line-height:1.65;overflow-wrap:anywhere;color:var(--txt)}
+#view .wm75-intro p{margin:6px 0 0;font-size:12px;line-height:1.9;color:var(--mut)}
+#view .wm75-lobby .wm75-friend h2{font-size:16px}
+#view .wm75-caption{margin:6px 0 14px;color:var(--mut);font-size:12px;line-height:1.9;overflow-wrap:anywhere}
+#view .wm75-page input{display:block;appearance:none;-webkit-appearance:none;width:100%;min-width:0;min-height:50px;margin:0;padding:12px 14px;border:1px solid var(--ln);border-radius:12px;outline:0;background:var(--bg2);color:var(--txt);font:inherit;box-shadow:none;line-height:1.6}
+#view .wm75-page input::placeholder{color:var(--mut);opacity:.85;letter-spacing:0}
+#view .wm75-page input:disabled{opacity:.55}
+#view .wm75-page .wm75-primary{background:var(--a1);color:var(--wm72-on-accent,#fff);font-weight:750;min-height:48px;border:1px solid transparent}
+#view .wm75-page .wm75-secondary{border:1px solid var(--ln);background:var(--bg2);color:var(--txt);font-weight:600;min-height:48px}
+#view .wm75-code-form{display:flex;align-items:stretch;gap:8px;margin:0}
+#view .wm75-code-form input{flex:1;width:0;font:600 18px/1.4 system-ui,sans-serif;letter-spacing:3px;text-transform:uppercase;min-height:52px}
+#view .wm75-code-form input::placeholder{font:12px/1.6 Tahoma,Arial,sans-serif;text-transform:none}
+#view .wm75-code-form button{flex:none;min-width:82px}
+#view .wm75-code-form button .wm75-icon{width:18px;height:18px}
+#view .wm75-form-status{margin:7px 0 0;min-height:0;color:var(--mut);font-size:11px;line-height:1.8}
+#view .wm75-form-status:empty{display:none}
+#view .wm75-own-slot{margin:24px 0 0;padding:22px 0 0;border-top:1px solid var(--ln)}
+#view .wm75-own-title{display:flex;align-items:center;gap:10px;margin:0 0 4px}
+#view .wm75-own-title>.wm75-icon{width:25px;height:25px;color:var(--mut)}
+#view .wm75-own-title>div{min-width:0;flex:1}
+#view .wm75-own-title small{display:block;font-size:11px;line-height:1.7;color:var(--mut)}
+#view .wm75-lobby .wm75-own-title h2{font-size:16px;line-height:1.8}
+#view .wm75-permanent{padding:3px 8px;flex:none;border:1px solid var(--ln);border-radius:6px;color:var(--mut);font-size:10px;font-weight:500;line-height:1.6}
+#view .wm75-code{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;margin:14px 0 12px;padding:13px 14px;background:var(--bg2);border:1px solid var(--ln);border-radius:13px}
+#view .wm75-code>div{min-width:0}
+#view .wm75-code small{display:block;margin:0 0 5px;color:var(--mut);font-size:10px;line-height:1.7}
+#view .wm75-code bdi{display:block;font:750 25px/1.3 system-ui,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:4px;direction:ltr;color:var(--txt);white-space:nowrap}
+#view .wm75-code>button{width:44px;height:44px;flex:none;padding:10px;background:var(--card)}
+#view .wm75-own-actions{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:8px}
+#view .wm75-own-actions>button{min-width:0;padding:11px 8px;font-size:12px;gap:6px}
+#view .wm75-own-actions .wm75-icon{width:17px;height:17px}
+#view .wm75-page .wm75-change-code{display:flex;margin:7px 0 0;padding:7px 2px;min-height:42px;font-size:11px;color:var(--mut)}
+#view .wm75-change-code .wm75-icon{width:16px;height:16px}
+#view .wm75-load-state{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;min-height:88px;font-size:12px;color:var(--mut);line-height:1.9}
+#view .wm75-load-state>p{width:100%;text-align:center;margin:0}
+#view .wm75-create label,#view .wm75-gate label{display:block;margin:14px 0 7px;font-size:12px;font-weight:600;color:var(--txt)}
+#view .wm75-create form>.wm75-primary{width:100%;margin-top:10px;font-size:13px}
+#view .wm75-gate{display:flex;flex-direction:column;align-items:center;padding:28px 24px 20px;border:1px solid var(--ln);border-radius:22px;background:var(--card);text-align:center}
+#view .wm75-camera-art{width:142px;height:142px;margin:0 0 14px}
+#view .wm75-gate>small{color:var(--mut);font-size:11px;line-height:1.8}
+#view .wm75-gate>h2{margin:7px 0 4px;color:var(--txt);font-size:23px;line-height:1.8;font-weight:800}
+#view .wm75-gate>.wm75-caption{max-width:380px;margin:4px 0 19px;font-size:12px;line-height:1.95}
+#view .wm75-gate form{width:100%;text-align:start}
+#view .wm75-gate form>label:first-child{margin-top:0}
+#view .wm75-gate form>.wm75-primary{width:100%;margin-top:17px;font-size:13px}
+#view .wm75-password{display:flex;position:relative;align-items:center}
+#view .wm75-password>input{padding-inline-end:48px;font-size:15px;min-height:52px}
+#view .wm75-password>button{position:absolute;inset-inline-end:4px;top:4px;bottom:4px;min-height:44px;width:44px;padding:10px;color:var(--mut)}
+#view .wm75-page .wm75-recover{font-size:12px;color:var(--mut);margin-top:12px;text-decoration:underline;text-underline-offset:4px}
+#view .wm75-error{font-size:12px;line-height:1.9;margin:12px 0 0;color:var(--err,#f17777)}
+.wm75-spinner{width:19px;height:19px;display:inline-block;flex:none;border:2px solid var(--ln);border-top-color:var(--a1);border-radius:50%;animation:wm75-spin .8s linear infinite}
+.wm75-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@keyframes wm75-spin{to{transform:rotate(360deg)}}
+@media(max-width:360px){#view .wm75-lobby{padding:17px}#view .wm75-gate{padding:22px 18px 18px}#view .wm75-heading h1{font-size:18px}#view .wm75-intro{gap:10px}#view .wm75-lobby-art{width:61px;height:67px}#view .wm75-own-actions{grid-template-columns:1fr}#view .wm75-code-form button{min-width:67px;padding:9px}#view .wm75-code-form button .wm75-icon{display:none}#view .wm75-code bdi{font-size:21px;letter-spacing:3px}#view .wm75-gate>h2{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.wm75-spinner{animation:none}}
+
+.wm72-cinema-art>.wm75-art{width:100%;height:100%}

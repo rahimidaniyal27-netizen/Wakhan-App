@@ -1,0 +1,17 @@
+/* All frames have a measured, centred 42-unit opening. The bitmap's transparent
+   padding includes protruding lion heads, birds, droplets and sparks. */
+.wm71-avatar>img,.wm71-avatar>.wm70-avatar-fallback{inset:15%;width:70%;height:70%;border:0}
+.wm71-avatar>.wm70-avatar-halo{inset:0;width:100%;height:100%;overflow:visible}
+.wm71-art{position:relative;display:block;isolation:isolate;filter:none!important;pointer-events:none}
+.wm71-profile{position:absolute;width:182%;height:208%;left:-41%;top:-54%;overflow:visible}
+.wm71-art>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border:0;max-width:none;max-height:none;border-radius:0!important;pointer-events:none}
+.wm71-poster{visibility:visible}.wm71-motion{visibility:hidden}.wm71-playing>.wm71-poster{visibility:hidden}.wm71-playing>.wm71-motion{visibility:visible}
+.wm71-gift{width:100%;height:100%;aspect-ratio:1}
+.wm70-gift-grid .wm71-gift{width:76px;height:76px;flex:none;margin:auto}.wm70-gift-showcase .wm71-gift{width:62px;height:62px}.wm70-live-gift>.wm71-gift{width:44px;height:44px;flex:none}
+.wm70-halo-preview{height:184px;overflow:visible}.wm70-halo-gallery>article{overflow:visible}.wm70-halo-gallery{gap:22px 13px}
+.wm70-editor-preview{min-height:184px;padding-block:24px 50px;margin-bottom:5px}.wm70-profile-head{padding-block:16px 42px}.wm70-public-profile>.wm70-avatar{margin-block:28px 62px}
+#hall .wm71-seated{overflow:visible;position:relative}#hall .wm71-seated>img{position:absolute;inset:15%;width:70%;height:70%;object-fit:cover;border-radius:50%}#hall .wm71-seated>.p27-seat-halo{inset:0;width:100%;height:100%;overflow:visible}
+.wm70-real-halo>canvas{display:none!important}.wm70-real-halo>.wm70-real-poster{opacity:1!important}
+@media(max-width:360px){.wm70-halo-preview{height:164px}.wm70-halo-gallery{column-gap:9px}}
+#hall .wm71-seated>.p27-seat-halo{left:0;top:0;transform:none;aspect-ratio:auto;z-index:4}
+#hall .wm71-seated{aspect-ratio:1;height:auto}#hall .wm71-seated>.wmc-initial,#hall .wm71-seated>.wmr-seat-wave{inset:15%;width:70%;height:70%}

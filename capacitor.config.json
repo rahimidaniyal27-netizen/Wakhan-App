@@ -1,0 +1,35 @@
+{
+  "appId": "app.wakhan.music",
+  "appName": "Wakhan",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#0047FF"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    },
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#0047FF",
+      "showSpinner": false
+    },
+    "Keyboard": {
+      "resizeOnFullScreen": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#071019"
+    },
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    }
+  },
+  "loggingBehavior": "none"
+}
