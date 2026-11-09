@@ -6,6 +6,7 @@ import {Haptics} from '@capacitor/haptics';
 import {StatusBar} from '@capacitor/status-bar';
 import {SplashScreen} from '@capacitor/splash-screen';
 import {PushNotifications} from '@capacitor/push-notifications';
+import {HP} from './hp-inline.mjs';
 import {SessionBroker,AuthError} from './session.mjs';
 import {installCompatibility} from './telegram-shim.mjs';
 import './style.css';
@@ -20,6 +21,21 @@ const Vault=registerPlugin('WakhanVault'),localOrigin=location.origin,rawFetch=w
 /* phone storage for the sign-in: the encrypted Android vault; on iPhone (until its own vault exists) the app's private storage */
 const ls={get:async key=>{try{return localStorage.getItem('wkv_'+key)}catch{return memory.get(key)||null}},set:async(key,v)=>{try{localStorage.setItem('wkv_'+key,v)}catch{memory.set(key,v)}},remove:async key=>{try{localStorage.removeItem('wkv_'+key)}catch{}memory.delete(key)}};
 const store=native&&Capacitor.isPluginAvailable('WakhanVault')?{get:async key=>(await Vault.get({key})).value??null,set:(key,value)=>Vault.set({key,value}),remove:key=>Vault.remove({key})}:native?ls:{get:async key=>memory.get(key)||null,set:async(key,v)=>memory.set(key,v),remove:async key=>memory.delete(key)};
+/* ---- every phone size: page inside the screen, bar colours follow the page, Home headphones always shown */
+const platform=Capacitor.getPlatform();
+document.documentElement.classList.add('wk-native','wk-'+platform);
+(()=>{const st=document.createElement('style');st.textContent=`html.wk-ios body>header{padding-top:calc(12px + env(safe-area-inset-top,0px))!important}
+html.wk-native .wm72-photo[data-wn-key=headphones]>img{animation:wm72-object-breathe 6.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){html.wk-native .wm72-photo[data-wn-key=headphones]>img{animation:none}}`;document.head.appendChild(st)})();
+let barsNow='';
+function setBars(hex){if(!native||!hex||hex===barsNow)return;barsNow=hex;const n=parseInt(hex.slice(1),16),lum=(0.299*(n>>16&255)+0.587*(n>>8&255)+0.114*(n&255))/255;
+ if(platform==='android')NativeLocale.bars({color:hex}).catch(()=>{});StatusBar.setStyle({style:lum>0.6?'LIGHT':'DARK'}).catch(()=>{})}
+const paint=document.createElement('canvas');paint.width=paint.height=1;
+function pageTop(){try{const c=paint.getContext('2d',{willReadFrequently:true});c.clearRect(0,0,1,1);c.fillStyle='#071019';c.fillRect(0,0,1,1);
+ for(const el of [document.documentElement,document.body,document.querySelector('body>header')]){if(!el)continue;const bg=getComputedStyle(el).backgroundColor;if(bg&&bg!=='transparent'&&bg!=='rgba(0, 0, 0, 0)'){c.fillStyle=bg;c.fillRect(0,0,1,1)}}
+ const d=c.getImageData(0,0,1,1).data;return '#'+[d[0],d[1],d[2]].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return ''}}
+setInterval(()=>{if(native&&inApp&&!root())setBars(pageTop())},1200);
+document.addEventListener('error',e=>{const im=e.target;if(im&&im.tagName==='IMG'&&/wm72_glass_headphones/.test(im.src||'')&&!im.dataset.wkInline){im.dataset.wkInline='1';e.stopImmediatePropagation();im.hidden=false;im.parentElement&&im.parentElement.classList.remove('wm72-image-failed');im.src=HP}},true);
 const broker=new SessionBroker({origin:'https://music.kabulcafe.uk',store,fetch:rawFetch});
 
 let lang='en',preferredLanguages=[],config={},busy=false,timer=0,pollBusy=false,activePending=null,email='',inApp=false,linking=false,compat=null,languageReady=false;
@@ -27,7 +43,7 @@ const t=k=>(COPY[lang]||COPY.en)[k]||COPY.en[k]||k,h=s=>String(s??'').replace(/[
 
 const st=k=>(SIGNUP[lang]||SIGNUP.en)[k]||SIGNUP.en[k]||k;let MODE='signin';
 function root(){return document.getElementById('native87-root')}
-function screen(html,{welcome=false}={}){clearTimeout(timer);document.documentElement.dir=languageInfo(lang).d;document.documentElement.lang=lang;const node=root();StatusBar.setStyle({style:'LIGHT'}).catch(()=>{});StatusBar.setBackgroundColor({color:welcome?'#a5f7ed':'#ffffff'}).catch(()=>{});node.classList.toggle('native87-welcome',welcome);node.dataset.screen=welcome?'welcome':'flow';document.body.classList.toggle('native87-auth',!inApp);node.innerHTML=welcome?html:'<div class="native87-wordmark"><img src="'+localOrigin+'/brand.svg" alt=""><div><strong>WAKHAN</strong><small>YOUR OWN RHYTHM</small></div></div>'+html+'<div id="auth-error" class="native87-error" role="alert" aria-live="polite"></div>';node.querySelector('[data-auth-help]')?.addEventListener('click',showHelp)}
+function screen(html,{welcome=false}={}){clearTimeout(timer);document.documentElement.dir=languageInfo(lang).d;document.documentElement.lang=lang;const node=root();setBars(welcome?'#a5f7ed':'#ffffff');node.classList.toggle('native87-welcome',welcome);node.dataset.screen=welcome?'welcome':'flow';document.body.classList.toggle('native87-auth',!inApp);node.innerHTML=welcome?html:'<div class="native87-wordmark"><img src="'+localOrigin+'/brand.svg" alt=""><div><strong>WAKHAN</strong><small>YOUR OWN RHYTHM</small></div></div>'+html+'<div id="auth-error" class="native87-error" role="alert" aria-live="polite"></div>';node.querySelector('[data-auth-help]')?.addEventListener('click',showHelp)}
 function showHelp(){let dialog=document.getElementById('native87-help');if(!dialog){dialog=document.createElement('dialog');dialog.id='native87-help';dialog.className='native87-help-dialog';document.body.append(dialog)}dialog.dir=languageInfo(lang).d;dialog.innerHTML=helpMarkup({lang,copy:COPY});dialog.querySelectorAll('[data-help-close]').forEach(b=>b.onclick=()=>dialog.close());dialog.showModal()}
 
 function error(e){if(e instanceof AuthError&&e.code==='too_young'){blocked();return}if(e instanceof AuthError&&['username_taken','username_bad','birth_bad','terms','photo_invalid','photo_size'].includes(e.code)){const n=document.getElementById('auth-error');if(n)n.textContent=st(e.code==='terms'?'terms_err':e.code);return}const node=document.getElementById('auth-error'),key=e instanceof AuthError?(e.code==='wait'?'waitError':e.code):'net';if(node)node.textContent=COPY[lang]?.[key]||COPY.en[key]||t('net')}
