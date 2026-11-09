@@ -389,7 +389,10 @@ function bubble(){if(S.bub)return paintBubble();const b=document.createElement('
  document.body.appendChild(b);S.bub=b;paintBubble()}
 function paintBubble(){const b=S.bub;if(!b)return;const on=VC.on&&!VC.mute,m=b.querySelector('.h2-bmic');setHtml(m,ic(on?'mic':'muted'));m.classList.toggle('on',on);m.disabled=!seated();
  let talk=false;try{talk=Object.entries(VC.spk||{}).some(([k,v])=>v&&Number(k)!==me())}catch(e){}b.classList.toggle('talk',talk);
- let n=0;try{n=(CS.seats||[]).filter(Boolean).length}catch(e){}setText(b.querySelector('.h2-bn'),n?String(n):'')}
+ let n=0;try{n=(CS.seats||[]).filter(Boolean).length}catch(e){}setText(b.querySelector('.h2-bn'),n?String(n):'');
+ /* the hall's own picture in the bubble (first letter when the hall has none) */
+ let h={};try{h=info()||{}}catch(e){}const key=(h.photo||'')+'|'+(h.name||''),ic_=b.querySelector('.h2-bic');
+ if(ic_&&ic_.dataset.k!==key){ic_.dataset.k=key;ic_.classList.toggle('pic',!!h.photo);setHtml(ic_,h.photo?`<img src="${esc(h.photo)}" alt="" onerror="this.parentNode.classList.remove('pic');this.replaceWith(document.createTextNode('${esc((h.name||'W').charAt(0)).replace(/'/g,'')}'))">`:(h.name?`<i>${esc(h.name.charAt(0))}</i>`:ic('cinema')))}}
 setInterval(()=>{if(S.min){paintBubble();if(typeof CID==='undefined'||!CID)finishMin()}if(S.bub){const sh=$('sheet'),hide=!!(sh&&sh.classList.contains('show'))||document.body.classList.contains('dt-open');if(S.bub.classList.contains('hide')!==hide)S.bub.classList.toggle('hide',hide)}},500);
 
 /* ---------------------------------------------------------------- 13 engine hooks */

@@ -6,6 +6,9 @@ echo '{"push":false}' > public/build-flags.json   # no push with a free Apple ID
 npm run build
 [ -d ios ] || npx cap add ios
 npx cap sync ios
+cp ios-assets/native/*.swift ios/App/App/
+(gem list -i xcodeproj >/dev/null 2>&1 || gem install --user-install xcodeproj >/dev/null) && ruby ios-assets/native/add_files.rb || ruby -I"$(gem env gemdir)" ios-assets/native/add_files.rb
+grep -q MainViewController ios/App/App/Base.lproj/Main.storyboard
 PL=ios/App/App/Info.plist; B=/usr/libexec/PlistBuddy
 set_kv(){ $B -c "Set :$1 $2" "$PL" 2>/dev/null || $B -c "Add :$1 string $2" "$PL"; }
 set_kv CFBundleDisplayName "Wakhan"

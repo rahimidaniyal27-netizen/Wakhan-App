@@ -1,6 +1,6 @@
 {
  "origin": "https://music.kabulcafe.uk",
- "index_sha256": "23ff6b2fecf1b41c27066d99aa9584da4f644a2b55ab128ce91e005c10d196be",
+ "index_sha256": "05fce4d01c33140bb14017766a299f6220111746641528bc80f0360da50a9502",
  "assets": {
   "/s/app.css?v=81": {
    "file": "s/app.css",
@@ -104,8 +104,8 @@
   },
   "/s/hall2.js?v=81": {
    "file": "s/hall2.js",
-   "sha256": "af769274ac12b1c8f19c04443fa24e2dd33ff64162c0f434ebb6f987e6515afb",
-   "bytes": 53485
+   "sha256": "70ca400a7228cf393f804cacf5ff0fd791e53843de4fecc3476203dd5d1a71e0",
+   "bytes": 54023
   },
   "/s/hall51.js?v=81": {
    "file": "s/hall51.js",
@@ -316,6 +316,11 @@
    "file": "s/safety.js",
    "sha256": "c3d83fa535bfc4acb3ab77e3d4e27f2981ad019793ec4599e5cae5ced33744f8",
    "bytes": 28189
+  },
+  "/s/coin3d.js?v=98": {
+   "file": "s/coin3d.js",
+   "sha256": "7029e531df9114d95a53712ba95aed3fcda9dd8f826155a32c92bcb0ac7bc03c",
+   "bytes": 5741
   }
  }
 }
