@@ -27,7 +27,8 @@ cd ios/App
 if [ -d App.xcworkspace ]; then T=(-workspace App.xcworkspace); else T=(-project App.xcodeproj); fi
 xcodebuild "${T[@]}" -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' \
   -derivedDataPath build MARKETING_VERSION="${V%%-*}" CURRENT_PROJECT_VERSION="$C" \
-  CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build | tail -20
+  CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build > /tmp/xb.log 2>&1 || { grep -E 'error:|warning: .*override' /tmp/xb.log | sort -u | head -15 | while read -r l; do echo "::error::$l"; done; tail -5 /tmp/xb.log; exit 65; }
+tail -3 /tmp/xb.log
 APP=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' | head -1)
 rm -rf Payload && mkdir Payload && cp -R "$APP" Payload/
 zip -qry "../../Wakhan-$V.ipa" Payload && cd ../.. && ls -la Wakhan-*.ipa
