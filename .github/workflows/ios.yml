@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+permissions:
+  contents: write
 jobs:
   ios:
     runs-on: macos-15
@@ -18,3 +20,10 @@ jobs:
           name: Wakhan-iOS
           path: Wakhan-*.ipa
           retention-days: 14
+      - name: Publish the IPA as a release (direct download)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          F=$(ls Wakhan-*.ipa | head -1); V=${F#Wakhan-}; V=${V%.ipa}
+          gh release delete "ios-$V" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "ios-$V" "$F" --prerelease --title "Wakhan $V (iPhone, for Sideloadly)" --notes "Install with Sideloadly using your Apple ID. Re-install every 7 days."
