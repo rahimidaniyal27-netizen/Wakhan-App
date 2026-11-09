@@ -44,6 +44,44 @@
   css.textContent = `.wkn-back{position:absolute;top:10px;inset-inline-start:12px;z-index:99;width:42px;height:42px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(10,8,25,.55);color:#fff;display:grid;place-items:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
   [dir=rtl] .wkn-back svg,html[dir=rtl] .wkn-back svg{transform:scaleX(-1)}`;
   document.head.appendChild(css);
+  /* ---- nothing under the clock, on every phone: each full page that would put a button
+     under the status bar / notch is pushed down by the bar's height (+ a little room for the thumb) */
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none';
+  document.documentElement.appendChild(probe);
+  function safeTop() {
+    let s = probe.getBoundingClientRect().height || 0;
+    const full = innerHeight >= screen.height - 4;          // the web view reaches the very top of the screen
+    if (!s && full) {
+      const ios = document.documentElement.classList.contains('wk-ios') || /iPhone|iPad/.test(navigator.userAgent);
+      s = ios ? (screen.height >= 852 ? 59 : screen.height >= 812 ? 47 : 20) : 28;
+    }
+    return Math.round(s);
+  }
+  const ROOM = 10;
+  function guardTop() {
+    const s = safeTop(); document.documentElement.style.setProperty('--wk-st', s + 'px');
+    const need = s + ROOM, W = innerWidth, H = innerHeight;
+    const list = document.body.querySelectorAll('body > *, body > * > *, [class*="panel"], [id*="panel"], [class*="-page"], [class*="fullscreen"], [class*="room"], [id*="room"]');
+    for (const el of list) {
+      if (!(el instanceof HTMLElement) || el.id === 'nav' || el.id === 'toast' || el.id === 'h2-bub' || el.dataset.wkst) continue;
+      const st = getComputedStyle(el); if (st.position !== 'fixed' || !visible(el)) continue;
+      const r = el.getBoundingClientRect(); if (r.top > 2 || r.width < W * 0.9 || r.height < H * 0.6) continue;
+      if (el.closest('#sheet') || el.parentElement?.closest('[data-wkst]')) continue;
+      let min = Infinity;                                   // the highest thing a finger must reach
+      for (const b of el.querySelectorAll('button, [role=button], a, input, [onclick], h1, h2, h3, .ttl')) {
+        if (!visible(b)) continue; const br = b.getBoundingClientRect(); if (br.top < min) min = br.top;
+      }
+      if (min === Infinity || min >= need) continue;
+      const push = Math.ceil(need - Math.max(0, min));
+      el.dataset.wkst = '1'; el.style.boxSizing = 'border-box';
+      el.style.borderTop = `${push}px solid transparent`;   // a transparent border keeps the page colour and moves fixed/absolute headers too
+    }
+    for (const el of document.querySelectorAll('[data-wkst]')) if (!el.isConnected || !visible(el)) { el.style.borderTop = ''; delete el.dataset.wkst; }
+  }
+  let gt = 0; const runGuard = () => { clearTimeout(gt); gt = setTimeout(guardTop, 120); };
+  new MutationObserver(runGuard).observe(document.body, {childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden']});
+  addEventListener('resize', runGuard); setInterval(guardTop, 1500); runGuard();
   /* iPhone has no back key: swipe in from the screen edge */
   let sx = 0, sy = 0, edge = false;
   addEventListener('touchstart', e => { const t = e.touches[0]; const rtl = document.documentElement.dir === 'rtl'; edge = rtl ? t.clientX > innerWidth - 22 : t.clientX < 22; sx = t.clientX; sy = t.clientY; }, {passive: true});

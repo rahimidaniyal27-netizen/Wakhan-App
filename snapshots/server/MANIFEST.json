@@ -1,6 +1,6 @@
 {
  "origin": "https://music.kabulcafe.uk",
- "index_sha256": "05fce4d01c33140bb14017766a299f6220111746641528bc80f0360da50a9502",
+ "index_sha256": "58faf96455803f9178515c542a08c600397cab3aba8060f06e224dc8645bfba1",
  "assets": {
   "/s/app.css?v=81": {
    "file": "s/app.css",
@@ -11,11 +11,6 @@
    "file": "s/app.js",
    "sha256": "9b88c657de7c4895ef20f9e4437c60172a7725c88787705163c0ab3c874def86",
    "bytes": 12207
-  },
-  "/s/chat2.js?v=81": {
-   "file": "s/chat2.js",
-   "sha256": "e46552604baf866e7079edd9539a6879ee8ae6061ceb91ede42fd7fca9d6c8b2",
-   "bytes": 16853
   },
   "/s/cinema16.js?v=23": {
    "file": "s/cinema16.js",
@@ -321,6 +316,21 @@
    "file": "s/coin3d.js",
    "sha256": "7029e531df9114d95a53712ba95aed3fcda9dd8f826155a32c92bcb0ac7bc03c",
    "bytes": 5741
+  },
+  "/s/chat2.js?v=99": {
+   "file": "s/chat2.js",
+   "sha256": "0a797f9c1787326c2cb02eee317e19382256b8962d92adf1f8dd3045c0914dd4",
+   "bytes": 51245
+  },
+  "/s/username.js?v=99": {
+   "file": "s/username.js",
+   "sha256": "74d94fa61df7a7163db535a4b0da8172df96e88f38e3f1e70bb9285aeb241ac1",
+   "bytes": 3399
+  },
+  "/s/tabs2.js?v=99": {
+   "file": "s/tabs2.js",
+   "sha256": "33e34f407b3b20a472227925429faf69666bc8bf02cdd8c076912ce1c2e76c13",
+   "bytes": 6519
   }
  }
 }
