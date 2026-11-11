@@ -68,11 +68,30 @@ for(const name of process.argv.slice(2)){
  hall.code=hall.code.slice(0,settings.start)+html+hall.code.slice(settings.end);
  const marker='/* WAKHAN_ROYAL_STYLE_V1 */';if(hall.code.includes(marker))hall.code=hall.code.slice(0,hall.code.indexOf(marker));hall.code=hall.code.trimEnd();
  hall.code+='\n'+marker+'\n(()=>{const css=document.createElement("style");css.id="h4-royal";css.textContent='+JSON.stringify(read('hall/royal.css'))+';document.head.append(css)})();\n';
+ // Gallery candidates must never inherit the viewer's currently worn frame.
+ for(const module of ['community70_profile.js','profile77.js','halo35.js']){
+  const gallery=bundle.programs.find(p=>p.id===module);
+  gallery.code=gallery.code.replaceAll('wm70Avatar({...WM70.self,halo:','wm70Avatar({...WM70.self,frame_style:null,halo:').replaceAll('wm70Avatar({...me,halo:','wm70Avatar({...me,frame_style:null,halo:');
+ }
+ const roomChat=bundle.programs.find(p=>p.id==='community70_hall.js');roomChat.code=patchFunctions(roomChat.code,'hall/chat-poll.js','wm70PollHall');
+ const haloFx=bundle.programs.find(p=>p.id==='halo35.js');
+ const previousBudgetStart=haloFx.code.indexOf('/* WAKHAN_HALO_BUDGET */');
+ if(previousBudgetStart<0){
+  haloFx.code=haloFx.code.replace('let raf=0,t0=performance.now();','let raf=0,t0=performance.now();');
+  haloFx.code=haloFx.code.replace('e.isIntersecting?vis.add(e.target):vis.delete(e.target)','e.isIntersecting?vis.add(e.target):vis.delete(e.target);kick()');
+  haloFx.code=haloFx.code.replace('function frame(now){raf=0;','function frame(now){raf=0;if(document.visibilityState===\'hidden\')return;');
+  haloFx.code=haloFx.code.replace('if(!vis.has(c))continue;any=true;',"if(!vis.has(c)||c.closest('[data-wk-overlay-covered],[hidden],[inert]'))continue;any=true;if(c.__drawn&&now-(c.__lastDraw||0)<(window.WakhanRenderMode?.economy?200:65))continue;c.__lastDraw=now;");
+  haloFx.code=haloFx.code.replace('if(any||nodes.size)raf=requestAnimationFrame(frame)','if(any)raf=requestAnimationFrame(frame)');
+  haloFx.code=haloFx.code.replace('new MutationObserver(()=>scan()).observe',"let scanPending=false;new MutationObserver(()=>{if(!scanPending){scanPending=true;requestAnimationFrame(()=>{scanPending=false;scan()})}}).observe");
+  haloFx.code=haloFx.code.replace('function kick(){if(!raf)raf=requestAnimationFrame(frame)}',"function kick(){if(!raf)raf=requestAnimationFrame(frame)}document.addEventListener('visibilitychange',kick);document.addEventListener('wk-overlay-changed',kick);");
+  haloFx.code+='\n/* WAKHAN_HALO_BUDGET */';
+ }
  const profile=bundle.programs.find(p=>p.id==='profile30.js');
  const top='<main class="wn-page wt-me">';
  if(!profile.code.includes('wk-profile-top'))profile.code=profile.code.replace(top,top+'<div class="wk-profile-top"><button type="button" onclick="go(\'h\')" aria-label="${esc(document.documentElement.lang.startsWith(\'fa\')?\'برگشت\':\'Back\')}">‹</button><b>${esc(t.profile||\'Wakhan\')}</b><button type="button" onclick="WAKHAN_NATIVE_N1.settings()" aria-label="${esc(WAKHAN_NATIVE_N1.accountLabel)}">⚙</button></div>');
  profile.code=profile.code.replace('Personal player & cinema, unlimited','Exclusive frames & VIP badge').replace('پلیر و سینمای شخصی، بدون محدودیت','قاب اختصاصی و نشان VIP').replace('شخصي پلیر او سینما','ځانګړي چوکاټونه او VIP نښه');
  profile.code=profile.code.replace('t.halos,"wm70Edit(\'halos\')"','t.halos,"(AF24.data?.role?af24Open():wm70Edit(\'halos\'))"');
+ profile.code=profile.code.replace(/<button type="button" onclick="go\('h'\)" aria-label="\$\{esc\(document.documentElement.lang.startsWith\('fa'\)\?'برگشت':'Back'\)\}">‹<\/button>/,'<span aria-hidden="true"></span>');
  const frames=bundle.programs.find(p=>p.id==='inline-22.js');
  frames.code=ast.replace(frames.code,'af24Add',"function af24Add(){return af24Staff(String(document.getElementById('af24-staff-uid')?.value||'').trim(),true)}",'declaration');
  frames.code=frames.code.replace('uid:Number(AF24.target)','uid:AF24.target').replace('AF24.target=wpDigits(document.getElementById(\'af24-target\')?.value||\'\')','AF24.target=String(document.getElementById(\'af24-target\')?.value||\'\').trim()');
@@ -80,8 +99,14 @@ for(const name of process.argv.slice(2)){
  frames.code=frames.code.replaceAll('Bot creator','Wakhan creator').replaceAll('Only the bot creator can do this.','Only the Wakhan creator can do this.').replaceAll('This account must start the bot first.','This person needs a Wakhan account.').replaceAll('The recipient must have started the bot.','The recipient needs a Wakhan account.').replaceAll('Numeric ID','Wakhan ID or @username').replaceAll('سازندهٔ ربات','سازندهٔ واخان').replaceAll('inputmode="numeric" dir="ltr"','inputmode="text" dir="ltr"');
  const finance=bundle.programs.find(p=>p.id==='inline-07.js');finance.code=finance.code.replace('${h(s.id)}</bdi>','${h(s.public_id||s.id)}</bdi>');
  if(!frames.code.includes('AF24_COPY.en.vip='))frames.code+='\nAF24_COPY.en.vip="VIP member";AF24_COPY.fa.vip="همراه VIP";AF24_COPY.ps.vip="VIP غړی";';
+ frames.code=frames.code.replace('await wiRefresh()})','await wiRefresh();await wm70Load();if(TAB===\'m\')rMe();if(TAB===\'c\')drawHall()})');
  const identity=bundle.programs.find(p=>p.id==='inline-08.js');
  if(!identity.code.includes('words.personal_6='))identity.code+='\nfor(const words of Object.values(WI_COPY)){words.personal_6=words.personal_3}';
+ // The old polling fallback could decorate a modal backdrop as a page and
+ // repeatedly measure every panel. Current surfaces have explicit back controls.
+ const compatibility=bundle.programs.find(p=>p.id==='native-n1-features.js');
+ compatibility.code=compatibility.code.replace('setInterval(ensureBackButtons, 700);','/* Back controls are supplied by the current surface headers. */');
+ compatibility.code=compatibility.code.replace("el.id === 'nav' || el.tagName === 'HEADER'","el.id === 'nav' || el.id === 'ov' || el.id === 'view' || el.inert || el.tagName === 'HEADER'");
  const last=bundle.programs[bundle.programs.length-1],productMarker='/* WAKHAN_NATIVE_PRODUCT_UI */';
  if(last.code.includes(productMarker))last.code=last.code.slice(0,last.code.indexOf(productMarker));last.code=last.code.trimEnd();
  last.code+='\n'+productMarker+'\n'+read('product-ui.js')+'\n'+read('cinema-lobby.js')+'\n'+read('commerce-ui.js')+'\nif(!window.__wkVoiceAudioUnlock){window.__wkVoiceAudioUnlock=true;document.addEventListener("pointerdown",()=>{if(typeof wmqResumeVoiceAudio==="function")wmqResumeVoiceAudio()},{capture:true,passive:true})}';

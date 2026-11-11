@@ -38,8 +38,10 @@ function renderReply(){
  const root=$('c2-thread');if(!root)return;
  let strip=root.querySelector('.c4-reply');
  if(!strip){strip=document.createElement('div');strip.className='c4-reply';root.querySelector('.c3-bar').before(strip)}
- const reply=S.replies.get(Number(WM70.peer));strip.hidden=!reply;
- if(!reply)return;
+ const reply=S.replies.get(Number(WM70.peer));if(strip.hidden===!!reply)strip.hidden=!reply;
+ if(!reply){delete strip.dataset.replyKey;return}
+ const key=JSON.stringify([WM70.peer,reply.id,replyAuthor(reply),replyPreview(reply)]);
+ if(strip.dataset.replyKey===key)return;strip.dataset.replyKey=key;
  strip.replaceChildren();
  const text=document.createElement('div'),label=document.createElement('b'),preview=document.createElement('span');
  label.textContent=replyAuthor(reply);label.dir='auto';preview.textContent=replyPreview(reply);preview.dir='auto';text.append(label,preview);

@@ -1,0 +1,17 @@
+{
+  "version": "0.2.11-beta",
+  "build": 25,
+  "core_music_cinema_free": true,
+  "local_ui_and_api_tests": true,
+  "native_build_verified": false,
+  "server_executed": false,
+  "device_voice_verified": false,
+  "merchant_configured": false,
+  "store_ready": false,
+  "gallery_single_frame": true,
+  "modal_background_isolated": true,
+  "stable_seat_rows": true,
+  "room_messages_per_visit": true,
+  "retired_directory_route_removed": true,
+  "paypal_removed": true
+}

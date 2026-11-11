@@ -11,6 +11,7 @@ function royalThrone(){
 
 function paintSeats(){
  const box=$('hall');if(!box||!CS||!Array.isArray(CS.seats))return;const seats=CS.seats;
+ if(S.royalChatRoom!==CID){S.royalChatRoom=CID;royalResetChat()}
  box.style.setProperty('--h4-cols',10);root()?.setAttribute('data-h4-capacity',String(seats.length));
  box.style.setProperty('--h4-compact-rows',seats.length<=5?1:2);
  if(box.children.length!==seats.length||!box.dataset.royal){box.innerHTML=seats.map((_,i)=>`<button type="button" class="h2-seat is-empty" data-i="${i}"><span class="h2-face">${royalThrone(i)}<span class="h2-av"></span><i class="h2-mic"></i></span><b class="h2-name"></b></button>`).join('');box.dataset.royal='1';S.seatAv=[];S.seatSig=[]}
@@ -109,13 +110,18 @@ function kb(){
 
 function speaking(id){
  const box=$('hall');if(!box)return;
- for(const node of box.children){const uid=node.dataset.uid;if(!uid||(id!==undefined&&String(id)!==uid))continue;
-  const on=!!VC.spk[uid]&&!micMuted(uid),level=on?Math.min(1,Math.max(0,Number(VC.levels?.[uid])||0)):0;
-  node.classList.toggle('is-speaking',on);node.style.setProperty('--h4-voice-level',level.toFixed(3));
+ for(const node of box.children){const uid=node.dataset.uid;
+  // A reused seat must also clear its previous occupant's visual state.
+  const on=!!uid&&!node.classList.contains('is-empty')&&!!VC.spk[uid]&&!micMuted(uid),level=on?Math.min(1,Math.max(0,Number(VC.levels?.[uid])||0)):0;
+  if(node.classList.contains('is-speaking')!==on)node.classList.toggle('is-speaking',on);
+  const value=level.toFixed(3);if(node.style.getPropertyValue('--h4-voice-level')!==value)node.style.setProperty('--h4-voice-level',value);
  }
 }
 
 function royalNavigate(k,sub){
+ const leaving=inHall()&&CV==='hall'&&(k!=='c'||window.WakhanCinema?.opening);
+ const returning=k==='c'&&S.min&&!window.WakhanCinema?.opening;
+ if(leaving||returning)royalResetChat();
  if(k==='c'&&window.WakhanCinema?.opening){
   const show=()=>{CV='lobby';return old.go(k,sub)};
   if(!S.min&&inHall()&&seated())return minimize(k,sub,show);
@@ -131,4 +137,32 @@ async function speaker(){
  if(SX.audioBlocked&&SX.speaker!==false){wmqResumeVoiceAudio();paintVoice();return}
  try{await sxSpeaker()}catch{}
  paintVoice();
+}
+
+function msgNode(m){
+ const p=m.sender||{},name=p.name||'Wakhan',gift=m.kind==='gift';
+ const node=document.createElement('article');node.className='h2-msg'+(Number(p.id)===me()?' is-own':'')+(gift?' is-gift':'');node.dataset.id=String(m.id);
+ const portrait=document.createElement('button');portrait.type='button';portrait.className='h2-mav';portrait.setAttribute('aria-label',tx('profile')+' · '+name);portrait.onclick=()=>wm70OpenProfile(Number(p.id));portrait.innerHTML=wm70Avatar(p);
+ const body=document.createElement('div');body.className='h2-mb';
+ const author=document.createElement('button');author.type='button';author.className='h2-mname';author.dir='auto';author.textContent=name;author.onclick=()=>wm70OpenProfile(Number(p.id));body.append(author);
+ if(gift){const line=document.createElement('div');line.className='h2-giftline';line.innerHTML=wm70GiftArt(m.detail?.gift);const label=document.createElement('span');label.dir='auto';label.textContent=(wm70Name(WM70.gifts.find(v=>v.code===m.detail?.gift))||tx('gift'))+' ↗ '+(WM70.people.get(Number(m.detail?.target))?.name||'');line.append(label);body.append(line)}
+ else{const text=document.createElement('p');text.className='wm70-native-emoji';text.dir='auto';text.textContent=m.text||'';body.append(text)}
+ node.append(portrait,body);return node;
+}
+
+function royalResetChat(){
+ // A new visible visit starts after the current server cursor. Other clients
+ // keep their messages; no shared history is deleted.
+ ++WM70.hallSeq;WM70.hallBusy=false;WM70.hallMessages=[];WM70.roomPending=null;
+ S.base=null;S.chatOn=false;S.nodes?.clear();S.echo=[];
+ S.mountAt=Date.now();S.peopleRef=WM70.hallPeople;S.royalChatBaseline=true;
+ const out=$('wm70-live-messages');if(out)out.querySelectorAll('.h2-msg,.h2-sys').forEach(node=>node.remove());
+}
+
+function baseline(){
+ if(S.royalChatBaseline)return false;
+ if(S.base!==null)return true;
+ const list=WM70.hallMessages||[];
+ if(!(WM70.hallCursor>0||WM70.hallPeople!==S.peopleRef||list.length||Date.now()-S.mountAt>5000))return false;
+ S.base=list.reduce((a,m)=>Math.max(a,Number(m.id)||0),0);return true;
 }

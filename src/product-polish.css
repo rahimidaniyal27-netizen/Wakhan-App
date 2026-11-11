@@ -88,3 +88,27 @@ body :is(#wc23-panel,#wk-commerce-panel).wk-commerce>header{display:grid!importa
 .wk-vip-frame{position:absolute;inset:-18%;pointer-events:none;z-index:2;display:grid;place-items:center;isolation:isolate}.wk-vip-frame svg{width:100%;height:100%;overflow:visible}
 body :is(.c3-row.me .c3-b,.c3 .c3-send,.dt-compose>button,.gbtn,.wk-admin-tabs>button[aria-pressed=true],.c4-attachment-actions>[data-send]){background:var(--a1)!important;color:var(--wk-on-accent,#fff)!important}
 body .c4-reply b{color:var(--txt)!important}body #nav button.on,body #nav button.on :is(svg,[data-wk-nav-label]){color:var(--txt)!important}
+
+/* One sheet header, one back control; the title stays in the same flow. */
+body #sheet{overscroll-behavior:contain;max-height:min(88dvh,calc(100dvh - var(--wk-safe-top,0px) - 12px));scroll-padding-top:74px}
+body #sheet :is(.wh-top,.wm70-title,.wt-et){position:sticky!important;top:0!important;z-index:6;display:grid!important;grid-template-columns:44px minmax(0,1fr) 44px!important;align-items:center!important;gap:10px!important;direction:ltr!important;min-height:60px;margin:0 0 14px!important;padding:6px 0!important;background:var(--bg2,var(--bg));isolation:isolate}
+body #sheet :is(.wh-top,.wm70-title,.wt-et)>h3{grid-column:2;grid-row:1;min-width:0;margin:0!important;line-height:1.5!important;text-align:center;color:var(--txt)}
+body #sheet :is(.wh-top,.wm70-title,.wt-et)>button{position:static!important;grid-column:1;grid-row:1;inset:auto!important;transform:none!important;margin:0!important}
+body #sheet>.grab{display:none}
+body #sheet .wk-sheet-backbar{background:var(--bg2,var(--bg));min-height:56px}
+body .wkn-back{left:12px!important;right:auto!important;inset-inline-start:auto!important;inset-inline-end:auto!important}body .wkn-back svg{transform:none!important}
+body .wh35 .wh-av{overflow:visible;isolation:isolate}body .wh35 .wh-it{padding:14px 8px 10px;gap:10px}body .wh35 .wh-av .wk-live-avatar{width:100%;height:100%}
+
+/* Main tabs have no redundant back button; selected directory tab is stronger. */
+body .wk-lobby-top{grid-template-columns:minmax(0,1fr) 44px;direction:ltr}
+body .wk-lobby-top>div{justify-content:flex-start;gap:16px;direction:rtl}
+body .wk-lobby-top [data-tab]{font-size:14px;font-weight:500;color:var(--mut);transition:font-size .15s ease}
+body .wk-lobby-top [data-tab][aria-pressed=true]{font-size:20px;font-weight:750;color:var(--txt)}
+body input:not([type=checkbox]):not([type=radio]):focus{outline:none!important;box-shadow:none!important}
+body [data-wk-overlay-covered]{overscroll-behavior:none!important}
+body [data-wk-overlay-covered] *{animation-play-state:paused!important}
+body :is(#wm-finance-panel,#af24-panel,#wc23-panel,#c3-settings,dialog[open]){overscroll-behavior:contain}
+/* Prevent iPhone's automatic input zoom from shrinking the surrounding app. */
+html.wk-ios :is(input:not([type=checkbox]):not([type=radio]),textarea,select){font-size:16px!important}
+
+body .wm70-avatar>img[hidden]{display:none!important}

@@ -1,9 +1,7 @@
-# Wakhan 0.2.10 beta
+# Wakhan 0.2.11 beta
 
-Music, cinema rooms and core chat/voice are free. This update fixes room keyboard overlays, navigation, seat layout, photo backgrounds and playback controls, and introduces a regional wallet storefront. Paid membership currently enables the implemented VIP badge and frame collection; proposed host scheduling/multiple-room features are not included.
+Gallery frames render one decoration at a time, “No halo” persists, modal panels isolate background scrolling, seats reserve stable name space, and room chat clears only for the returning visitor. Music and cinema remain free. PayPal is removed; Stripe checkout remains disabled until the owner configures a merchant account.
 
-The `polish-0210.yml` workflow builds an unsigned device IPA for Windows Sideloadly, compiles Android and packages one matching server upgrade. The server upgrade requires the actual deployed native 0.2.9 service, stages and tests real picture/audio/Range before cutover, and preserves the current ledger and original Android signing key. Archived source installers are build inputs, not installation steps.
+`polish-0211.yml` builds a device IPA and compiles Android. `server-update0211/build-upgrade.py` packages a guarded upgrade of the actual deployed 0.2.10 service, with the current ledger and existing Android signer preserved. See `server-update0211/README-fa.md`.
 
-Online payment adapters are disabled until the owner configures a verified merchant account. Only verified payment events can grant coins or membership; a checkout return cannot grant anything. StoreKit/Play Billing are not enabled. Real A13/iPhone audio, carrier and keyboard testing remains required.
-
-See `server-update0210/README-fa.md` for the one-file installation and private merchant setup.
+Browser verification does not establish real iPhone/Samsung A13 voice quality or store readiness.

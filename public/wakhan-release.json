@@ -24,7 +24,7 @@
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.10-beta",
-  "build": 24,
-  "shell_sha256": "a18dd579117dcba2ded15db7253d18f0152dfbfb33d71d8de288712985f2e45f"
+  "version": "0.2.11-beta",
+  "build": 25,
+  "shell_sha256": "56dce3f80150418c649558175e4d6799636267f6c9ca467d2a2abc14f9a5ad05"
 }
