@@ -129,7 +129,10 @@ for(const name of process.argv.slice(2)){
  const rawError="OP31.error=op31T(j?.err||'error');";
  admin.code=admin.code.replace(rawError,"OP31.error=op31T(Object.prototype.hasOwnProperty.call(OPS31_COPY.en,j?.err)?j.err:'error');");
  admin.code=admin.code.replace("Object.hasOwn(OPS31_COPY.en,j?.err)","Object.prototype.hasOwnProperty.call(OPS31_COPY.en,j?.err)");
- for(const program of bundle.programs)new vm.Script(program.code,{filename:program.id});
+ // The chosen room name belongs to interface copy. Existing room titles and
+ // messages come from the API and are never rewritten.
+ const roomBrand=value=>value.replaceAll('سالن','دنج').replaceAll('سالون','دنج');
+ for(const program of bundle.programs){program.code=roomBrand(program.code);new vm.Script(program.code,{filename:program.id})}
  fs.writeFileSync(file,JSON.stringify(bundle));
  const release=path.join(path.dirname(file),'wakhan-release.json');
  if(fs.existsSync(release)){const meta=JSON.parse(fs.readFileSync(release,'utf8'));meta.shell_sha256=require('node:crypto').createHash('sha256').update(fs.readFileSync(file)).digest('hex');fs.writeFileSync(release,JSON.stringify(meta,null,2)+'\n')}

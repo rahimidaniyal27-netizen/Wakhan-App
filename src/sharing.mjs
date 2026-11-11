@@ -5,6 +5,6 @@ export function installSharing({origin}){
   }catch(error){if(error?.name!=='AbortError')window.WakhanNative?.showAlert(text)}
  }
  const app=()=>share(origin+'/');
- const room=code=>{if(!/^[A-Za-z0-9_-]{3,40}$/.test(String(code)))return;return share('Wakhan\n'+(document.documentElement.lang==='en'?'Hall code: ':'کد سالون: ')+code+'\n'+origin+'/')};
+ const room=code=>{if(!/^[A-Za-z0-9_-]{3,40}$/.test(String(code)))return;return share('Wakhan\n'+(document.documentElement.lang==='en'?'Hall code: ':'کد دنج: ')+code+'\n'+origin+'/')};
  window.WakhanSharing={app,room};return window.WakhanSharing;
 }
