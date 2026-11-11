@@ -1,0 +1,24 @@
+name: Isolated 0210 playback diagnostic
+on:
+  push:
+    branches: [codex/stripe-only-diagnostics]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and package diagnostic sources
+        run: |
+          python3 -m py_compile diagnostics/diagnose0210.py
+          mkdir diagnostic-delivery
+          cp diagnostics/diagnose0210.py diagnostic-delivery/wakhan-diagnose-0210.py
+          cp diagnostics/README-fa.md diagnostic-delivery/README-fa.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0210-Diagnostic
+          path: diagnostic-delivery/
+          if-no-files-found: error
+          retention-days: 14

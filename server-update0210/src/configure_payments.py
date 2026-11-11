@@ -6,6 +6,7 @@ from native_payment_gateways import Gateways,GatewayError
 
 
 async def configure(provider,config):
+    if provider!='stripe':raise ValueError('payment_unavailable')
     settings=json.loads(config.read_text());env=dict(settings.get('env',{}));origin='https://music.kabulcafe.uk'
     print('Enter credentials here on your server. Never send them in chat.')
     if provider=='stripe':
@@ -21,18 +22,6 @@ async def configure(provider,config):
             if not webhook.startswith('whsec_') or len(webhook)<20:raise ValueError('WEBHOOK_SECRET_REQUIRED')
             env['WKA_STRIPE_WEBHOOK_SECRET']=webhook
         finally:await gateway.close()
-    else:
-        env['WKA_PAYPAL_CLIENT_ID']=getpass.getpass('PayPal LIVE client ID: ').strip()
-        env['WKA_PAYPAL_SECRET']=getpass.getpass('PayPal LIVE client secret: ').strip()
-        env['WKA_PAYPAL_ENV']='live';gateway=Gateways(env)
-        try:
-            await gateway.paypal_token()
-            print('In your PayPal LIVE application, add webhook: '+origin+'/api/payments/paypal/webhook')
-            print('Event: PAYMENT.CAPTURE.COMPLETED')
-            webhook=getpass.getpass('Webhook ID: ').strip()
-            if not webhook.isalnum() or not 5<len(webhook)<100:raise ValueError('WEBHOOK_ID_REQUIRED')
-            env['WKA_PAYPAL_WEBHOOK_ID']=webhook
-        finally:await gateway.close()
     settings['env']=env
     # Do not print settings, provider responses, IDs or credentials.
     previous=config.stat();fd,name=tempfile.mkstemp(prefix='.payments-',dir=config.parent)
@@ -47,7 +36,7 @@ async def configure(provider,config):
 
 def main():
     if os.geteuid()!=0:raise SystemExit('RUN_AS_ROOT_ON_YOUR_SERVER')
-    parser=argparse.ArgumentParser();parser.add_argument('provider',choices=('stripe','paypal'));parser.add_argument('--config',type=Path,default=Path(__file__).resolve().parent/'private/app.json');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('provider',choices=('stripe',));parser.add_argument('--config',type=Path,default=Path(__file__).resolve().parent/'private/app.json');args=parser.parse_args()
     try:asyncio.run(configure(args.provider,args.config))
     except (ValueError,GatewayError) as error:raise SystemExit(str(error)) from None
 

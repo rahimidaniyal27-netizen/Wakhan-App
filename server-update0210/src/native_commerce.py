@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS wka_commerce_events(provider TEXT NOT NULL,event TEXT
 
     async def catalog(self,req):
         uid=int(req['u']['id']);value=catalog(req.query.get('country','US'))
-        value.update(ok=True,balance=self.n['WM_WALLET'].amount(self.n['WM_WALLET'].balance(uid)),entitlement=await self.n['WM_PERSONAL'].entitlement(uid),methods=[{'id':provider,'enabled':self.gateway.enabled(provider,value['currency'])} for provider in ('stripe','paypal')])
+        value.update(ok=True,balance=self.n['WM_WALLET'].amount(self.n['WM_WALLET'].balance(uid)),entitlement=await self.n['WM_PERSONAL'].entitlement(uid),methods=[{'id':provider,'enabled':self.gateway.enabled(provider,value['currency'])} for provider in ('stripe',)])
         return self.n['J'](value)
 
     async def create(self,req):
@@ -52,13 +52,14 @@ CREATE TABLE IF NOT EXISTS wka_commerce_events(provider TEXT NOT NULL,event TEXT
         if not order['provider_ref']:
             reference,url=await self.gateway.create(provider,order)
             parsed=urlsplit(url or '')
-            hosts={'stripe':{'checkout.stripe.com'},'paypal':{'www.paypal.com','paypal.com'}}
+            hosts={'stripe':{'checkout.stripe.com'}}
             if not isinstance(reference,str) or not reference or len(reference)>200 or parsed.scheme!='https' or parsed.hostname not in hosts[provider] or parsed.username or parsed.password or parsed.port not in (None,443):raise CommerceError('payment_provider_unavailable',502)
             with self.db:self.db.execute("UPDATE wka_commerce_orders SET provider_ref=?,checkout_url=?,state='pending' WHERE id=? AND provider_ref IS NULL",(reference,url,order['id']))
             order=self.row(order['token'],uid)
         return self.n['J'](dict(self.public(order),ok=True,url=order['checkout_url']))
 
     def fulfill(self,provider,event,reference,currency,amount):
+        if provider!='stripe':raise CommerceError('bad_provider',404)
         if not isinstance(event,str) or not 0<len(event)<=200 or not isinstance(reference,str):raise CommerceError('bad_event')
         cursor=self.db.execute('SELECT * FROM wka_commerce_orders WHERE provider=? AND provider_ref=?',(provider,reference));row=cursor.fetchone()
         if not row:return {'ok':True,'ignored':True}
@@ -86,13 +87,6 @@ CREATE TABLE IF NOT EXISTS wka_commerce_events(provider TEXT NOT NULL,event TEXT
 
     async def status(self,req):
         uid=int(req['u']['id']);order=self.row(req.match_info['token'],uid)
-        if req.method=='POST' and order['provider']=='paypal' and order['state']=='pending':
-            value=await self.gateway.capture(order['provider_ref'],order['token'])
-            if value.get('id')!=order['provider_ref'] or value.get('status')!='COMPLETED':raise CommerceError('payment_pending',409)
-            captures=[capture for unit in value.get('purchase_units',[]) for capture in unit.get('payments',{}).get('captures',[])]
-            if len(captures)!=1 or captures[0].get('status')!='COMPLETED':raise CommerceError('payment_pending',409)
-            capture=captures[0];amount=capture.get('amount',{});self.fulfill('paypal','capture:'+capture['id'],order['provider_ref'],amount.get('currency_code'),self.minor(amount.get('value')))
-            order=self.row(order['token'],uid)
         value=self.public(order);value.update(ok=True,balance=self.n['WM_WALLET'].amount(self.n['WM_WALLET'].balance(uid)),entitlement=await self.n['WM_PERSONAL'].entitlement(uid));return self.n['J'](value)
 
     async def webhook(self,req):
@@ -105,15 +99,6 @@ CREATE TABLE IF NOT EXISTS wka_commerce_events(provider TEXT NOT NULL,event TEXT
             value=event.get('data',{}).get('object',{})
             if value.get('payment_status')!='paid':return self.n['J']({'ok':True,'pending':True})
             result=self.fulfill(provider,event.get('id'),value.get('id'),str(value.get('currency','')).upper(),value.get('amount_total'))
-        elif provider=='paypal':
-            try:event=json.loads(raw)
-            except ValueError:raise CommerceError('bad_event')
-            if not isinstance(event,dict):raise CommerceError('bad_event')
-            await self.gateway.verify_paypal(event,req.headers)
-            if event.get('event_type')!='PAYMENT.CAPTURE.COMPLETED':return self.n['J']({'ok':True,'ignored':True})
-            value=event.get('resource',{});reference=value.get('supplementary_data',{}).get('related_ids',{}).get('order_id');amount=value.get('amount',{})
-            if value.get('status')!='COMPLETED':raise CommerceError('payment_pending',409)
-            result=self.fulfill(provider,event.get('id'),reference,amount.get('currency_code'),self.minor(amount.get('value')))
         else:raise CommerceError('bad_provider',404)
         return self.n['J'](result)
 
