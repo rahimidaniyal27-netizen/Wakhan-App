@@ -33,6 +33,8 @@ over the existing release APK requires the separately preserved release key.
 - On-demand, sanitized voice transport diagnostics and a secure relay preference;
   candidate allocation alone does not prove that two-way audio works.
 - Notification preferences, explicit device registration and moderator report review.
+- Android personal music uses a Media3/ExoPlayer media service with native
+  notification controls and audio focus, independently of the WebView renderer.
 - Native audio session handles private recording, interruptions, output changes
   and awaited shutdown on logout. Obsolete Telegram client adapters are removed.
 

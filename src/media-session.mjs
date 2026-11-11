@@ -8,7 +8,9 @@ export function installMediaSession({session,enabled}) {
   try{hall=typeof VC!=='undefined'&&!!VC.on;microphone=hall&&!VC.mute&&!!VC.stream?.getAudioTracks().some(t=>t.readyState==='live'&&t.enabled)}catch{}
   try{playing=typeof au!=='undefined'&&!au.paused&&!au.ended;preparing=typeof LOADING!=='undefined'&&!!LOADING&&typeof CUR!=='undefined'&&!!CUR}catch{}
   if(!playing)playing=Array.from(document.querySelectorAll('audio,video')).some(el=>!el.paused&&!el.ended&&!el.muted&&el.readyState>0);
-  return {active:!stopped&&(hall||playing||preparing||recording),hall:!stopped&&hall,microphone:!stopped&&(microphone||recording)};
+  // Media3 owns personal music and its notification. Do not run a second service.
+  const nativeMusic=window.WakhanNativeMusic?.active===true;
+  return {active:!stopped&&(hall||(!nativeMusic&&(playing||preparing))||recording),hall:!stopped&&hall,microphone:!stopped&&(microphone||recording)};
  };
  async function sync(){
   scheduled=0;if(disposed)return;
@@ -54,6 +56,7 @@ export function installMediaSession({session,enabled}) {
  soon();
  async function shutdown(){
   stop();disposed=true;clearInterval(timer);clearTimeout(scheduled);
+  try{await window.WakhanNativeMusic?.shutdown?.()}catch{}
   try{await session.update({active:false,hall:false,microphone:false})}catch{}
  }
  return {sync,intent,stop,shutdown,dispose:shutdown};

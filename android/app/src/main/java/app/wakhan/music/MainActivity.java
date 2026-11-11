@@ -17,6 +17,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(WakhanVaultPlugin.class);
         registerPlugin(WakhanLocalePlugin.class);
         registerPlugin(WakhanAudioSessionPlugin.class);
+        registerPlugin(WakhanMusicPlugin.class);
         super.onCreate(savedInstanceState);
         View web = getBridge().getWebView();
         web.setBackgroundColor(android.graphics.Color.rgb(7, 16, 25));
