@@ -12,7 +12,7 @@ public class WakhanLocalePlugin: CAPPlugin, CAPBridgedPlugin {
     ]
 
     @objc func preferred(_ call: CAPPluginCall) {
-        call.resolve(["languages": Locale.preferredLanguages])
+        call.resolve(["languages": Locale.preferredLanguages, "country": Locale.current.regionCode ?? ""])
     }
 
     @objc func bars(_ call: CAPPluginCall) {

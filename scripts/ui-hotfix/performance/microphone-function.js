@@ -7,6 +7,7 @@ async function(){
  try{
   if(!VC.on){const joining=vcJoin();job.token=WMQ.token;await joining;}
   if(!owns())return;job.token=WMQ.token;
+  if(!VC.mute&&!SX.mic?.getAudioTracks().some(track=>track.readyState==='live'))VC.mute=true;
   if(!VC.mute){VC.mute=true;SX.mic?.getAudioTracks().forEach(t=>t.enabled=false);VC.spk[ME.me.id]=false}
   else{
    let stream=SX.mic;

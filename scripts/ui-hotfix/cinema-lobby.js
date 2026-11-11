@@ -1,0 +1,38 @@
+/* Cinema opens a directory; room entry is always an explicit choice. */
+(()=>{'use strict';
+ const state={tab:'mine',filter:'favorites',query:'',halls:[],mine:null,ready:false,busy:false,error:false,at:0,seq:0};
+ const copy={fa:{mine:'سینمای من',discover:'کشف سالن‌ها',favorites:'دنبال‌شده‌ها',friends:'دوستان',recent:'اخیر',all:'همه',search:'نام، صاحب سالن یا کد…',enter:'ورود به سالن',create:'ساخت سینمای من',join:'ورود با کد',code:'کد سالن',empty:'هنوز سالنی در این فهرست نیست',error:'فهرست باز نشد؛ دوباره تلاش کن',retry:'تلاش دوباره',back:'برگشت',people:'نفر',name:'نام سینمای من',own:'سالن اختصاصی تو',saved:'دنبال‌کردن',following:'دنبال می‌کنی'},ps:{mine:'زما سینما',discover:'سالونونه',favorites:'تعقیب شوي',friends:'ملګري',recent:'وروستي',all:'ټول',search:'نوم یا د سالون کوډ…',enter:'سالون ته ننوتل',create:'زما سینما جوړه کړئ',join:'په کوډ ننوتل',code:'د سالون کوډ',empty:'لا سالون نشته',error:'بیا هڅه وکړئ',retry:'بیا هڅه',back:'شاته',people:'کسان',name:'د سینما نوم',own:'ستاسو سالون',saved:'تعقیبول',following:'تعقیب شوی'},en:{mine:'My cinema',discover:'Discover',favorites:'Following',friends:'Friends',recent:'Recent',all:'All',search:'Room, host or code…',enter:'Enter room',create:'Create my cinema',join:'Join by code',code:'Room code',empty:'No rooms in this list yet',error:'Could not load rooms. Try again.',retry:'Retry',back:'Back',people:'people',name:'My cinema name',own:'Your own room',saved:'Follow',following:'Following'}};
+ const tx=key=>(copy[String(document.documentElement.lang||'en').slice(0,2)]||copy.en)[key]||key;
+ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const isLobby=()=>TAB==='c'&&CV==='lobby';
+ const card=(room,own=false)=>`<article class="wk-room-card"><button type="button" data-enter="${esc(room.code)}"><span class="wk-room-photo">${room.photo?`<img src="${esc(room.photo)}" alt="" loading="lazy">`:`<b>${esc((room.name||'W').charAt(0))}</b>`}</span><span class="wk-room-copy"><b dir="auto">${esc(room.name)}</b><small dir="auto">${esc(room.now||room.topic||room.owner_name||tx('own'))}</small><span class="wk-room-code">${esc(room.code)}</span></span><span class="wk-room-count">▥ ${Number(room.live)||0}</span></button>${own?'':`<button type="button" class="wk-room-follow" data-follow="${esc(room.code)}" aria-pressed="${!!room.favorite}" aria-label="${esc(tx(room.favorite?'following':'saved'))}">${room.favorite?'♥':'♡'}</button>`}</article>`;
+ function paint(){
+  if(!isLobby())return;
+  const existing=V().querySelector('.wk-cinema-lobby');
+  const list=state.halls.filter(room=>room.code!==state.mine?.code);
+  const filters=state.tab==='mine'?['favorites','friends','recent']:['all','friends','recent'];
+  const body=`<div class="wk-lobby-top"><button type="button" data-back aria-label="${esc(tx('back'))}">‹</button><div role="group">${['mine','discover'].map(key=>`<button type="button" data-tab="${key}" aria-pressed="${state.tab===key}">${esc(tx(key))}</button>`).join('')}</div><button type="button" data-search aria-label="${esc(tx('search'))}">⌕</button></div><form class="wk-lobby-search"><input type="search" value="${esc(state.query)}" placeholder="${esc(tx('search'))}" aria-label="${esc(tx('search'))}"><button type="submit" aria-label="${esc(tx('search'))}">⌕</button></form>${state.tab==='mine'?(state.mine?card(state.mine,true):state.ready?`<form class="wk-lobby-create"><input name="name" maxlength="60" required placeholder="${esc(tx('name'))}" value="${esc(ME?.me?.name||'')}"><button type="submit">${esc(tx('create'))}</button></form>`:''):''}<div class="wk-lobby-filters" role="group">${filters.map(key=>`<button type="button" data-filter="${key}" aria-pressed="${state.filter===key}">${esc(tx(key))}</button>`).join('')}</div><div class="wk-lobby-rooms">${list.map(room=>card(room)).join('')}</div>${state.busy?'<p class="wk-lobby-status" role="status">…</p>':state.error?`<p class="wk-lobby-status" role="alert">${esc(tx('error'))}<button type="button" data-retry>${esc(tx('retry'))}</button></p>`:!list.length?`<p class="wk-lobby-status">${esc(tx('empty'))}</p>`:''}<form class="wk-lobby-join"><input name="code" maxlength="8" minlength="6" pattern="[A-Za-z0-9]{6,8}" placeholder="${esc(tx('code'))}" aria-label="${esc(tx('code'))}" autocomplete="off"><button type="submit">${esc(tx('join'))}</button></form>`;
+  if(!existing){document.body.classList.remove('h2-open','wm78-room-open','wmc-hall-active','wm75-lobby-mode','wk-typing');V().innerHTML='<main class="wk-cinema-lobby"></main>'}
+  const node=V().querySelector('.wk-cinema-lobby'),focused=node.querySelector('input[type=search]')===document.activeElement;
+  node.innerHTML=body;
+  node.querySelector('[data-back]').onclick=()=>go('h');node.querySelector('[data-search]').onclick=()=>node.querySelector('input[type=search]').focus();
+  node.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{state.tab=button.dataset.tab;state.filter=state.tab==='mine'?'favorites':'all';paint();void refresh()});
+  node.querySelectorAll('[data-filter]').forEach(button=>button.onclick=()=>{state.filter=button.dataset.filter;paint();void refresh()});
+  node.querySelectorAll('[data-enter]').forEach(button=>button.onclick=()=>enter(button.dataset.enter));
+  node.querySelectorAll('[data-follow]').forEach(button=>button.onclick=async()=>{button.disabled=true;const room=state.halls.find(room=>room.code===button.dataset.follow);try{const r=await api('/api/app/rooms/favorite',{code:room.code,favorite:!room.favorite});if(!r.ok)throw Error('follow');void refresh()}catch{button.disabled=false}});
+  node.querySelector('form.wk-lobby-search').onsubmit=event=>{event.preventDefault();state.query=event.target.querySelector('input').value.trim();void refresh()};
+  node.querySelector('form.wk-lobby-join').onsubmit=event=>{event.preventDefault();void enter(event.target.elements.code.value.trim().toUpperCase())};
+  node.querySelector('form.wk-lobby-create')?.addEventListener('submit',async event=>{event.preventDefault();const button=event.target.querySelector('button');button.disabled=true;try{const r=await api('/api/room/new',{a:'create',name:event.target.elements.name.value.trim()});if(!r.ok)throw Error('create');state.mine=r.cinema||{code:r.code,name:event.target.elements.name.value};WMP.mine=state.mine;WMP.loaded=true;paint()}catch{button.disabled=false}});
+  node.querySelector('[data-retry]')?.addEventListener('click',refresh);
+  if(focused)node.querySelector('input[type=search]').focus({preventScroll:true});
+ }
+ async function refresh(){
+  if(!isLobby())return;const seq=++state.seq;state.busy=true;state.error=false;paint();
+  try{const [mine,result]=await Promise.all([api('/api/room/new',{a:'mine'}),api('/api/app/rooms?filter='+state.filter+'&q='+encodeURIComponent(state.query))]);if(seq!==state.seq)return;if(!mine.ok||!result.ok)throw Error('directory');state.mine=mine.cinema||null;WMP.mine=state.mine;WMP.loaded=true;state.halls=result.halls||[];state.ready=true;state.at=Date.now()}
+  catch{if(seq===state.seq)state.error=true}finally{if(seq===state.seq){state.busy=false;paint()}}
+ }
+ async function enter(code){if(!/^[A-Z0-9]{6,8}$/.test(code))return;document.activeElement?.blur();if(CID===code&&H2.state.min){CV='hall';go('c');return}CV='hall';await enterRoom(code)}
+ const controller={opening:false,isLobby,render(){paint();if(!state.ready||Date.now()-state.at>20000)void refresh()},open(){document.activeElement?.blur();controller.opening=true;try{go('c')}finally{controller.opening=false}}};
+ const previous=rCinema;rCinema=function(){if(isLobby())return controller.render();return previous.apply(this,arguments)};
+ window.WakhanCinema=controller;
+})();

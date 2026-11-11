@@ -21,17 +21,17 @@ jobs:
           node-version: 22
       - run: bash ios-assets/build-ios.sh
       - name: Package the consolidated client and server update
-        run: python3 server-update029/build-upgrade.py
+        run: python3 server-update0210/build-upgrade.py
       - name: Upload one consolidated update
         uses: actions/upload-artifact@v4
         with:
-          name: Wakhan-Consolidated-0.2.9-beta
-          path: delivery029/
+          name: Wakhan-Consolidated-0.2.10-beta
+          path: delivery0210/
           if-no-files-found: error
           retention-days: 14
       - uses: actions/upload-artifact@v4
         with:
-          name: Wakhan-iOS-0.2.9-beta
+          name: Wakhan-iOS-0.2.10-beta
           path: |
             Wakhan-*.ipa
             ios-build-result.json

@@ -181,7 +181,6 @@ function installChatFeatures(){
  .c4-reply-action{position:absolute;width:1px;height:1px;padding:0;clip-path:inset(50%);overflow:hidden;white-space:nowrap;border:0}
  .c4-reply-action:focus-visible{position:static;width:auto;height:auto;min-height:44px;clip-path:none;padding:4px 10px;background:var(--card);color:var(--txt)}
  .c4-content{touch-action:pan-y;transition:transform .16s ease}.c4-swiping>.c4-content{transition:none}.c3-row{position:relative}
- .c4-swiping:after{content:'↩';position:absolute;right:8px;top:8px;font:20px system-ui;color:var(--mut);opacity:.5;pointer-events:none}.c4-swipe-ready:after{color:var(--a1,#8b5cf6);opacity:1}
  .c4-reply-action[hidden],.c4-reply[hidden]{display:none!important}
  .c4-quote{display:block!important;max-width:100%;width:100%;overflow:hidden;text-overflow:ellipsis;text-align:start;white-space:nowrap;border:0!important;border-inline-start:3px solid var(--a1,#8b5cf6)!important;border-radius:6px;background:#ffffff0c!important;box-shadow:none!important;color:inherit;font:inherit;font-size:12px;padding:7px 9px!important;margin:0 0 5px!important;min-height:32px}
  .c4-quote>b,.c4-quote>span{display:block;overflow:hidden;text-overflow:ellipsis}.c4-quote>b{font-size:11px;margin-bottom:2px}

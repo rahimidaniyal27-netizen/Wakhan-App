@@ -8,6 +8,7 @@ function(){
  }
  tabs.forEach(([tab,shape,label],index)=>{
   const button=buttons[index],selected=active===tab,text=tr(label);
+  if(tab==='c'&&button.getAttribute('onclick')!=='WakhanCinema.open()')button.setAttribute('onclick','WakhanCinema.open()');
   if(button.classList.contains('on')!==selected){button.classList.toggle('on',selected);changed=true}
   if(selected){if(button.getAttribute('aria-current')!=='page')button.setAttribute('aria-current','page')}else if(button.hasAttribute('aria-current'))button.removeAttribute('aria-current');
   if(button.getAttribute('aria-label')!==text){button.setAttribute('aria-label',text);changed=true}

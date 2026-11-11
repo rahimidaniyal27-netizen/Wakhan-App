@@ -20,7 +20,7 @@ export function installPresence({request,getPeople,getSelf,getUid,document:doc=g
   }catch{}finally{busy=false}
  }
  function settings(parent){
-  const lang=(doc.documentElement.lang||'en').slice(0,2),words=lang==='fa'?['نمایش آنلاین بودن','وقتی روشن باشد، دیگران دایرهٔ سبز کنار پروفایلت می‌بینند.','ذخیره نشد؛ دوباره تلاش کن']:lang==='ps'?['آنلاین حالت ښکاره کول','نور کسان ستاسو د پروفایل شنه نښه ویني.','بیا هڅه وکړئ']:['Show online status','When enabled, others can see a green dot beside your profile.','Could not save; try again'];
+  const lang=(doc.documentElement.lang||'en').slice(0,2),words=lang==='fa'?['نمایش آنلاین بودن','وقتی روشن باشد، دیگران دایرهٔ سبز کنار پروفایلت می‌بینند.','ذخیره نشد؛ دوباره تلاش کن']:lang==='ps'?['آنلاین حالت ښکاره کول','نور کسان ستاسو د پروفایل شنه نښه ویني.','بیا هڅه وکړئ']:lang==='de'?['Online-Status anzeigen','Andere sehen einen grünen Punkt neben deinem Profil, wenn diese Option aktiv ist.','Speichern fehlgeschlagen; bitte erneut versuchen']:['Show online status','When enabled, others can see a green dot beside your profile.','Could not save; try again'];
   parent.querySelector('.wk-online-setting')?.remove();
   const section=doc.createElement('section');section.className='wk-online-setting';
   const label=doc.createElement('label'),title=doc.createElement('span'),input=doc.createElement('input'),hint=doc.createElement('small');

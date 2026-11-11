@@ -182,7 +182,7 @@ function scheduleVisibleRead(){
 
 function dropEcho(message){
  if(Number(message.sender)!==me())return;
- for(const [key,echo] of S.outbox)if(echo.mid===Number(message.id)||key===message.client_key){echo.mid=Number(message.id);echo.state='sent';echo.el?.remove();S.outbox.delete(key)}
+ for(const [key,echo] of S.outbox)if(echo.mid===Number(message.id)||key===message.client_key){echo.mid=Number(message.id);echo.state='sent';echo.el?.remove();S.outbox.delete(key);finishSend(echo,$('wm70-dm-text'),Number(WM70.peer));renderAttachment()}
 }
 
 async function send(value){

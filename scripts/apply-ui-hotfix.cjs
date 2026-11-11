@@ -37,6 +37,10 @@ for(const name of process.argv.slice(2)){
  const engine=bundle.programs.find(p=>p.id==='community70_chat.js');engine.code=patchFunctions(engine.code,'chat/engine-functions.js','wm70PollDM');
  const voice=bundle.programs[9];voice.code=ast.replace(voice.code,'vcMute',read('performance/microphone-function.js').trim(),'assignment');
  if(voice.code.includes('function wmqNotifyMute('))voice.code=ast.replace(voice.code,'wmqNotifyMute',read('performance/mute-sync.js').trim(),'declaration');else voice.code+='\n'+read('performance/mute-sync.js');
+ const meters=bundle.programs.find(p=>p.id==='voice2.js'),meterMarker='/* Speaking indicators share one bounded visual sampler; media tracks are unchanged. */';
+ if(!meters.code.includes(meterMarker))throw Error('Missing bounded audio sampler');
+ meters.code=meters.code.slice(0,meters.code.indexOf(meterMarker)).trimEnd()+'\n'+read('performance/voice-meters.js');
+ const peer=bundle.programs.find(p=>p.id==='inline-03.js');peer.code=patchFunctions(peer.code,'performance/audio-receive.js','vcPc');
  const hall=bundle.programs.find(p=>p.id==='hall2.js');
  // Canonicalize helper placement so a fresh build and a previously patched
  // working copy produce identical assets, even when new helpers were added.
@@ -46,21 +50,45 @@ for(const name of process.argv.slice(2)){
   catch(error){if(!error.message.endsWith(': 0'))throw error}
  }
  hall.code=patchFunctions(hall.code,'hall/royal-functions.js','paintSeats');
+ hall.code=ast.replace(hall.code,'go','function(k,sub){return royalNavigate(k,sub)}','assignment');
+ const cssChanges=[];
+ ast.walk(parser.exports.parse(hall.code,{ecmaVersion:'latest'}),node=>{
+  if(node.type==='AssignmentExpression'&&node.left?.type==='MemberExpression'&&node.left.property?.name==='textContent'&&typeof node.right.value==='string'){
+   const value=node.right.value;
+   if(value.includes('.h2')&&!value.includes('Keyboard opens a transparent'))cssChanges.push({start:node.right.start,end:node.right.end,value:JSON.stringify(value.replaceAll('.is-typing','.is-legacy-typing').replace(/@media\s*\(max-height:\s*(\d+)px\)/g,'@container wk-hall (max-height:$1px)'))});
+  }
+ });
+ for(const change of cssChanges.sort((a,b)=>b.start-a.start))hall.code=hall.code.slice(0,change.start)+change.value+hall.code.slice(change.end);
  if(!hall.code.includes('setSeats:royalSetSeats'))hall.code=hall.code.replace('const api_={','const api_={setSeats:royalSetSeats,royalBackground,stop:royalStop,');
+ hall.code=hall.code.replace(',bgPick,bgReset,',',bgPick:royalBackground,bgReset:()=>royalBackground(true),');
  const settings=ast.find(hall.code,'settingsHtml','declaration');let html=hall.code.slice(settings.start,settings.end);
  if(!html.includes('royalLayoutSettings()'))html=html.replace('<section class="h2-sh h2-set"><h3>${esc(tx(\'settings\'))}</h3>','<section class="h2-sh h2-set"><div class="h4-sh-head"><button type="button" onclick="closeSheet()" aria-label="${esc(royalWords(\'close\'))}">‹</button><h3>${esc(tx(\'settings\'))}</h3><span></span></div>${royalLayoutSettings()}');
+ const oldBackground=html.indexOf('<div class="h2-card"><div class="h2-ch"><span>${ic(\'palette\')}');
+ if(oldBackground>=0){const following=html.indexOf('<div class="h2-card"><div class="h2-ch"><span>${ic(\'user\')}',oldBackground);if(following<0)throw Error('Background settings boundary changed');html=html.slice(0,oldBackground)+html.slice(following)}
  hall.code=hall.code.slice(0,settings.start)+html+hall.code.slice(settings.end);
  const marker='/* WAKHAN_ROYAL_STYLE_V1 */';if(hall.code.includes(marker))hall.code=hall.code.slice(0,hall.code.indexOf(marker));hall.code=hall.code.trimEnd();
  hall.code+='\n'+marker+'\n(()=>{const css=document.createElement("style");css.id="h4-royal";css.textContent='+JSON.stringify(read('hall/royal.css'))+';document.head.append(css)})();\n';
  const profile=bundle.programs.find(p=>p.id==='profile30.js');
  const top='<main class="wn-page wt-me">';
  if(!profile.code.includes('wk-profile-top'))profile.code=profile.code.replace(top,top+'<div class="wk-profile-top"><button type="button" onclick="go(\'h\')" aria-label="${esc(document.documentElement.lang.startsWith(\'fa\')?\'برگشت\':\'Back\')}">‹</button><b>${esc(t.profile||\'Wakhan\')}</b><button type="button" onclick="WAKHAN_NATIVE_N1.settings()" aria-label="${esc(WAKHAN_NATIVE_N1.accountLabel)}">⚙</button></div>');
+ profile.code=profile.code.replace('Personal player & cinema, unlimited','Exclusive frames & VIP badge').replace('پلیر و سینمای شخصی، بدون محدودیت','قاب اختصاصی و نشان VIP').replace('شخصي پلیر او سینما','ځانګړي چوکاټونه او VIP نښه');
+ profile.code=profile.code.replace('t.halos,"wm70Edit(\'halos\')"','t.halos,"(AF24.data?.role?af24Open():wm70Edit(\'halos\'))"');
+ const frames=bundle.programs.find(p=>p.id==='inline-22.js');
+ frames.code=ast.replace(frames.code,'af24Add',"function af24Add(){return af24Staff(String(document.getElementById('af24-staff-uid')?.value||'').trim(),true)}",'declaration');
+ frames.code=frames.code.replace('uid:Number(AF24.target)','uid:AF24.target').replace('AF24.target=wpDigits(document.getElementById(\'af24-target\')?.value||\'\')','AF24.target=String(document.getElementById(\'af24-target\')?.value||\'\').trim()');
+ frames.code=frames.code.replaceAll('${v.id}</bdi>','${v.public_id||v.id}</bdi>').replaceAll('${g.recipient.id}</bdi>','${g.recipient.public_id||g.recipient.id}</bdi>').replaceAll('${AF24.quote.recipient.id}</bdi>','${AF24.quote.recipient.public_id||AF24.quote.recipient.id}</bdi>');
+ frames.code=frames.code.replaceAll('Bot creator','Wakhan creator').replaceAll('Only the bot creator can do this.','Only the Wakhan creator can do this.').replaceAll('This account must start the bot first.','This person needs a Wakhan account.').replaceAll('The recipient must have started the bot.','The recipient needs a Wakhan account.').replaceAll('Numeric ID','Wakhan ID or @username').replaceAll('سازندهٔ ربات','سازندهٔ واخان').replaceAll('inputmode="numeric" dir="ltr"','inputmode="text" dir="ltr"');
+ const finance=bundle.programs.find(p=>p.id==='inline-07.js');finance.code=finance.code.replace('${h(s.id)}</bdi>','${h(s.public_id||s.id)}</bdi>');
+ if(!frames.code.includes('AF24_COPY.en.vip='))frames.code+='\nAF24_COPY.en.vip="VIP member";AF24_COPY.fa.vip="همراه VIP";AF24_COPY.ps.vip="VIP غړی";';
+ const identity=bundle.programs.find(p=>p.id==='inline-08.js');
+ if(!identity.code.includes('words.personal_6='))identity.code+='\nfor(const words of Object.values(WI_COPY)){words.personal_6=words.personal_3}';
  const last=bundle.programs[bundle.programs.length-1],productMarker='/* WAKHAN_NATIVE_PRODUCT_UI */';
  if(last.code.includes(productMarker))last.code=last.code.slice(0,last.code.indexOf(productMarker));last.code=last.code.trimEnd();
- last.code+='\n'+productMarker+'\n'+read('product-ui.js');
+ last.code+='\n'+productMarker+'\n'+read('product-ui.js')+'\n'+read('cinema-lobby.js')+'\n'+read('commerce-ui.js')+'\nif(!window.__wkVoiceAudioUnlock){window.__wkVoiceAudioUnlock=true;document.addEventListener("pointerdown",()=>{if(typeof wmqResumeVoiceAudio==="function")wmqResumeVoiceAudio()},{capture:true,passive:true})}';
  const admin=bundle.programs.find(p=>p.id==='inline-28.js');
  const heading='<div class="op31-heading">${op31Icon()}';
  if(admin.code.includes(heading))admin.code=admin.code.replace(heading,'<div class="op31-heading"><button type="button" class="op31-back" onclick="go(\'m\')" aria-label="${LG===\'fa\'?\'برگشت\':LG===\'ps\'?\'شاته\':\'Back\'}">‹</button>');
+ profile.code=profile.code.replace('>⚙</button>',"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9.5 3-.6 2.1-2 .9-2-.5-2.4 4.1 1.5 1.6v2L2.5 15l2.4 4.1 2-.5 2 .9.6 2.1h5l.6-2.1 2-.9 2 .5 2.4-4.1-1.5-1.6v-2l1.5-1.6L19.6 5l-2 .5-2-.9L15 3Z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></button>");
  const rawError="OP31.error=op31T(j?.err||'error');";
  admin.code=admin.code.replace(rawError,"OP31.error=op31T(Object.prototype.hasOwnProperty.call(OPS31_COPY.en,j?.err)?j.err:'error');");
  admin.code=admin.code.replace("Object.hasOwn(OPS31_COPY.en,j?.err)","Object.prototype.hasOwnProperty.call(OPS31_COPY.en,j?.err)");

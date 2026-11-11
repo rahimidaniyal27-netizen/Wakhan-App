@@ -8,7 +8,7 @@ export function installPageCache({root,route,afterResume=()=>{},maxPages=10}){
  const usable=element=>!!element.querySelector('main,form,button,input,textarea,iframe,video,audio,[role=main]');
  const state=()=>{try{return route()}catch{return {tab:'h',sub:null,context:''}}};
  const signature=sub=>{try{return JSON.stringify(sub||null)}catch{return 'uncacheable'}};
- const key=s=>String(s.tab||'h');
+ const key=s=>s.tab==='c'&&String(s.context||'').endsWith('|lobby')?'c:lobby':String(s.tab||'h');
  function get(s=state()){
   const id=key(s);let entry=entries.get(id);
   if(!entry){
@@ -38,11 +38,11 @@ export function installPageCache({root,route,afterResume=()=>{},maxPages=10}){
   const original=getGo();
   setGo(function(tab,sub){
    const before=state(),target={tab,sub:sub===undefined&&String(tab)!==key(before)?entries.get(String(tab))?.sub||null:sub||null};
-   const cached=entries.get(String(tab)),render=getRender();const invocation=++serial;
+   const render=getRender();const invocation=++serial;
    const requestedSignature=signature(target.sub);navigating={from:key(before),to:String(tab)};
    let restored=false;
    setRender(function(...args){
-    const actual=state();
+    const actual=state(),cached=entries.get(key(actual));
     if(cached?.ready&&actual.tab===tab&&cached.signature===requestedSignature&&cached.context===(actual.context||'')){
      activate(cached);stats.hits++;restored=true;return;
     }

@@ -16,7 +16,8 @@ public class WakhanLocalePlugin extends Plugin {
     @PluginMethod public void preferred(PluginCall call) {
         LocaleList locales = LocaleList.getDefault(); JSArray tags = new JSArray();
         for (int i = 0; i < locales.size(); i++) tags.put(locales.get(i).toLanguageTag());
-        JSObject result = new JSObject(); result.put("languages", tags); call.resolve(result);
+        JSObject result = new JSObject(); result.put("languages", tags);
+        result.put("country", java.util.Locale.getDefault().getCountry()); call.resolve(result);
     }
     /** Basic compatibility information; no account data or device identifier. */
     @PluginMethod public void device(PluginCall call) {

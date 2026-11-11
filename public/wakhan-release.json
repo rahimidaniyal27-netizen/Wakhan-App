@@ -14,11 +14,17 @@
     "native-room-video",
     "seen-receipts",
     "online-privacy",
-    "native-management"
+    "native-management",
+    "free-core-music-and-cinema",
+    "regional-storefront",
+    "verified-payment-webhooks",
+    "cinema-chooser",
+    "fixed-chair-keyboard-overlay",
+    "five-seats-per-row"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.9-beta",
-  "build": 23,
-  "shell_sha256": "85af399b7575929f616f50e0523821ac7081c05d9f1d54b7536c96bf31884367"
+  "version": "0.2.10-beta",
+  "build": 24,
+  "shell_sha256": "b116d986e6f8b8371d171921d623478bf28c9cce269aed21ab2f3f7e5d1d5ade"
 }

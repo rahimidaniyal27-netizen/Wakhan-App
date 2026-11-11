@@ -1,0 +1,11 @@
+{
+  "version": "0.2.10-beta",
+  "build": 24,
+  "core_music_cinema_free": true,
+  "local_ui_and_api_tests": true,
+  "native_build_verified": false,
+  "server_executed": false,
+  "device_voice_verified": false,
+  "merchant_configured": false,
+  "store_ready": false
+}

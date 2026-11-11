@@ -1,6 +1,6 @@
 {
   "name": "wakhan-standalone",
-  "version": "0.2.9-beta",
+  "version": "0.2.10-beta",
   "description": "Wakhan independent iOS and Android client",
   "main": "index.js",
   "scripts": {
@@ -30,5 +30,5 @@
     "@capacitor/ios": "8.6.0"
   },
   "private": true,
-  "wakhanBuild": 23
+  "wakhanBuild": 24
 }
