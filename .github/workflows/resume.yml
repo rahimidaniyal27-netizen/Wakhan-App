@@ -1,4 +1,4 @@
-name: Package 028 resume
+name: Package 028 source repair
 on:
   push:
     branches: [codex/resume-028]
@@ -15,7 +15,7 @@ jobs:
           PYTHONPYCACHEPREFIX: /tmp/wakhan-resume-pycache
       - uses: actions/upload-artifact@v4
         with:
-          name: Wakhan-028-Resume
+          name: Wakhan-028-SourceFix
           path: repair/
           if-no-files-found: error
           retention-days: 14
