@@ -1,0 +1,19 @@
+name: Package 028 diagnostic
+on:
+  push:
+    branches: [codex/diagnostic-028]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile server-update/wakhan-diagnose-028.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-028-Diagnostic
+          path: server-update/wakhan-diagnose-028.py
+          if-no-files-found: error
+          retention-days: 7
