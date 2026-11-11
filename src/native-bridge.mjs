@@ -13,7 +13,7 @@ export function installNativeBridge({broker,browser,haptics,app,statusBar,platfo
   getItem(k,cb){this.getItems([k],(e,v)=>cb(e,v[k]))},
   removeItem(k,cb){localStorage.removeItem('wm_native_pref_'+k);cb?.(null,true)}
  };
- const bridge={sessionKey:broker.session.key,userInfo:{user:{...broker.session.user,language_code:languageCode}},platform,version:'0.2.8',
+ const bridge={sessionKey:broker.session.key,userInfo:{user:{...broker.session.user,language_code:languageCode}},platform,version:'0.2.9',
   get isActive(){return active},get isFullscreen(){return !!document.fullscreenElement},
   requestFullscreen(){document.documentElement.requestFullscreen?.().catch(()=>{})},exitFullscreen(){document.exitFullscreen?.().catch(()=>{})},
   colorScheme:'dark',themeParams:{bg_color:'#071019',text_color:'#f4f7fa'},

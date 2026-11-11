@@ -1,0 +1,24 @@
+{
+  "features": [
+    "single-native-insets",
+    "private-replies",
+    "media-preview-retry",
+    "persistent-tabs",
+    "voice-tls-fallback",
+    "room-queue-votes",
+    "group-game",
+    "room-discovery",
+    "notification-preferences",
+    "royal-seats-2-to-16",
+    "transparent-room-chat",
+    "native-room-video",
+    "seen-receipts",
+    "online-privacy",
+    "native-management"
+  ],
+  "device_verified": false,
+  "store_ready": false,
+  "version": "0.2.9-beta",
+  "build": 23,
+  "shell_sha256": "7707f6bd4ea07b67c5fc0ef95840cd2f256c0a97235e3868248290af35eb1ffd"
+}

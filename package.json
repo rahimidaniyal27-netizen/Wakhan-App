@@ -1,15 +1,15 @@
 {
   "name": "wakhan-standalone",
-  "version": "0.2.8-beta",
+  "version": "0.2.9-beta",
   "description": "Wakhan independent iOS and Android client",
   "main": "index.js",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "prepare:web": "node scripts/validate-client.mjs",
+    "prepare:web": "node scripts/apply-ui-hotfix.cjs public/wakhan-shell.json && node scripts/validate-client.mjs",
     "build": "node scripts/build.mjs",
     "build:debug": "node scripts/build.mjs --debug",
     "sync": "cap sync android",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs tests/*.test.cjs"
   },
   "keywords": [],
   "author": "",
@@ -30,5 +30,5 @@
     "@capacitor/ios": "8.6.0"
   },
   "private": true,
-  "wakhanBuild": 22
+  "wakhanBuild": 23
 }

@@ -1,0 +1,13 @@
+/* Full-screen panels use the same safe region as the native iPhone content. */
+html.wk-ios{--wk-safe-top:env(safe-area-inset-top,0px);--wk-safe-bottom:env(safe-area-inset-bottom,0px)}
+html.wk-ios :is(#wm-finance-panel,#wc23-panel,#af24-panel){top:var(--wk-safe-top)!important;bottom:var(--wk-safe-bottom)!important;height:auto!important;max-height:calc(100dvh - var(--wk-safe-top) - var(--wk-safe-bottom))!important;box-sizing:border-box}
+html.wk-ios dialog[open]{position:fixed!important;top:calc(var(--wk-safe-top) + 12px)!important;bottom:auto!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;margin:0!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - var(--wk-safe-top) - var(--wk-safe-bottom) - 24px)!important;overflow:auto!important;overscroll-behavior:contain}
+html.wk-ios dialog header{display:flex!important;position:static!important;padding-top:0!important}
+.op31-back{display:inline-flex!important;align-items:center;justify-content:center;flex:none;width:44px;min-width:44px;height:44px;border:1px solid var(--ln,#fff2);border-radius:12px;color:var(--txt);background:var(--card2,#ffffff09);font:28px system-ui}
+
+/* Physical navigation positions stay fixed when the language direction changes. */
+:where(.c3-head,.op31-heading,.wm75-heading){direction:ltr!important}
+:where(.c3-title,.op31-heading>div,.wm75-heading>div){direction:initial}
+#auth-back{display:block;text-align:left!important;direction:ltr!important;margin-left:0!important;margin-right:auto!important}
+
+html[dir=rtl] :is(.op31-heading>div,.wm75-heading>div){direction:rtl;text-align:right}

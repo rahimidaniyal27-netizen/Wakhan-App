@@ -1,0 +1,88 @@
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal{--h2-glass:#ffffff0d;background:radial-gradient(ellipse at 50% 0,#25304a 0%,#101523 44%,#090c14 100%)}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.h4-background{background:linear-gradient(#05091265,#07091345 35%,#050912d9),var(--h4-background) center/cover no-repeat}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-top{gap:6px;padding-inline:10px;background:linear-gradient(#080d2060,transparent);direction:ltr}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-id{max-width:62%;background:#10152170;border-radius:22px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-nm b{font-size:13px;line-height:1.4}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-nm small{font-size:10px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-seats{grid-template-columns:repeat(var(--h4-cols,4),minmax(0,1fr));gap:5px 8px;padding:8px 16px 5px;border:0;justify-items:center}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-seat:nth-child(n){min-height:72px;width:100%;gap:2px;background:none;box-shadow:none;border:0}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-face{position:relative;width:60px!important;height:67px!important;border:0;background:none;overflow:visible}
+.h4-throne{position:absolute!important;inset:0;width:100%!important;height:100%!important;filter:drop-shadow(0 3px 4px #0005)}
+img.h4-throne{object-fit:contain}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-av{position:absolute;left:13px;top:12px;width:34px!important;height:34px!important;max-width:34px;max-height:34px;background:none!important;border:0!important;overflow:visible}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-seat.is-empty .h2-av{color:#f8d8a5;opacity:.85;display:grid;place-items:center}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-seat.is-empty .h2-av>svg{width:16px;height:16px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-mic{right:8px;bottom:12px;width:16px;height:16px;border:1px solid #ffffff30}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-name{font-size:10px;font-weight:600;line-height:1.3;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-name:empty{display:none}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-seat.is-speaking .h2-face::after{inset:9px 10px 18px;border-radius:50%;border-color:#63e6a0;box-shadow:none;animation:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-stage{position:relative;margin:3px 10px 2px;border-radius:13px;overflow:hidden;flex:none}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-stage .screen{position:relative;aspect-ratio:16/9;min-height:0;background:#050609}
+.h4-screen-tap{position:absolute!important;inset:0!important;z-index:8!important;width:100%!important;height:100%!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;color:transparent!important;cursor:pointer}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .wmc-stage-toolbar{position:absolute!important;bottom:0;left:0;right:0;z-index:9;display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:22px 8px 7px!important;background:linear-gradient(transparent,#000c);opacity:0;pointer-events:none;transition:opacity .2s;transform:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h4-controls-visible .wmc-stage-toolbar{opacity:1;pointer-events:auto}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal #cbar{flex:1;min-width:120px;background:transparent!important;border:0!important;box-shadow:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .wmc-controls button{min-width:30px;min-height:32px;border:0!important;background:#ffffff12!important;color:white;border-radius:7px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h4-stop{flex:none;min-height:32px;padding:5px 9px;border:1px solid #ffffff30;background:#ffffff10;color:white;border-radius:8px;font:500 10px system-ui}
+.h4-stop[hidden]{display:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-title{font-size:11px;padding:2px 14px;max-height:32px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffffffb8}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-chat{padding-inline:12px;flex:1 1 auto;min-height:64px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-notice{padding:6px 8px;background:#0002;border:0;border-radius:8px;margin-bottom:5px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-msgs{gap:5px;mask-image:none;-webkit-mask-image:none}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-mb p{font-size:13px;line-height:1.6}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-foot{background:#090d176b;backdrop-filter:none;-webkit-backdrop-filter:none;border-top:1px solid #ffffff0c}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-bar{gap:3px;min-height:48px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-rb{background:transparent;box-shadow:none;border:0;min-width:44px;width:44px;min-height:44px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-bar>button[onclick="H2.emoji()"]{display:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-rb.is-on{color:#4ade80;background:#22c55e12}
+.h4-layout label{display:flex;align-items:center;justify-content:space-between;gap:12px}.h4-layout select{min-height:44px;min-width:80px;padding:6px 10px;border-radius:10px;background:#ffffff0a;color:inherit;border:1px solid #ffffff25;font:inherit}
+.h4-background-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.h4-background-actions button{min-height:44px;padding:8px 12px;border:1px solid #ffffff25;border-radius:12px;background:#ffffff09;color:inherit;font:inherit}.h4-layout-status{font-size:12px;line-height:1.6;min-height:0;margin:6px 0 0}.h4-layout-status:empty{display:none}
+.h4-sh-head{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;direction:ltr}.h4-sh-head>button{width:44px;height:44px;border:0;background:none;color:inherit;font:28px system-ui}.h4-sh-head>h3{text-align:center}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-seats{display:flex!important;overflow-x:auto;justify-content:flex-start;height:54px;padding:2px 10px;gap:8px;scrollbar-width:none}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-seat:nth-child(n){flex:none;width:42px;min-height:48px;height:48px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-face{width:40px!important;height:46px!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-av{width:24px!important;height:24px!important;top:7px;left:8px}
+@media(prefers-reduced-motion:reduce){.h4-throne{filter:none}.h4-royal .wmc-stage-toolbar{transition:none!important}}
+@media(max-height:740px){
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal:not(.is-idle) .h2-face{width:44px!important;height:50px!important}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal:not(.is-idle) .h2-av{width:26px!important;height:26px!important;left:9px;top:8px}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal:not(.is-idle) .h2-seat:nth-child(n){min-height:60px;gap:0}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-stage .screen{aspect-ratio:auto;height:min(45vw,160px)}
+}
+@media(max-height:550px){
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-seats{grid-template-columns:none;grid-template-rows:repeat(var(--h4-compact-rows,2),46px);grid-auto-flow:column;grid-auto-columns:48px;justify-content:start;overflow-x:auto;height:calc(var(--h4-compact-rows,2)*46px + 8px);padding:4px 12px;gap:0 8px;scrollbar-width:none}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-seat:nth-child(n){width:48px;min-height:44px;height:46px;gap:0}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-face{width:32px!important;height:37px!important}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-av{width:19px!important;height:19px!important;top:6px;left:7px}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-name{font-size:8px;line-height:1}
+ body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-stage .screen{height:92px}
+}
+
+html.wk-ios body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-top{padding-top:calc(8px + var(--wk-safe-top,env(safe-area-inset-top,0px)))!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .nx-reveal{display:none!important}
+/* TopTop's video-room hierarchy: screen, one seat strip, live chat, composer. */
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal:not(.is-idle) .h2-seats{display:flex;flex:none;overflow-x:auto;justify-content:flex-start;gap:8px;padding:5px 10px;height:78px;scrollbar-width:none;scroll-snap-type:x proximity}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal:not(.is-idle) .h2-seat:nth-child(n){flex:0 0 56px;width:56px;min-height:66px;scroll-snap-align:start}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal:not(.is-idle) .h2-face{width:48px!important;height:54px!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal:not(.is-idle) .h2-av{width:28px!important;height:28px!important;left:10px;top:8px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-chat{direction:ltr;padding-top:0}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-msgs{gap:10px;padding-top:8px;scrollbar-width:thin;justify-content:flex-start!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-msgs>*{opacity:1!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-msgs>:first-child{margin-top:0}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-msg{justify-content:flex-start;align-self:flex-start;max-width:100%;gap:7px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-mav{width:24px;height:24px;flex:0 0 24px;margin:0}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-mname{font-size:11px;color:#9cc9b5;text-align:start}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-mb{gap:4px;align-items:flex-start}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-mb p{padding:0;background:none!important;box-shadow:none;border:0;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none;font-size:13px;font-weight:400;line-height:1.6}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-sys{align-self:flex-start;max-width:92%;border-radius:7px;background:#0b111b65;padding:7px 9px;line-height:1.5;font-size:11px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-say{border:0;box-shadow:none;background:#ffffff08;font-size:12px;text-align:start;padding-inline:12px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal .h2-compose input{border:0!important;box-shadow:none!important;outline:0!important;background:#ffffff0c!important;border-radius:9px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-seats{height:54px}
+/* The keyboard composer floats over the same room background, without a panel. */
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing :is(.h2-foot,.h2-compose,.h2-chat,.h2-msgs){background:transparent!important;box-shadow:none!important;border:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-compose input{background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-stage{display:none!important}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-chat{order:2;min-height:40px;flex:1 1 auto}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-seats{order:3;flex:0 0 54px}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing .h2-foot{order:4;flex:none}
+body #view > [data-wk-page-active] #wm78-room.h2.h4-royal.is-typing :is(.wmc-connection,.h2-title,.h2-pick){display:none!important}
