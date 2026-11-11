@@ -40,7 +40,7 @@ function royalPaint(){
   let stop=toolbar.querySelector('.h4-stop');
   if(!stop){stop=document.createElement('button');stop.type='button';stop.className='h4-stop';stop.onclick=royalStop;stop.textContent=royalWords('stop');toolbar.append(stop)}
   stop.hidden=CS?.can===false;
-  if(S.royalVideo!==String(CS?.vid||'')){if(S.royalVideo&&!CS?.vid)royalSilence();S.royalVideo=String(CS?.vid||'');royalReveal(!!CS?.vid)}
+  if(S.royalVideo!==String(CS?.vid||'')){if(S.royalVideo&&!CS?.vid){royalSilence();if(WMC.expanded)wmcExpand(false)}S.royalVideo=String(CS?.vid||'');royalReveal(!!CS?.vid)}
  }
  const messages=$('wm70-live-messages'),notice=room.querySelector('.h2-notice')||(S.royalNoticeRoom===CID?S.royalNotice:null);
  if(messages&&notice&&notice.parentElement!==messages){messages.prepend(notice);S.royalNotice=notice;S.royalNoticeRoom=CID}
@@ -96,10 +96,14 @@ async function royalBackground(remove=false){
 
 function kb(){
  S.raf=0;const room=root();if(!room)return;
- const viewport=window.__h2vv||window.visualViewport,visible=Math.round(viewport?.height||innerHeight),offset=Math.round(Math.max(0,viewport?.offsetTop||0)),width=Math.round(innerWidth);
- const typing=document.activeElement===$('wm70-room-text');
+ if(WMC.expanded){S.royalWasFullscreen=true;return}
+ if(S.royalWasFullscreen){S.royalWasFullscreen=false;S.royalFullHeight=0;S.royalWidth=0;S.royalKeyboardUntil=0}
+ const viewport=window.__h2vv||window.WakhanKeyboard?.viewport()||window.visualViewport,typing=document.activeElement===$('wm70-room-text');
+ const adjustingKeyboard=typing||Date.now()<(S.royalKeyboardUntil||0);
+ const visible=Math.round(adjustingKeyboard?(viewport?.height||innerHeight):innerHeight),offset=adjustingKeyboard?Math.round(Math.max(0,viewport?.offsetTop||0)):0,width=Math.round(innerWidth);
  if(typing)S.royalKeyboardUntil=Date.now()+900;
  if(!S.royalFullHeight||S.royalWidth!==width||(!typing&&(Date.now()>(S.royalKeyboardUntil||0)||visible+offset>=S.royalFullHeight-40))){S.royalFullHeight=visible+offset;S.royalWidth=width}
+ if(viewport?.fullHeight)S.royalFullHeight=viewport.fullHeight;
  const full=S.royalFullHeight,keyboard=Math.max(0,full-visible-offset);
  room.style.setProperty('--h2-h',full+'px');room.style.setProperty('--h4-keyboard-bottom',keyboard+'px');room.style.transform='';
  const top=room.querySelector('.h2-top');if(top)room.style.setProperty('--h4-chat-top',Math.round(top.getBoundingClientRect().bottom-room.getBoundingClientRect().top)+'px');

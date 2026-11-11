@@ -1,10 +1,10 @@
-/* Shared search shape: a quiet border, with a keyboard-visible focus indicator. */
+/* Shared search shape: one quiet outer surface, without an inner focus ring. */
 body :is(.wm81-search-field,.wk56-find,.wm78-search){box-shadow:none!important;outline:0!important;border:1px solid var(--ln,#ffffff20)!important;border-radius:14px!important}
 body :is(.wm81-search-field,.wk56-find,.wm78-search):focus-within{box-shadow:none!important;border-color:color-mix(in srgb,var(--txt,#fff) 35%,transparent)!important}
 body :is(.wm76-search,.wm76-search-wrap,.wm76-searchbox,.mx-search,.sc-search,.fi-search,.op31-search,.wmc-search,.wk16-form,.wn-search){box-shadow:none!important;outline:0!important;border:1px solid var(--ln,#ffffff20)!important;border-radius:14px!important}
 body :is(.wm76-search,.wm76-search-wrap,.wm76-searchbox,.mx-search,.sc-search,.fi-search,.op31-search,.wmc-search,.wk16-form,.wn-search):focus-within{box-shadow:none!important;border-color:color-mix(in srgb,var(--txt,#fff) 35%,transparent)!important}
 body :is(input[type=search],#q,#hq,#op31-search,#wm70-dm-text):focus{box-shadow:none!important;outline:none!important}
-body :is(input[type=search],#q,#hq,#op31-search,#wm70-dm-text):focus-visible{outline:2px solid color-mix(in srgb,var(--txt,#fff) 38%,transparent)!important;outline-offset:2px}
+body :is(input[type=search],#q,#hq,#op31-search,#wm70-dm-text):focus-visible{outline:0!important;box-shadow:none!important}
 .wk-live-avatar{display:inline-flex;position:relative;flex:none;align-items:center;justify-content:center;width:100%;height:100%;vertical-align:middle}
 .wk-live-avatar>.wm70-avatar{width:100%;height:100%}.wk-online-dot{position:absolute!important;right:0;bottom:0;width:8px!important;height:8px!important;min-width:8px;border-radius:50%;background:#35ce79;border:2px solid var(--bg,#10131c);z-index:3;box-sizing:content-box;pointer-events:none}.wk-online-dot[hidden]{display:none!important}
 .wk-online-setting{padding:14px 0;margin:10px 0;border-block:1px solid var(--ln,#ffffff20)}.wk-online-setting label{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;font:inherit}.wk-online-setting input{width:21px;height:21px;accent-color:var(--a1,#4c6ce8)}.wk-online-setting small{display:block;color:var(--mut,#a3aabc);font-size:12px;line-height:1.6}
@@ -19,12 +19,12 @@ body .wt-member{color:var(--txt)}
 .wk-admin{max-width:680px;margin:auto}.wk-admin-tabs{display:flex;gap:8px;margin-bottom:16px}.wk-admin-tabs button{flex:1;min-height:44px;border:1px solid var(--ln,#fff2);border-radius:12px;background:var(--card);color:var(--txt);font:inherit}.wk-admin-tabs button[aria-pressed=true]{background:var(--a1,#4c6ce8);color:white}.wk-admin-search{display:flex;gap:10px;align-items:center;min-height:48px;border:1px solid var(--ln);border-radius:14px;padding:4px 12px}.wk-admin input{min-width:0;min-height:44px;border:1px solid var(--ln);background:var(--card2);color:var(--txt);border-radius:10px;padding:8px;font:inherit}.wk-admin-search input{flex:1;border:0!important;background:none!important}.wk-admin-list{margin:14px 0}.wk-admin-list article{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--ln)}.wk-admin-list article>div{min-width:0}.wk-admin-list b{display:block;font-size:14px}.wk-admin-list small{display:block;margin-top:5px;font-size:11px;color:var(--mut)}.wk-admin-list button,.wk-admin form button{min-height:44px;padding:8px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card2);color:var(--txt);font:inherit}.wk-admin form{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.wk-admin form input[name=target]{flex:1;min-width:140px}.wk-admin form h3{width:100%;margin:4px 0}.wk-admin-empty{padding:24px;text-align:center;color:var(--mut)}
 .wk-help{line-height:1.8}.wk-help h2{font-size:20px}.wk-help details{border-bottom:1px solid var(--ln,#fff2);padding:12px 0}.wk-help summary{cursor:pointer;font-weight:600;min-height:32px}.wk-help p{font-size:13px;color:var(--mut);margin:8px 0}.wk-help-head{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;direction:ltr}.wk-help-head h2{text-align:center}.wk-help-head button{width:44px;height:44px;border:0;background:none;color:inherit;font:28px system-ui}
 #wk-launch-intro{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:#0047ff;color:#fff;direction:ltr;transition:opacity .28s}
-#wk-launch-intro .wm-intro-lockup{display:flex;align-items:center;justify-content:center;max-width:94vw;filter:drop-shadow(18px 22px 0 #000d5430)}
+#wk-launch-intro .wm-intro-lockup{display:flex;align-items:center;justify-content:center;max-width:94vw;filter:none}
 #wk-launch-intro .wm-intro-mark{display:block;flex:0 0 auto;width:96px;height:96px;animation:wm-intro-mark-v2 .5s cubic-bezier(.2,.8,.2,1) both}
 #wk-launch-intro .wm-intro-name{width:0;overflow:hidden;animation:wm-intro-open-v2 .55s cubic-bezier(.2,.8,.2,1) .5s both}
 #wk-launch-intro .wm-intro-words{width:198px;padding-left:8px;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;text-align:left;white-space:nowrap}
 #wk-launch-intro .wm-intro-akhan{display:flex;justify-content:space-between;font-size:45px;line-height:1.03;font-weight:900}
-#wk-launch-intro .wm-intro-music{display:flex;justify-content:space-between;font-size:16px;line-height:1.65;font-weight:400;padding-top:1px}
+#wk-launch-intro .wm-intro-live{display:flex;justify-content:space-between;font-size:16px;line-height:1.65;font-weight:400;padding-top:1px}
 @keyframes wm-intro-mark-v2{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
 @keyframes wm-intro-open-v2{from{width:0;opacity:0;transform:translateX(-8px)}to{width:198px;opacity:1;transform:translateX(0)}}
 @keyframes wm-intro-exit-v2{from{opacity:1;visibility:visible}to{opacity:0;visibility:hidden}}
@@ -112,3 +112,33 @@ body :is(#wm-finance-panel,#af24-panel,#wc23-panel,#c3-settings,dialog[open]){ov
 html.wk-ios :is(input:not([type=checkbox]):not([type=radio]),textarea,select){font-size:16px!important}
 
 body .wm70-avatar>img[hidden]{display:none!important}
+
+/* Lightweight room activity bars, preserving the separate real participant count. */
+.wk-room-count{display:inline-flex;align-items:center;gap:5px;direction:ltr;font-variant-numeric:tabular-nums}
+.wk-room-meter{display:inline-flex;align-items:center;justify-content:center;gap:2px;width:15px;height:16px;flex:none;color:inherit}
+.wk-room-meter>i{display:block;width:2px;height:12px;border-radius:2px;background:currentColor;transform-origin:50% 50%;animation:wk-room-equalize 1.1s ease-in-out infinite alternate}
+.wk-room-meter>i:nth-child(2){height:15px;animation-delay:-.45s;animation-duration:.85s}
+.wk-room-meter>i:nth-child(3){height:10px;animation-delay:-.7s;animation-duration:1.25s}
+@keyframes wk-room-equalize{0%{transform:scaleY(.3)}35%{transform:scaleY(.85)}65%{transform:scaleY(.5)}100%{transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){.wk-room-meter>i{animation:none}}
+/* Editing the photo shows a clean image; decoration belongs to the profile. */
+.wt-thumb{border-radius:50%;overflow:hidden}
+.wt-thumb .wk-online-dot,[data-avatar-preview]>.wk-online-dot{display:none!important}
+
+/* Profile chrome stays below the status area even when a cached page is scrolled. */
+body .wt-me>.wk-profile-top{position:sticky;top:calc(var(--wk-safe-top,0px) + 6px);z-index:20;min-height:52px;background:var(--bg);border-radius:12px;padding-block:4px}
+
+/* The composer has one soft surface and no focus ring drawn inside it. */
+body #c2-thread :is(#wm70-dm-text,#wm70-dm-text:focus,#wm70-dm-text:focus-visible,.c3-field,.c3-field:focus-within){outline:0!important;box-shadow:none!important;border:0!important}
+/* UIKit supplies the keyboard's target and timing at the start of its motion. */
+html.wk-keyboard-moving body #view>[data-wk-page-active] #wm78-room.h4-royal.is-typing :is(.h2-foot,.h2-chat){transition:bottom var(--wk-keyboard-duration,0s) var(--wk-keyboard-curve,ease-out)!important}
+html.wk-keyboard-moving body #c2-thread{transition:height var(--wk-keyboard-duration,0s) var(--wk-keyboard-curve,ease-out)!important}
+body #c2-thread .c3-row{touch-action:pan-y}
+body #c2-thread .c4-swiping>.c4-content{will-change:transform}
+
+/* The original Mini App logo reveal uses clean flat artwork and the Live wordmark. */
+#wk-launch-intro,#wk-launch-intro *{filter:none!important;box-shadow:none!important;text-shadow:none!important}
+/* Native-style chrome does not enter text-selection mode on a long press. */
+body *{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none}
+body :is(input,textarea,[contenteditable=true],[contenteditable=true] *){-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default}
+body img{-webkit-user-drag:none}

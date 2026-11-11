@@ -12,6 +12,7 @@ import {PushNotifications} from '@capacitor/push-notifications';
 import {HP} from './hp-inline.mjs';
 import {SessionBroker,AuthError} from './session.mjs';
 import {installNativeBridge} from './native-bridge.mjs';
+import {installKeyboardLayout} from './keyboard-layout.mjs';
 import {installMediaSession} from './media-session.mjs';
 import {installNativeMusic} from './native-music.mjs';
 import {installVoiceNetworkDiagnostics} from './voice-network.mjs';
@@ -39,6 +40,9 @@ const ls={get:async key=>{try{return localStorage.getItem('wkv_'+key)}catch{retu
 const store=native&&Capacitor.isPluginAvailable('WakhanVault')?{get:async key=>(await Vault.get({key})).value??null,set:(key,value)=>Vault.set({key,value}),remove:key=>Vault.remove({key})}:native?ls:{get:async key=>memory.get(key)||null,set:async(key,v)=>memory.set(key,v),remove:async key=>memory.delete(key)};
 /* ---- every phone size: page inside the screen, bar colours follow the page, Home headphones always shown */
 const platform=Capacitor.getPlatform();
+installKeyboardLayout({platform});
+window.WakhanOrientation={setFullscreen:fullscreen=>native&&Capacitor.isPluginAvailable('WakhanLocale')?NativeLocale.orientation({fullscreen}).catch(()=>{}):Promise.resolve()};
+void window.WakhanOrientation.setFullscreen(false);
 document.documentElement.classList.add('wk-native','wk-'+platform);
 (()=>{const st=document.createElement('style');st.textContent=`html.wk-ios body>header{padding-top:calc(12px + env(safe-area-inset-top,0px))!important}
 html.wk-native .wm72-photo[data-wn-key=headphones]>img{animation:wm72-object-breathe 6.4s ease-in-out infinite}

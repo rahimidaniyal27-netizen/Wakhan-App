@@ -8,11 +8,28 @@ public class WakhanLocalePlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "WakhanLocale"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "preferred", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "orientation", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "bars", returnType: CAPPluginReturnPromise)
     ]
 
     @objc func preferred(_ call: CAPPluginCall) {
         call.resolve(["languages": Locale.preferredLanguages, "country": Locale.current.regionCode ?? ""])
+    }
+
+    @objc func orientation(_ call: CAPPluginCall) {
+        let fullscreen = call.getBool("fullscreen") ?? false
+        DispatchQueue.main.async {
+            WakhanOrientation.fullscreen = fullscreen
+            let controller = self.bridge?.viewController
+            if #available(iOS 16.0, *) {
+                controller?.setNeedsUpdateOfSupportedInterfaceOrientations()
+                controller?.parent?.setNeedsUpdateOfSupportedInterfaceOrientations()
+                controller?.view.window?.windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: WakhanOrientation.mask))
+            } else {
+                UIViewController.attemptRotationToDeviceOrientation()
+            }
+            call.resolve()
+        }
     }
 
     @objc func bars(_ call: CAPPluginCall) {

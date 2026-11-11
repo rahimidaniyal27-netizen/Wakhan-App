@@ -20,11 +20,13 @@
     "verified-payment-webhooks",
     "cinema-chooser",
     "fixed-chair-keyboard-overlay",
-    "five-seats-per-row"
+    "five-seats-per-row",
+    "animated-room-indicator",
+    "plain-profile-photo-preview"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.11-beta",
-  "build": 25,
-  "shell_sha256": "56dce3f80150418c649558175e4d6799636267f6c9ca467d2a2abc14f9a5ad05"
+  "version": "0.2.12-beta",
+  "build": 26,
+  "shell_sha256": "cfa968e84ef7307ec58afb2905a934615c9d8fb467a60822141fc05df8832c65"
 }

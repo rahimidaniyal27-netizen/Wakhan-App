@@ -42,7 +42,7 @@
  }
  function decorate(){
   decorateNavigation();
-  for(const node of document.querySelectorAll('.wk-live-avatar[data-online-user]')){
+  for(const node of document.querySelectorAll('.wk-live-avatar[data-online-user]:not([data-avatar-preview])')){
    const uid=Number(node.dataset.onlineUser),person=WM70.people?.get(uid)||(Number(WM70.self?.id)===uid?WM70.self:null),dot=node.querySelector(':scope>.wk-online-dot');
    if(dot)dot.hidden=person?.online!==true;
   }
@@ -76,9 +76,11 @@
  }
  function start(){
   if(state.started)return;state.started=true;
+  document.addEventListener('contextmenu',event=>{if(!event.target.closest?.('input,textarea,[contenteditable=true]'))event.preventDefault()},{capture:true});
+  window.WakhanFullscreen?.start();
   const dismissSheet=closeSheet;closeSheet=function(...args){WM70.modal=null;WM70.gift=null;++WM70.profileSeq;++WM70.giftSeq;return dismissSheet.apply(this,args)};window.closeSheet=closeSheet;
   const avatar=wm70Avatar;
-  wm70Avatar=function(person,...rest){const frame=person?.frame_style?.frame,html=avatar.call(this,frame?{...person,halo:null}:person,...rest),art=frame&&typeof af24Art==='function'?af24Art(frame):'';return `<span class="wk-live-avatar" data-online-user="${Number(person?.id)||0}">${html}${art?`<i class="wk-vip-frame" aria-hidden="true">${art}</i>`:''}<i class="wk-online-dot" aria-hidden="true" ${person?.online===true?'':'hidden'}></i></span>`};
+  wm70Avatar=function(person,...rest){const frame=person?.frame_style?.frame,html=avatar.call(this,frame?{...person,halo:null}:person,...rest),art=frame&&typeof af24Art==='function'?af24Art(frame):'';return `<span class="wk-live-avatar" data-online-user="${Number(person?.id)||0}"${person?.avatar_preview?' data-avatar-preview="true"':''}>${html}${art?`<i class="wk-vip-frame" aria-hidden="true">${art}</i>`:''}<i class="wk-online-dot" aria-hidden="true" ${person?.online===true?'':'hidden'}></i></span>`};
   helpSheet=help;window.helpSheet=help;
   op31Render=render;op31Go=function(tab='halls'){state.tab=tab==='team'?'staff':['halls','staff','audit'].includes(tab)?tab:'halls';go('o');void load()};window.op31Go=op31Go;
   window.WakhanPresence?.subscribe(decorate);setInterval(decorate,5000);

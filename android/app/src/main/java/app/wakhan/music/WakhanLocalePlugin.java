@@ -13,6 +13,15 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "WakhanLocale")
 public class WakhanLocalePlugin extends Plugin {
+    @PluginMethod public void orientation(PluginCall call) {
+        final boolean fullscreen = Boolean.TRUE.equals(call.getBoolean("fullscreen", false));
+        getActivity().runOnUiThread(() -> {
+            getActivity().setRequestedOrientation(fullscreen
+                ? android.content.pm.ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                : android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            call.resolve();
+        });
+    }
     @PluginMethod public void preferred(PluginCall call) {
         LocaleList locales = LocaleList.getDefault(); JSArray tags = new JSArray();
         for (int i = 0; i < locales.size(); i++) tags.put(locales.get(i).toLanguageTag());

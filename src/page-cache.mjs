@@ -65,10 +65,13 @@ export function installPageCache({root,route,afterResume=()=>{},maxPages=10}){
 
 export function bindPageNavigation(pages){
  pages.bind({getGo:()=>go,setGo:fn=>{go=fn},getRender:()=>render,setRender:fn=>{render=fn},onResume:(tab,pane)=>{
+  try{if((tab!=='c'||!pane.querySelector('#wm78-room'))&&WMC.expanded)wmcExpand(false)}catch{}
   try{cinMode()}catch{}
   document.body.classList.toggle('dt-open',tab==='d'&&!!pane.querySelector('#c2-thread'));
   document.body.classList.toggle('wk-typing',false);
   const hall=tab==='c'&&!!pane.querySelector('#wm78-room');for(const cls of ['h2-open','wm78-room-open','wmc-hall-active'])document.body.classList.toggle(cls,hall);
+  if(!hall)document.body.classList.remove('wmc-theater');
+  try{if(tab==='d'&&pane.querySelector('#c2-thread'))window.C2?.latest?.()}catch{}
   try{setBack()}catch{}
   try{if(tab==='p'&&typeof showRes==='function')showRes()}catch{}
  }});

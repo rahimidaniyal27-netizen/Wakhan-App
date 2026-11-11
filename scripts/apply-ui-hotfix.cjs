@@ -3,6 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),ast=
 const Module=require('node:module'),parser=new Module('hotfix-parser');parser._compile(process.binding('natives')['internal/deps/acorn/acorn/dist/acorn'],'hotfix-parser');
 const read=p=>fs.readFileSync(path.join(__dirname,'ui-hotfix',p),'utf8');
 function chat(source){
+ for(const name of ['scheduleThreadBottom','bindThreadScroll','activateThreadLatest']){try{const n=ast.find(source,name,'declaration');source=source.slice(0,n.start).trimEnd()+'\n'+source.slice(n.end).trimStart()}catch(error){if(!error.message.endsWith(': 0'))throw error}}
  let extra='';
  for(const file of ['chat/thread-functions.js','chat/media-functions.js']){
   const patches=read(file);
@@ -34,6 +35,13 @@ for(const name of process.argv.slice(2)){
  if(!nav||!thread)throw Error('Missing UI modules');
  nav.code=ast.replace(nav.code,'renderNav',read('performance/nav-render-function.js').trim(),'assignment');
  thread.code=chat(thread.code);
+ thread.code=thread.code.replace("if(saved)requestAnimationFrame(()=>{const out=$('wm70-dm-messages');if(out&&Number(WM70.peer)===peer)out.scrollTop=saved.scroll})","activateThreadLatest()");
+ if(!thread.code.includes('latest:activateThreadLatest'))thread.code=thread.code.replace('window.C2={','window.C2={latest:activateThreadLatest,');
+ const chatKb=ast.find(thread.code,'kb','declaration');let chatLayout=thread.code.slice(chatKb.start,chatKb.end);
+ chatLayout=chatLayout.replace("if(o)requestAnimationFrame(()=>{o.scrollTop=o.scrollHeight})","if(o&&S.followBottom!==false)scheduleThreadBottom()");
+ chatLayout=chatLayout.replace('window.__h2vv||window.visualViewport','window.__h2vv||window.WakhanKeyboard?.viewport()||window.visualViewport');
+ thread.code=thread.code.slice(0,chatKb.start)+chatLayout+thread.code.slice(chatKb.end);
+
  const engine=bundle.programs.find(p=>p.id==='community70_chat.js');engine.code=patchFunctions(engine.code,'chat/engine-functions.js','wm70PollDM');
  const voice=bundle.programs[9];voice.code=ast.replace(voice.code,'vcMute',read('performance/microphone-function.js').trim(),'assignment');
  if(voice.code.includes('function wmqNotifyMute('))voice.code=ast.replace(voice.code,'wmqNotifyMute',read('performance/mute-sync.js').trim(),'declaration');else voice.code+='\n'+read('performance/mute-sync.js');
@@ -50,6 +58,7 @@ for(const name of process.argv.slice(2)){
   catch(error){if(!error.message.endsWith(': 0'))throw error}
  }
  hall.code=patchFunctions(hall.code,'hall/royal-functions.js','paintSeats');
+ hall.code=ast.replace(hall.code,'type',"function type(){if(!seated())return say(tx('sitToChat'));const i=$('wm70-room-text');if(i&&!i.disabled){i.focus({preventScroll:true});kb()}}",'declaration');
  hall.code=ast.replace(hall.code,'go','function(k,sub){return royalNavigate(k,sub)}','assignment');
  const cssChanges=[];
  ast.walk(parser.exports.parse(hall.code,{ecmaVersion:'latest'}),node=>{
@@ -59,7 +68,8 @@ for(const name of process.argv.slice(2)){
   }
  });
  for(const change of cssChanges.sort((a,b)=>b.start-a.start))hall.code=hall.code.slice(0,change.start)+change.value+hall.code.slice(change.end);
- if(!hall.code.includes('setSeats:royalSetSeats'))hall.code=hall.code.replace('const api_={','const api_={setSeats:royalSetSeats,royalBackground,stop:royalStop,');
+ if(!hall.code.includes('setSeats:royalSetSeats'))hall.code=hall.code.replace('const api_={','const api_={reveal:royalReveal,setSeats:royalSetSeats,royalBackground,stop:royalStop,');
+ if(!hall.code.includes('reveal:royalReveal'))hall.code=hall.code.replace('const api_={','const api_={reveal:royalReveal,');
  hall.code=hall.code.replace(',bgPick,bgReset,',',bgPick:royalBackground,bgReset:()=>royalBackground(true),');
  const settings=ast.find(hall.code,'settingsHtml','declaration');let html=hall.code.slice(settings.start,settings.end);
  if(!html.includes('royalLayoutSettings()'))html=html.replace('<section class="h2-sh h2-set"><h3>${esc(tx(\'settings\'))}</h3>','<section class="h2-sh h2-set"><div class="h4-sh-head"><button type="button" onclick="closeSheet()" aria-label="${esc(royalWords(\'close\'))}">‹</button><h3>${esc(tx(\'settings\'))}</h3><span></span></div>${royalLayoutSettings()}');
@@ -92,6 +102,8 @@ for(const name of process.argv.slice(2)){
  profile.code=profile.code.replace('Personal player & cinema, unlimited','Exclusive frames & VIP badge').replace('پلیر و سینمای شخصی، بدون محدودیت','قاب اختصاصی و نشان VIP').replace('شخصي پلیر او سینما','ځانګړي چوکاټونه او VIP نښه');
  profile.code=profile.code.replace('t.halos,"wm70Edit(\'halos\')"','t.halos,"(AF24.data?.role?af24Open():wm70Edit(\'halos\'))"');
  profile.code=profile.code.replace(/<button type="button" onclick="go\('h'\)" aria-label="\$\{esc\(document.documentElement.lang.startsWith\('fa'\)\?'برگشت':'Back'\)\}">‹<\/button>/,'<span aria-hidden="true"></span>');
+ // A photo-edit thumbnail is the photo alone, without the worn frame or presence dot.
+ profile.code=profile.code.replaceAll('wm70Avatar({...p,halo:null})','wm70Avatar({...p,halo:null,frame_style:null,online:false,avatar_preview:true})');
  const frames=bundle.programs.find(p=>p.id==='inline-22.js');
  frames.code=ast.replace(frames.code,'af24Add',"function af24Add(){return af24Staff(String(document.getElementById('af24-staff-uid')?.value||'').trim(),true)}",'declaration');
  frames.code=frames.code.replace('uid:Number(AF24.target)','uid:AF24.target').replace('AF24.target=wpDigits(document.getElementById(\'af24-target\')?.value||\'\')','AF24.target=String(document.getElementById(\'af24-target\')?.value||\'\').trim()');
@@ -109,7 +121,7 @@ for(const name of process.argv.slice(2)){
  compatibility.code=compatibility.code.replace("el.id === 'nav' || el.tagName === 'HEADER'","el.id === 'nav' || el.id === 'ov' || el.id === 'view' || el.inert || el.tagName === 'HEADER'");
  const last=bundle.programs[bundle.programs.length-1],productMarker='/* WAKHAN_NATIVE_PRODUCT_UI */';
  if(last.code.includes(productMarker))last.code=last.code.slice(0,last.code.indexOf(productMarker));last.code=last.code.trimEnd();
- last.code+='\n'+productMarker+'\n'+read('product-ui.js')+'\n'+read('cinema-lobby.js')+'\n'+read('commerce-ui.js')+'\nif(!window.__wkVoiceAudioUnlock){window.__wkVoiceAudioUnlock=true;document.addEventListener("pointerdown",()=>{if(typeof wmqResumeVoiceAudio==="function")wmqResumeVoiceAudio()},{capture:true,passive:true})}';
+ last.code+='\n'+productMarker+'\n'+read('product-ui.js')+'\n'+read('cinema-lobby.js')+'\n'+read('fullscreen-ui.js')+'\n'+read('commerce-ui.js')+'\nif(!window.__wkVoiceAudioUnlock){window.__wkVoiceAudioUnlock=true;document.addEventListener("pointerdown",()=>{if(typeof wmqResumeVoiceAudio==="function")wmqResumeVoiceAudio()},{capture:true,passive:true})}';
  const admin=bundle.programs.find(p=>p.id==='inline-28.js');
  const heading='<div class="op31-heading">${op31Icon()}';
  if(admin.code.includes(heading))admin.code=admin.code.replace(heading,'<div class="op31-heading"><button type="button" class="op31-back" onclick="go(\'m\')" aria-label="${LG===\'fa\'?\'برگشت\':LG===\'ps\'?\'شاته\':\'Back\'}">‹</button>');

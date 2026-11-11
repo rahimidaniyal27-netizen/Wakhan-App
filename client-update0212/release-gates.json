@@ -1,0 +1,9 @@
+{
+  "version": "0.2.12-beta",
+  "build": 26,
+  "backend_version": "0.2.11-beta",
+  "server_services_unchanged": true,
+  "live_database_migrations": false,
+  "device_verified": false,
+  "store_ready": false
+}
