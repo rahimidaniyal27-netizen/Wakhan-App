@@ -3,7 +3,7 @@ require 'xcodeproj'
 proj = Xcodeproj::Project.open('ios/App/App.xcodeproj')
 target = proj.targets.find { |t| t.name == 'App' }
 group = proj.main_group.find_subpath('App', false)
-%w[MainViewController.swift WakhanLocalePlugin.swift].each do |f|
+Dir.glob('ios-assets/native/*.swift').map { |f| File.basename(f) }.sort.each do |f|
   next if group.files.any? { |x| x.path == f }
   ref = group.new_reference(f)
   target.add_file_references([ref])

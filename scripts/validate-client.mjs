@@ -1,0 +1,13 @@
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+const shell=JSON.parse(readFileSync('public/wakhan-shell.json','utf8'));
+const config=JSON.parse(readFileSync('capacitor.config.json','utf8'));
+if(config.plugins?.SystemBars?.insetsHandling!=='disable'||config.plugins?.Keyboard?.resizeOnFullScreen!==false)throw Error('Duplicate native inset owners would break the keyboard');
+for(const feature of ['function chooseReply(','function sendAttachment(','function stopRecording('])if(!shell.programs[71].code.includes(feature))throw Error('Consolidated chat feature missing: '+feature);
+if(!shell.programs[72].code.includes('WakhanVoiceRoutes'))throw Error('Voice route fallback missing');
+if(shell.programs?.length!==76)throw Error('Unexpected application module count');
+if(shell.programs.some(p=>/Telegram\.WebApp|window\.Telegram|https:\/\/t\.me\/|tg:\/\//.test(p.code)))throw Error('Unexpected external account dependency');
+for(const index of [65,68,69])if(shell.programs[index].code.length>100)throw Error('Obsolete hall controller included');
+const asset=readFileSync('public/s/wm72_glass_headphones.png');
+if(createHash('sha256').update(asset).digest('hex')!=='7424d7159890521a800a99e0eef933802a63b57bc9567b9f68c544f99324c451')throw Error('Home asset changed');
+console.log('Wakhan native client assets verified.');

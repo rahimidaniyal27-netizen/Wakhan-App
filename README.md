@@ -1,31 +1,68 @@
-# Wakhan Android project
+# Wakhan 0.2.8-beta · build 22
 
-سورس مستقل پروژهٔ اندروید واخان (Capacitor)، نسخهٔ 0.1.0-beta.
-این ZIP شامل سورس رابط، پروژهٔ Android Studio، فایل‌های لازم رابط M81 و تست‌های اندروید است. بستهٔ نصب سرور یا پروژهٔ iOS در آن نیست.
+Independent Android and iPhone client, bundle ID `app.wakhan.music`.
 
-## Build
+## iPhone test installation
 
-Requirements: Node 22.12+ / 24, npm, Python 3, full JDK 21, Android SDK platform/build-tools 36.
+The `codex/consolidated-0.2.8` branch builds an unsigned device IPA with GitHub's
+macOS/Xcode runner. Open **Actions → iOS build (unsigned IPA for Sideloadly)**,
+select the successful run for this branch, and download **Wakhan-iOS-0.2.8-beta**
+from Artifacts. Extract `Wakhan-0.2.8-beta.ipa` from the ZIP on Windows and install
+it with Sideloadly using the same Apple ID and bundle settings as before.
+Free provisioning normally expires after seven days. This is a test build.
 
-```bash
+The workflow verifies the actual IPA's bundle ID, version 0.2.8/build 22, arm64
+binary, native audio plugin and bundled assets. Successful builds on `main`
+also publish a prerelease; branch builds only produce private workflow artifacts.
+Previous releases are retained. Push registration is disabled in this free iOS
+sideload build. The Android workflow validates a debug compilation; installing
+over the existing release APK requires the separately preserved release key.
+
+## Consolidated client changes
+
+- One Android keyboard inset owner, with compact hall layouts for short viewports.
+- Attached tab views retain drafts, scroll positions and active media.
+- Private-chat quotes, per-conversation drafts, bounded history caching and
+  stable retry keys; stale responses cannot send into a different conversation.
+- Photo and voice previews, explicit send/cancel, lost-acknowledgement retry and
+  one voice-message player at a time. Recording permission races stop safely.
+- A compact ten-seat hall, connection status and accessible microphone controls.
+- Music request queue, votes, host controls, room topics/languages/events,
+  favorite/friend/recent room filters and a shared number-guessing activity.
+- Automatic/lite display settings and Arabic/Persian search normalization.
+- On-demand, sanitized voice transport diagnostics and a secure relay preference;
+  candidate allocation alone does not prove that two-way audio works.
+- Notification preferences, explicit device registration and moderator report review.
+- Native audio session handles private recording, interruptions, output changes
+  and awaited shutdown on logout. Obsolete Telegram client adapters are removed.
+
+## Backend and device gates
+
+Quotes, media uploads, room activities, preferences and moderation require the
+matching 0.2.8 native backend. Uploading this repository does **not** migrate the
+production database, open relay firewall ports or stop old server services.
+The server update is a separate operator step in the consolidated deployment.
+User-confirmed coin transfers are preserved; this client update does not alter
+the financial ledger or sell store products.
+
+The client has passed local web/HTTP integration checks and simulated native
+bridge tests. GitHub supplies the actual Swift/Android compilation check.
+Samsung A13 keyboard behavior, real iPhone recording, lock-screen/Bluetooth
+behavior and two-way audio on Irancell **without VPN** still require handset
+tests. Existing feedback established good audio with VPN, not without VPN.
+Store accounts, purchase integration and store acceptance remain release gates.
+
+## Local checks
+
+Node 22.12+ or 24 and Python 3:
+
+```sh
 npm ci
-npm run build
-npm run sync
-cd android
-chmod +x gradlew
-./gradlew --max-workers=2 :app:assembleDebug
+npm run prepare:web
+npm test
+python3 -m unittest discover -s tests -p 'test_ios_package.py' -q
+WAKHAN_BUILD_PLATFORM=ios npm run build
 ```
 
-Open the `android/` directory in Android Studio after npm install/sync.
-Output: android/app/build/outputs/apk/debug/app-debug.apk
-Set ANDROID_HOME or create android/local.properties for your SDK. Native dependencies come from npm; node_modules, SDK caches and signing keys are excluded. Gradle creates a new debug key in the new build environment.
+On macOS with Xcode, run `bash ios-assets/build-ios.sh` for the actual IPA.
 
-```bash
-node --test --test-isolation=none tests/*.test.mjs
-```
-
-Application ID: app.wakhan.music; minSdk 24; target/compileSdk 36.
-The app connects to https://music.kabulcafe.uk. It needs the existing M81/N1 backend and a signed-in Wakhan account at runtime. Google is configured on that server; email/Facebook require their separate provider settings.
-This is beta source, not an iOS or store release. The previous APK was built and signature-checked; physical Android device validation remains outstanding.
-
-Packaging: the asset-root path in scripts/prepare-web.py was adapted so this project is self-contained. Approved Home headphones bytes are preserved.

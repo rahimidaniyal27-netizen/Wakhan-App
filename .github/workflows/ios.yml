@@ -2,13 +2,18 @@ name: iOS build (unsigned IPA for Sideloadly)
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, codex/consolidated-0.2.8]
 permissions:
-  contents: write
+  contents: read
+concurrency:
+  group: wakhan-ios-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   ios:
     runs-on: macos-15
     timeout-minutes: 40
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,13 +22,29 @@ jobs:
       - run: bash ios-assets/build-ios.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: Wakhan-iOS
-          path: Wakhan-*.ipa
+          name: Wakhan-iOS-0.2.8-beta
+          path: |
+            Wakhan-*.ipa
+            ios-build-result.json
+          if-no-files-found: error
           retention-days: 14
       - name: Publish the IPA as a release (direct download)
+        if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          F=$(ls Wakhan-*.ipa | head -1); V=${F#Wakhan-}; V=${V%.ipa}
-          gh release delete "ios-$V" --yes --cleanup-tag 2>/dev/null || true
-          gh release create "ios-$V" "$F" --prerelease --title "Wakhan $V (iPhone, for Sideloadly)" --notes "Install with Sideloadly using your Apple ID. Re-install every 7 days."
+          F="Wakhan-$(node -p "require('./package.json').version").ipa"
+          V=${F#Wakhan-}; V=${V%.ipa}
+          if gh release view "ios-$V" >/dev/null 2>&1; then
+            gh release upload "ios-$V" "$F" ios-build-result.json --clobber
+          else
+            gh release create "ios-$V" "$F" ios-build-result.json --target "$GITHUB_SHA" --prerelease --title "Wakhan $V (iPhone, for Sideloadly)" --notes "Unsigned test IPA. Install with Sideloadly using the same Apple ID and bundle settings as before. Free provisioning normally expires after 7 days. Real iPhone audio testing remains required."
+          fi
+      - name: Build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iOS-build-log
+          path: ios-build.log
+          if-no-files-found: ignore
+          retention-days: 7

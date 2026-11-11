@@ -8,6 +8,7 @@ import Capacitor
 class WakhanBridgeViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
         bridge?.registerPluginInstance(WakhanLocalePlugin())
+        bridge?.registerPluginInstance(WakhanAudioSessionPlugin())
     }
 }
 

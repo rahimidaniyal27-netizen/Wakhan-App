@@ -1,4 +1,0 @@
-/* Currency identity is independent of the selected app theme. */
-svg.wm85-currency.wp-coin{display:inline-block;flex:none;width:34px;height:34px;min-width:34px;vertical-align:middle;color:inherit;fill:none;stroke:none;filter:none!important;animation:none!important;transform:none!important;opacity:1;overflow:visible;pointer-events:none}
-.wp-currency svg.wm85-currency,.wp-method svg.wm85-currency{width:30px;height:30px;min-width:30px}
-@media(max-width:360px){.wp-currency svg.wm85-currency{width:28px;height:28px;min-width:28px}}

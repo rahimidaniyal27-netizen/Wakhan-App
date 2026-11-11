@@ -2,7 +2,12 @@ name: Android check (build only)
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, codex/consolidated-0.2.8]
+permissions:
+  contents: read
+concurrency:
+  group: wakhan-android-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   android:
     runs-on: ubuntu-latest
@@ -16,7 +21,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --no-audit --no-fund --loglevel=error
+      - run: npm ci --no-audit --no-fund --loglevel=error
+      - run: npm run prepare:web
+      - run: npm test
       - run: npm run build
       - run: npx cap sync android
       - run: cd android && chmod +x gradlew && ./gradlew --no-daemon :app:assembleDebug -q

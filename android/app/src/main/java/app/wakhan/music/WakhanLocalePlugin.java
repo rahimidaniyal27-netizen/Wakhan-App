@@ -18,6 +18,24 @@ public class WakhanLocalePlugin extends Plugin {
         for (int i = 0; i < locales.size(); i++) tags.put(locales.get(i).toLanguageTag());
         JSObject result = new JSObject(); result.put("languages", tags); call.resolve(result);
     }
+    /** Basic compatibility information; no account data or device identifier. */
+    @PluginMethod public void device(PluginCall call) {
+        android.app.ActivityManager manager = (android.app.ActivityManager) getContext().getSystemService(android.content.Context.ACTIVITY_SERVICE);
+        android.app.ActivityManager.MemoryInfo memory = new android.app.ActivityManager.MemoryInfo();
+        manager.getMemoryInfo(memory);
+        JSObject info = new JSObject();
+        info.put("model", android.os.Build.MODEL);
+        info.put("manufacturer", android.os.Build.MANUFACTURER);
+        info.put("android", android.os.Build.VERSION.RELEASE);
+        info.put("sdk", android.os.Build.VERSION.SDK_INT);
+        info.put("totalRamBytes", memory.totalMem);
+        info.put("lowRam", manager.isLowRamDevice());
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            android.content.pm.PackageInfo provider = android.webkit.WebView.getCurrentWebViewPackage();
+            if (provider != null) info.put("webView", provider.versionName);
+        }
+        call.resolve(info);
+    }
     /** colour behind the status / navigation bars, and dark or light bar icons to match */
     @PluginMethod public void bars(PluginCall call) {
         final String hex = call.getString("color", "#071019");

@@ -8,6 +8,9 @@
     "backgroundColor": "#0047FF"
   },
   "plugins": {
+    "SystemBars": {
+      "insetsHandling": "disable"
+    },
     "CapacitorHttp": {
       "enabled": true
     },
@@ -17,7 +20,7 @@
       "showSpinner": false
     },
     "Keyboard": {
-      "resizeOnFullScreen": true
+      "resizeOnFullScreen": false
     },
     "StatusBar": {
       "style": "DARK",
