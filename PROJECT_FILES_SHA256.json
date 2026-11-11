@@ -212,9 +212,14 @@
   "server-update0211/src/native_room_video.py": "58db10a4c09b7496c6fa74e66e496ecd866cf17a5b9561e4bc367cb630759778",
   "server-update0211/src/native_runtime.py": "8b29c0ba460603784a34af67accab757c10b9d0430811945d7ec977d5f6413c3",
   "server-update0211/src/native_social.py": "e3a1373b7a530b9d8dc5a29461a245479ee5c748290b0a57688b70597246e1fa",
-  "server-update0211/src/release_probe.py": "6cfccbbc159a223a49e6892a96af4c83e0d7000660a8bb61009599c1dd409539",
+  "server-update0211/src/release_probe.py": "a7c79ac0eaf329855840fe7b65274f15a0a46bf32cd237a7d2a33129ee1a431d",
   "server-update0211/src/room_tools.py": "1b59f9dfd6e985e60562408f92ba25036f17183fb387143c2cb35800dafba233",
   "server-update0211/src/update0211_template.py": "668aa93f96d8ca177afbb9325d0e0def4f64f3c0518c68330f28c90dcefbe3af",
   "server-update0211/src/upgrade_chat.py": "a68754020ebab41ecd867519399f25865546003ce4403cda7fdb294fd8652569",
-  "src/overlay-isolation.mjs": "ab52153b797397964f1fd576e7b82ee67f54b823c0c66a6f886b39c17079b32b"
+  "src/overlay-isolation.mjs": "ab52153b797397964f1fd576e7b82ee67f54b823c0c66a6f886b39c17079b32b",
+  ".github/workflows/resume-0211.yml": "3071e27166b5fb10ccd07cd950cf850e4c24cf3d2a5f39147a1e9a06ebbe913b",
+  "server-resume0211/wakhan-resume-0211.py": "8bdb22a14ed6b0d7ef9dfd64b2588b7f1f1ffe7c65d65940e0b196b617a8532e",
+  "server-resume0211/verify-package.py": "3c2c3eb04fc63652a55d84cfbd855c74e9d06c60402bcb16319ff70b5ff0f5ab",
+  "server-resume0211/repair-manifest.json": "bcd9fd5d84b419fe1770e3526bf3c702792e5ca795b683da680d563e61d10830",
+  "server-resume0211/README-fa.md": "429887f0f741639c8d208ae0685fb4b3945ddd28a52ef4972ac716cd0529406f"
 }

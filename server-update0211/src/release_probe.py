@@ -1,4 +1,4 @@
-"""Probe the actual isolated 028 service without logging account data or credentials."""
+"""Probe the actual isolated 0211 service without logging account data or credentials."""
 import asyncio
 import json
 from pathlib import Path
@@ -38,6 +38,8 @@ async def run(settings,media=True):
             if response.status!=200:raise RuntimeError('RELEASE_API_PROBE_FAILED_'+str(response.status)+'_'+path.replace('/','_'))
             return await response.json()
         health=await get('/health',False);config=await get('/api/app/config',False);me=await get('/api/me')
+        result['expected_version']='0.2.11-beta';result['config_version']=config.get('version')
+        result['version_matches']=health.get('version')==result['expected_version'] and config.get('version')==result['expected_version']
         result['version']=health.get('version');result['standalone']=health.get('standalone') is True
         result['existing_session']=me.get('me',{}).get('id')==owner
         result['owner_public_id']=me.get('me',{}).get('public_id')
@@ -85,7 +87,11 @@ async def run(settings,media=True):
             if not result['media']['ok']:result['media']['provider']=await asyncio.to_thread(provider_health,settings)
         result['online_visibility']=(await get('/api/app/presence')).get('ok') is True
         result['native_administration']=(await get('/api/app/admin')).get('ok') is True
-        result['ok']=all(result.get(x) for x in ('standalone','existing_session','replies','room_tools','preferences','report_review','tls_443_advertised','legacy_accounts_absent','online_visibility','native_administration','commerce_catalog','free_core')) and not result['forbidden_sdk_loaded'] and result['media']['ok'] and result['version']=='0.2.10-beta'
+        required=('standalone','existing_session','replies','room_tools','preferences','report_review','tls_443_advertised','legacy_accounts_absent','online_visibility','native_administration','commerce_catalog','free_core','version_matches')
+        result['failed_checks']=[name for name in required if result.get(name) is not True]
+        if result['forbidden_sdk_loaded']:result['failed_checks'].append('forbidden_sdk_loaded')
+        if not result['media']['ok']:result['failed_checks'].append('media')
+        result['ok']=not result['failed_checks']
     return result
 
 

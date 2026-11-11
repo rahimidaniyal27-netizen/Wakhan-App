@@ -1,0 +1,25 @@
+name: Resume 0211 with corrected release check
+on:
+  push:
+    branches: [codex/resume-0211]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate repair package
+        run: |
+          python3 -m py_compile server-resume0211/wakhan-resume-0211.py server-update0211/src/release_probe.py
+          python3 server-resume0211/verify-package.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0211-Resume
+          path: |
+            server-resume0211/wakhan-resume-0211.py
+            server-resume0211/README-fa.md
+            server-resume0211/repair-manifest.json
+          if-no-files-found: error
+          retention-days: 14

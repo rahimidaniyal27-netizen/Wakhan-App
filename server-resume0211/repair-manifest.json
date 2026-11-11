@@ -1,0 +1,12 @@
+{
+  "version": "0.2.11-beta",
+  "build": 25,
+  "original_installer_sha256": "20097fee8e81707c70b699992de09b0da8f100a86d58b0eecce2cb31e1ba5986",
+  "original_payload_sha256": "ce08878c18d7adc2c58bdd1491757868b6a295d3d30d4126e9eba57a018c8ed3",
+  "original_probe_sha256": "6cfccbbc159a223a49e6892a96af4c83e0d7000660a8bb61009599c1dd409539",
+  "corrected_probe_sha256": "a7c79ac0eaf329855840fe7b65274f15a0a46bf32cd237a7d2a33129ee1a431d",
+  "resume_sha256": "8bdb22a14ed6b0d7ef9dfd64b2588b7f1f1ffe7c65d65940e0b196b617a8532e",
+  "apk_unchanged": true,
+  "ipa_unchanged": true,
+  "all_release_guards_retained": true
+}
