@@ -20,6 +20,15 @@ jobs:
         with:
           node-version: 22
       - run: bash ios-assets/build-ios.sh
+      - name: Package the consolidated client and server update
+        run: python3 scripts/package-consolidated.py
+      - name: Upload one consolidated update
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-Consolidated-0.2.8-beta
+          path: .delivery/
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         with:
           name: Wakhan-iOS-0.2.8-beta
@@ -36,9 +45,9 @@ jobs:
           F="Wakhan-$(node -p "require('./package.json').version").ipa"
           V=${F#Wakhan-}; V=${V%.ipa}
           if gh release view "ios-$V" >/dev/null 2>&1; then
-            gh release upload "ios-$V" "$F" ios-build-result.json --clobber
+            gh release upload "ios-$V" "$F" ios-build-result.json "Wakhan-Consolidated-$V.zip" --clobber
           else
-            gh release create "ios-$V" "$F" ios-build-result.json --target "$GITHUB_SHA" --prerelease --title "Wakhan $V (iPhone, for Sideloadly)" --notes "Unsigned test IPA. Install with Sideloadly using the same Apple ID and bundle settings as before. Free provisioning normally expires after 7 days. Real iPhone audio testing remains required."
+            gh release create "ios-$V" "$F" ios-build-result.json "Wakhan-Consolidated-$V.zip" --target "$GITHUB_SHA" --prerelease --title "Wakhan $V (iPhone, for Sideloadly)" --notes "Consolidated beta: install the matching server update before testing new features. Unsigned IPA for Sideloadly. Real keyboard/background audio and Irancell without VPN testing remain required."
           fi
       - name: Build diagnostics
         if: failure()

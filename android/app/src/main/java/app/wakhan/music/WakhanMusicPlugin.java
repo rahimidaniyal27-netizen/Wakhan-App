@@ -127,7 +127,7 @@ public class WakhanMusicPlugin extends Plugin {
         ready(call, player -> {
             if (!id.equals(requestId)) { call.resolve(); return; }
             switch (action) {
-                case "play": player.play(); break;
+                case "play": if (player.getPlaybackState() == Player.STATE_IDLE) player.prepare(); player.play(); break;
                 case "pause": player.pause(); break;
                 case "seek": player.seekTo((long)(Math.max(0, call.getDouble("position", 0.0)) * 1000)); break;
                 case "stop": player.stop(); player.clearMediaItems(); requestId = ""; break;

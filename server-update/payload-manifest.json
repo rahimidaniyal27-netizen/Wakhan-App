@@ -1,0 +1,23 @@
+{
+  "helper_sha256": "56fb34c1c40f77745d85eff0c6d97ff741b77be4890771c6240c8a4c0e47b741",
+  "payload_sha256": "ac8544fd19e5a45a95054d3fcb68be70c7d1f88d38a1d3e72894de6197617055",
+  "embedded_files": {
+    "build_accounts.py": "90c5d26db0b831c733092022134c640b1f4f71514ba23298d71c6a2363bdeb56",
+    "build_finance.py": "f0627246cb55b53c5118de2176b69699c095d3e1706d01467497a1064274f1ee",
+    "build_native_modules.py": "523edd345b3e57b044b8b2eb2ceca67ab93805360c7e4134beb05bab1d7da855",
+    "build_core.py": "fcd816b37a67d4e63e8a08b64ff9bfc519d62c27bad1ba1fd0132c8a0ca542d4",
+    "upgrade_chat.py": "65b1d6d573a538ad5068cf71a0ed8bc21dedee5af0f0c1b3819b17be8d000952",
+    "room_tools.py": "cb29f3ca6524b3206ac66abeee322c713408d87dc0a3a8e78759aeca6312ac98",
+    "native_runtime.py": "632424d9512227cccf66cd1c34d7a51b1efb67141fbd09e8e99bb42b7a58c14e",
+    "native_profiles.py": "82b44edf5da48ae57c80e1b3dfc92b41acee775a59c4eb0239ae831fbfb05996",
+    "native_receipts.py": "061e4000b64647501774629cc547f39f2a17150690b30987f5d293fa0f96493e",
+    "native_preferences.py": "76cb23adc4adee95cad95c0590a9a110c7c2ac49cd56b30e1b5573e9c2be2080",
+    "native_migrations.py": "d2c38edd657728b46603537998ce0b1c0359951dedc68a5d27b55fdd326f2240",
+    "public_ids.py": "e1e543bbfe60c4deecda7133dc1839e9dd6fee7d2934d51018c468b3b3249e6b",
+    "stage_probe.py": "1b2b212f679aebcda07305dcfb7029c7d36399256ceef9504162687aeaf9d4a2",
+    "release_probe.py": "a40fe091d4282392e10a86b09035b97dbbef5a43e01004f3fbfd4c7a58a0af4b",
+    "session_keys.py": "dc0e9c5739e599931abf04aaadc658ebc3c4459f7c8f99d55c46be1a695e469b",
+    "build_android.py": "f25408d9e635639abdf94e0bedcefc70f70d5a227eb88a423a0949b567a7958d",
+    "relay_probe.py": "7689e3c2ebe4de5239d48bce452d9ba81060113f28f39ff993d06f8d329bbbac"
+  }
+}

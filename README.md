@@ -6,8 +6,9 @@ Independent Android and iPhone client, bundle ID `app.wakhan.music`.
 
 The `codex/consolidated-0.2.8` branch builds an unsigned device IPA with GitHub's
 macOS/Xcode runner. Open **Actions → iOS build (unsigned IPA for Sideloadly)**,
-select the successful run for this branch, and download **Wakhan-iOS-0.2.8-beta**
-from Artifacts. Extract `Wakhan-0.2.8-beta.ipa` from the ZIP on Windows and install
+select the successful run for this branch, and download **Wakhan-Consolidated-0.2.8-beta**
+from Artifacts. Read `README-fa.md` for the guarded matching server/Android update.
+Extract `Wakhan-0.2.8-beta.ipa` from the ZIP on Windows and install
 it with Sideloadly using the same Apple ID and bundle settings as before.
 Free provisioning normally expires after seven days. This is a test build.
 

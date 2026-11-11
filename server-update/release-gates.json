@@ -1,0 +1,15 @@
+{
+  "version": "0.2.8-beta",
+  "build": 22,
+  "server_executed": false,
+  "store_ready": false,
+  "a13_keyboard_verified": false,
+  "real_iphone_audio_verified": false,
+  "android_background_music_device_verified": false,
+  "irancell_without_vpn_verified": false,
+  "store_iap_implemented": false,
+  "ios_free_sideload_push_enabled": false,
+  "financial_transfer_user_confirmed": true,
+  "update_includes_signed_android_builder": true,
+  "update_includes_guarded_native_backend_cutover": true
+}
