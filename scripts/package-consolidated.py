@@ -13,7 +13,9 @@ assert hashlib.sha256(ipa.read_bytes()).hexdigest()==result['sha256']
 operator=root/'server-update/wakhan-update-028.py'
 manifest=json.loads((root/'server-update/payload-manifest.json').read_text())
 assert hashlib.sha256(operator.read_bytes()).hexdigest()==manifest['helper_sha256']
-out=root/'.delivery';out.mkdir(exist_ok=True)
+out=root/'delivery'
+if out.exists():shutil.rmtree(out)
+out.mkdir()
 for file in (ipa,root/'ios-build-result.json',operator,root/'server-update/README-fa.md',root/'server-update/release-gates.json'):
     shutil.copyfile(file,out/file.name)
 checksums={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in out.iterdir() if p.is_file() and p.name!='checksums.json'}

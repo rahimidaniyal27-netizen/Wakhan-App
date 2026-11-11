@@ -1,7 +1,7 @@
 {
   ".github/workflows/android-check.yml": "e9ce261ad88353a5c4bdbfffcacb48a7e1ca7318fa7b05219918bc7fbe3dd41a",
-  ".github/workflows/ios.yml": "aac9cb567ff7b85f0ebdaad1e7e56f78b234ebec361c6f0081b844508fb31a78",
-  ".gitignore": "c682044d4b748da119bc53a33687a4c313e289c52b354fc540269814403c7f20",
+  ".github/workflows/ios.yml": "b272e31b233ecafca764a85cd22a7a600dbc682176f5d457527d9094ee414436",
+  ".gitignore": "9bb9b99394a11123a0a1b244dd7075e3904eb1a6b8535a9fa58d3f61aeedab9b",
   "LANGUAGES.md": "6c20546e52eb1e330d27d4d1a01a251b3d257b90fbbabf96cc3c082ae3a6ae0e",
   "README.md": "c61d0f28d485764ee3c3044b89482e89ac9d904e095484e1d1bd2e0186ec4fea",
   "android/.gitignore": "065e4a92a240fe11a0ea230491ad9dabef143f5fd5a3e6884ad6f0395666a971",
@@ -81,7 +81,7 @@
   "public/wakhan-shell.json": "ffbc8d0c2c98eb9986615f0a8dd0f504a163bfb2049f64230fd6c978bb12948e",
   "scripts/build.mjs": "80b5e892f687dcfda53a7e9decdacc74a3eee8527272c340e366c66de270ffc1",
   "scripts/configure-ios.py": "6572ebde0556827a786bb8dfc9ffa93154604f5e06f244d3b0d1307e2a3294f8",
-  "scripts/package-consolidated.py": "12a994518e73fe4442054c82b5eb4afac23e63ea45ff482273a82eb0ad17c276",
+  "scripts/package-consolidated.py": "e2a1a6907454903c70c5df812ad41bcef8cba78d849cb2b27f312305379dc4ca",
   "scripts/validate-client.mjs": "0fb28600afbb4a8034c54a1414d1950d9ba509c253edb70e00bd2f5d6d376f5f",
   "scripts/verify-ios.py": "93b6d723587abbf20eb5258f89fa604e6c88a3c73e262988d44a0e2cfe592e9e",
   "server-update/README-fa.md": "593e79e9d1cb50f6b8b93804d8db28e46ecb3cd96541a0c7d36e3735a3034a3f",

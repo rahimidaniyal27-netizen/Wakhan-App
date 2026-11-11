@@ -15,4 +15,5 @@ __pycache__/
 ios-build.log
 ios-build-result.json
 .delivery/
+delivery/
 Wakhan-Consolidated-*.zip
