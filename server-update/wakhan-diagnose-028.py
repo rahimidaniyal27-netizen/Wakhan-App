@@ -48,6 +48,32 @@ def failed_stage(root):
     return max(candidates,key=lambda p:p.stat().st_mtime)
 
 
+def worker_diagnostic(stage,python):
+    code='''import json,tempfile,subprocess,sys
+from pathlib import Path
+root=Path(sys.argv[1]);result={}
+with tempfile.TemporaryDirectory(prefix="wakhan-028-worker-") as temporary:
+    job={"root":str(root),"url":"https://www.youtube.com/watch?v=oSbzN0OZYMM","temporary":temporary}
+    p=subprocess.run([sys.executable,str(root/"wakhan_resolver_v43.py"),"--worker"],input=json.dumps(job),capture_output=True,text=True,timeout=50,cwd=root)
+    result["exit_code"]=p.returncode
+    try:
+        value=json.loads(p.stdout)
+        for key in ("ok","checked","waited_seconds","video_width","video_height"):
+            if type(value.get(key)) in (bool,int,float):result[key]=value[key]
+        if value.get("reason") in ("source_worker_failed","no_readable_video","blocked","size","failed","timeout","source_differs"):result["reason"]=value["reason"]
+    except ValueError:result["worker_json"]=False
+    import re
+    missing=re.findall(r"ModuleNotFoundError: No module named ['\\\"]([A-Za-z_][A-Za-z0-9_.]*)",p.stderr)
+    if missing:result["missing_module"]=missing[-1]
+    result["stderr_tags"]=[name for name,pattern in (("permission","permission denied"),("syntax","syntaxerror"),("missing_module","modulenotfounderror"),("certificate","certificate verify failed"),("javascript","javascript"),("ejs","yt_dlp_ejs"),("provider","local browser token request failed")) if pattern in p.stderr.lower()]
+print(json.dumps(result))'''
+    try:
+        result=subprocess.run(['runuser','-u','musicbot','--',str(python),'-c',code,str(stage)],capture_output=True,text=True,cwd=stage,timeout=60)
+        if result.returncode:return sanitized(result)
+        return json.loads(result.stdout.strip().splitlines()[-1])
+    except (subprocess.TimeoutExpired,ValueError):return {'diagnostic_failed':True}
+
+
 def diagnose(stage,python):
     # Add a fixed endpoint/status marker in memory. Do not alter staged source files.
     original=(stage/'release_probe.py').read_text()
@@ -65,7 +91,9 @@ def diagnose(stage,python):
         path=stage/'private'/('diagnostic-'+name+'.private.log')
         fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_TRUNC|os.O_NOFOLLOW,0o600)
         with os.fdopen(fd,'w') as stream:stream.write(result.stdout+'\n'+result.stderr)
-        if result.returncode:break
+        if result.returncode:
+            if name=='media':report['checks']['media_worker']=worker_diagnostic(stage,python)
+            break
     return report
 
 
