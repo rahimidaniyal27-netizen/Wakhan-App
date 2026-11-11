@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 -m compileall -q repair
+        env:
+          PYTHONPYCACHEPREFIX: /tmp/wakhan-resume-pycache
       - uses: actions/upload-artifact@v4
         with:
           name: Wakhan-028-Resume
