@@ -2,7 +2,7 @@ name: Wakhan 0.2.12 room and chat build
 on:
   workflow_dispatch:
   push:
-    branches: [codex/polish-0.2.12]
+    branches: [codex/polish-0.2.12, codex/polish-0.2.12-denj]
 permissions:
   contents: read
 concurrency:

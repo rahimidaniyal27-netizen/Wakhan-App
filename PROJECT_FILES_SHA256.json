@@ -222,7 +222,7 @@
   "server-resume0211/verify-package.py": "3c2c3eb04fc63652a55d84cfbd855c74e9d06c60402bcb16319ff70b5ff0f5ab",
   "server-resume0211/repair-manifest.json": "bcd9fd5d84b419fe1770e3526bf3c702792e5ca795b683da680d563e61d10830",
   "server-resume0211/README-fa.md": "429887f0f741639c8d208ae0685fb4b3945ddd28a52ef4972ac716cd0529406f",
-  ".github/workflows/polish-0212.yml": "d2ff06627f31688274e5e1d2b38f288dcfdc1b717f3cd978d70ff0ce14c265e0",
+  ".github/workflows/polish-0212.yml": "226f44b14c3f8314ab19acbe41dd93356aa351369ed76b11d0b7b9fd0032c11f",
   "client-update0212/README-fa.md": "868a0259d0f792324e23de2175df92b69dc4b2e139af9b533b135f0773672bac",
   "client-update0212/build-upgrade.py": "d6858dc17801fdd9c416cb47a53b83af3534c4734a30a870d83786ebf9579a9b",
   "client-update0212/operator-common.py": "6832053edd7cb5232d44501f1e883d4d659468f04e7ec5e1c350cdb1c3090ce0",
