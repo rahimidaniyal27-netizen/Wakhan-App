@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Wakhan</string>
-    <string name="title_activity_main">Wakhan</string>
-    <string name="package_name">app.wakhan.music</string>
-    <string name="custom_url_scheme">app.wakhan.music</string>
-</resources>
