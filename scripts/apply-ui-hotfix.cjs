@@ -37,18 +37,26 @@ for(const name of process.argv.slice(2)){
  const engine=bundle.programs.find(p=>p.id==='community70_chat.js');engine.code=patchFunctions(engine.code,'chat/engine-functions.js','wm70PollDM');
  const voice=bundle.programs[9];voice.code=ast.replace(voice.code,'vcMute',read('performance/microphone-function.js').trim(),'assignment');
  if(voice.code.includes('function wmqNotifyMute('))voice.code=ast.replace(voice.code,'wmqNotifyMute',read('performance/mute-sync.js').trim(),'declaration');else voice.code+='\n'+read('performance/mute-sync.js');
- const hall=bundle.programs.find(p=>p.id==='hall2.js');hall.code=patchFunctions(hall.code,'hall/royal-functions.js','paintSeats');
+ const hall=bundle.programs.find(p=>p.id==='hall2.js');
+ // Canonicalize helper placement so a fresh build and a previously patched
+ // working copy produce identical assets, even when new helpers were added.
+ for(const node of parser.exports.parse(read('hall/royal-functions.js'),{ecmaVersion:'latest'}).body){
+  if(node.id?.name==='paintSeats')continue;
+  try{const old=ast.find(hall.code,node.id.name,'declaration');hall.code=hall.code.slice(0,old.start).trimEnd()+'\n'+hall.code.slice(old.end).trimStart()}
+  catch(error){if(!error.message.endsWith(': 0'))throw error}
+ }
+ hall.code=patchFunctions(hall.code,'hall/royal-functions.js','paintSeats');
  if(!hall.code.includes('setSeats:royalSetSeats'))hall.code=hall.code.replace('const api_={','const api_={setSeats:royalSetSeats,royalBackground,stop:royalStop,');
  const settings=ast.find(hall.code,'settingsHtml','declaration');let html=hall.code.slice(settings.start,settings.end);
  if(!html.includes('royalLayoutSettings()'))html=html.replace('<section class="h2-sh h2-set"><h3>${esc(tx(\'settings\'))}</h3>','<section class="h2-sh h2-set"><div class="h4-sh-head"><button type="button" onclick="closeSheet()" aria-label="${esc(royalWords(\'close\'))}">‹</button><h3>${esc(tx(\'settings\'))}</h3><span></span></div>${royalLayoutSettings()}');
  hall.code=hall.code.slice(0,settings.start)+html+hall.code.slice(settings.end);
- const marker='/* WAKHAN_ROYAL_STYLE_V1 */';if(hall.code.includes(marker))hall.code=hall.code.slice(0,hall.code.indexOf(marker));
+ const marker='/* WAKHAN_ROYAL_STYLE_V1 */';if(hall.code.includes(marker))hall.code=hall.code.slice(0,hall.code.indexOf(marker));hall.code=hall.code.trimEnd();
  hall.code+='\n'+marker+'\n(()=>{const css=document.createElement("style");css.id="h4-royal";css.textContent='+JSON.stringify(read('hall/royal.css'))+';document.head.append(css)})();\n';
  const profile=bundle.programs.find(p=>p.id==='profile30.js');
  const top='<main class="wn-page wt-me">';
  if(!profile.code.includes('wk-profile-top'))profile.code=profile.code.replace(top,top+'<div class="wk-profile-top"><button type="button" onclick="go(\'h\')" aria-label="${esc(document.documentElement.lang.startsWith(\'fa\')?\'برگشت\':\'Back\')}">‹</button><b>${esc(t.profile||\'Wakhan\')}</b><button type="button" onclick="WAKHAN_NATIVE_N1.settings()" aria-label="${esc(WAKHAN_NATIVE_N1.accountLabel)}">⚙</button></div>');
  const last=bundle.programs[bundle.programs.length-1],productMarker='/* WAKHAN_NATIVE_PRODUCT_UI */';
- if(last.code.includes(productMarker))last.code=last.code.slice(0,last.code.indexOf(productMarker));
+ if(last.code.includes(productMarker))last.code=last.code.slice(0,last.code.indexOf(productMarker));last.code=last.code.trimEnd();
  last.code+='\n'+productMarker+'\n'+read('product-ui.js');
  const admin=bundle.programs.find(p=>p.id==='inline-28.js');
  const heading='<div class="op31-heading">${op31Icon()}';

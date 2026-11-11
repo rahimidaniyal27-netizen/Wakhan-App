@@ -18,6 +18,13 @@ jobs:
         with:
           node-version: 22
       - run: bash ios-assets/build-ios.sh
+      - run: python3 server-update029/build-upgrade.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-Consolidated-0.2.9-beta
+          path: delivery029/
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         with:
           name: Wakhan-iOS-0.2.9-beta
