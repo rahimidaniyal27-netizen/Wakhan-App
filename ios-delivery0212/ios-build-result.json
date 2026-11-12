@@ -1,0 +1,14 @@
+{
+  "version": "0.2.12-beta",
+  "build": 26,
+  "sha256": "7512fff8780d1e2f01adb504dc72782f9978f02ab875b6ec80410d3667fc1798",
+  "bytes": 2057528,
+  "signed": false,
+  "install_method": "Sideloadly",
+  "native_ci_run": 43093984466,
+  "native_source_commit": "75c9300636b83fd698e563871ab6fa844c459a28",
+  "web_source_commit": "56f4ccb1ca41ae25e8b25f3b5f4d075f504b12a9",
+  "build_method": "verified macOS native binary with rebuilt localized web assets",
+  "device_verified": false,
+  "store_ready": false
+}
