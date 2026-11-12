@@ -1,4 +1,4 @@
-import {Capacitor,registerPlugin} from '@capacitor/core';
+    import {Capacitor,registerPlugin} from '@capacitor/core';
 import {App} from '@capacitor/app';
 import {AppLauncher} from '@capacitor/app-launcher';
 import {Browser} from '@capacitor/browser';
@@ -135,3 +135,92 @@ async function playIntro(){try{const shell=await (await rawFetch(localOrigin+'/w
  setTimeout(()=>{el.remove()},2100)}catch(e){}}
 async function boot(){await SplashScreen.hide().catch(()=>{});if(!introAt)playIntro();try{await initializeLanguage();config=await broker.config();const saved=await broker.restore();if(saved){try{const me=await broker.me();if(!me.complete)return profileStep(me);return await launch()}catch(e){if(e instanceof AuthError&&e.code==='too_young')return blocked();if(e instanceof AuthError&&e.code==='auth')await broker.logout();else throw e}}const pending=await broker.pending();if(pending)return waitStep(pending);home()}catch(e){screen('<h1>Wakhan</h1><p>'+h(t('net'))+'</p><button id="retry" class="native87-primary">'+h(t('retry'))+'</button>');document.getElementById('retry').onclick=boot;error(e)}}
 App.addListener('appStateChange',async({isActive})=>{compat?.setActive(isActive);if(isActive&&languageReady){const previous=lang;await initializeLanguage();if(previous!==lang&&!busy&&!activePending){location.reload();return}}if(isActive&&activePending)poll()});App.addListener('appUrlOpen',async({url})=>{if(url.startsWith('wakhan://auth')){await Browser.close().catch(()=>{});if(activePending)poll()}});App.addListener('backButton',()=>{const help=document.getElementById('native87-help');if(help?.open){help.close();return}if(busy)return;if(inApp){const dialog=document.getElementById('native-account');if(dialog?.open){dialog.close();return}if(root()){root().remove();return}window.wnNativeN1Back?.()}else if(activePending){activePending=null;home()}else home()});window.addEventListener('wakhan-auth-required',()=>location.reload());boot();
+/* ==================================================== */
+/* 🚀 WAKHAN 2.0 : CUSTOM WALLET & SHOWCASE INJECTION   */
+/* ==================================================== */
+function injectWakhanFeatures() {
+    // آی‌پی سرور هتزنر خود را در خط زیر جایگزین کنید
+    const SERVER_URL = 'http://YOUR_SERVER_IP:8000';
+    const WAKHAN_ID = '00001234'; 
+
+    const putFeatures = () => {
+        try { if (typeof TAB === 'undefined' || TAB !== 'm') return; } catch(e) { return; }
+        const view = document.getElementById('view');
+        if (!view || view.querySelector('.wakhan-v2-panel')) return;
+
+        const panel = document.createElement('div');
+        panel.className = 'wakhan-v2-panel';
+        panel.style.cssText = 'background:#061225; padding:20px; margin:15px; border-radius:15px; border:1px solid #9D4DFF; direction:rtl; color:#fff; font-family:sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);';
+        
+        panel.innerHTML = `
+            <div style="text-align:center; margin-bottom:15px;">
+                <h3 style="color:#FFC857; margin:0 0 10px 0; font-size:16px;">موجودی کیف پول شما</h3>
+                <div id="wk-coin-balance" style="font-size:28px; font-weight:bold; color:#fff;">بارگذاری...</div>
+            </div>
+            <button id="wk-buy-btn" style="width:100%; background:#9D4DFF; color:#fff; border:none; padding:12px; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer;">
+                + خرید ۵۰۰ سکه
+            </button>
+            <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
+                <h4 style="margin:0 0 15px 0; color:#00C8FF; font-size:15px;">🎁 ویترین هدیه‌های من</h4>
+                <div id="wk-showcase" style="display:flex; overflow-x:auto; gap:10px; padding-bottom:10px; transform: scaleX(-1);">
+                    <span style="color:#A0AEC0; font-size:12px; transform: scaleX(-1);">در حال دریافت...</span>
+                </div>
+            </div>
+        `;
+        
+        const mainContainer = view.querySelector('main') || view;
+        mainContainer.appendChild(panel);
+
+        // دریافت اطلاعات از API سرور هتزنر شما
+        fetch(`${SERVER_URL}/api/me/${WAKHAN_ID}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('wk-coin-balance').innerHTML = '💰 ' + (data.wallet?.balance_coins || 0).toLocaleString();
+                const sc = document.getElementById('wk-showcase');
+                if(data.showcase && data.showcase.length > 0) {
+                    sc.innerHTML = data.showcase.map(g => `
+                        <div style="background:#101A34; padding:10px 15px; border-radius:10px; border:1px solid rgba(255,255,255,0.05); text-align:center; min-width:55px; transform: scaleX(-1);">
+                            <div style="font-size:24px;">${g.icon_url}</div>
+                            <div style="font-size:12px; margin-top:6px; background:rgba(0,0,0,0.5); border-radius:8px; padding:2px;">x${g.quantity}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    sc.innerHTML = '<span style="color:#A0AEC0; font-size:12px; transform: scaleX(-1);">ویترین خالی است.</span>';
+                }
+            }).catch(err => console.log('API Error:', err));
+
+        // اکشن خرید سکه
+        document.getElementById('wk-buy-btn').onclick = function() {
+            const btn = this;
+            btn.innerHTML = 'در حال پردازش...';
+            btn.style.opacity = '0.7';
+            
+            fetch(`${SERVER_URL}/api/wallet/buy`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ wakhan_id: WAKHAN_ID, coins: 500 })
+            })
+            .then(res => res.json())
+            .then(resData => {
+                btn.innerHTML = '+ خرید ۵۰۰ سکه';
+                btn.style.opacity = '1';
+                if(resData.success) {
+                    alert('۵۰۰ سکه به کیف پول شما اضافه شد!');
+                    document.getElementById('wk-coin-balance').innerHTML = '💰 ' + resData.new_balance.toLocaleString();
+                }
+            })
+            .catch(() => {
+                btn.innerHTML = '+ خرید ۵۰۰ سکه';
+                btn.style.opacity = '1';
+                alert('خطا در ارتباط با سرور.');
+            });
+        };
+    };
+
+    const viewEl = document.getElementById('view') || document.body;
+    new MutationObserver(putFeatures).observe(viewEl, { childList: true, subtree: true });
+    setInterval(putFeatures, 1500);
+}
+setTimeout(injectWakhanFeatures, 3000);
+/* ==================================================== */
+
