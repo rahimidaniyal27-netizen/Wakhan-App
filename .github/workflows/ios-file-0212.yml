@@ -1,0 +1,35 @@
+name: Deliver verified Wakhan iPhone file
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/ios-delivery-0212]
+    paths: [.github/workflows/ios-file-0212.yml]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify the exact iPhone file
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, plistlib, zipfile
+          from pathlib import Path
+          p=Path('ios-delivery0212/Wakhan-0.2.12-beta.ipa')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='7512fff8780d1e2f01adb504dc72782f9978f02ab875b6ec80410d3667fc1798'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              info=plistlib.loads(z.read('Payload/App.app/Info.plist'))
+              assert info['CFBundleIdentifier']=='app.wakhan.music'
+              assert info['CFBundleVersion']=='26' and info['CFBundleShortVersionString']=='0.2.12'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.12-build26
+          path: |
+            ios-delivery0212/Wakhan-0.2.12-beta.ipa
+            ios-delivery0212/ios-build-result.json
+          if-no-files-found: error
+          retention-days: 14
