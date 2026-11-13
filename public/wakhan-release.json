@@ -36,6 +36,6 @@
   "device_verified": false,
   "store_ready": false,
   "version": "0.2.14-beta",
-  "build": 28,
-  "shell_sha256": "2fee4cca637a3e8bc2c0b92568e2013ecf8dc1c9104e18674e3f4d16aadf4361"
+  "build": 29,
+  "shell_sha256": "2ffee897083f391a4895630b421ce097f2173df6703c213dd42c0840dd046d7f"
 }
