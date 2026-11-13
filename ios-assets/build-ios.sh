@@ -3,7 +3,7 @@
 set -euo pipefail
 npm install --no-audit --no-fund --loglevel=error
 echo '{"push":false}' > public/build-flags.json   # no push with a free Apple ID
-npm run build
+npx vite build --config vite.beta.config.mjs   # app bundle (public/wakhan-shell.json) is already final; never rebuild it from the old snapshot
 [ -d ios ] || npx cap add ios
 npx cap sync ios
 cp ios-assets/native/*.swift ios/App/App/

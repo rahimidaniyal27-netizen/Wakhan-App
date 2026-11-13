@@ -1,0 +1,33 @@
+{
+  "features": [
+    "single-native-insets",
+    "private-replies",
+    "media-preview-retry",
+    "persistent-tabs",
+    "voice-tls-fallback",
+    "room-queue-votes",
+    "group-game",
+    "room-discovery",
+    "notification-preferences",
+    "royal-seats-2-to-16",
+    "transparent-room-chat",
+    "native-room-video",
+    "seen-receipts",
+    "online-privacy",
+    "native-management",
+    "free-core-music-and-cinema",
+    "regional-storefront",
+    "verified-payment-webhooks",
+    "cinema-chooser",
+    "fixed-chair-keyboard-overlay",
+    "five-seats-per-row",
+    "animated-room-indicator",
+    "plain-profile-photo-preview",
+    "wakhan2-me"
+  ],
+  "device_verified": false,
+  "store_ready": false,
+  "version": "0.2.13-beta",
+  "build": 27,
+  "shell_sha256": "5065174c0a8fcdda05f614a5f5431c0f4bd6026cc204b62f0a9758b5dbec95e7"
+}
