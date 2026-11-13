@@ -23,11 +23,19 @@
     "five-seats-per-row",
     "animated-room-indicator",
     "plain-profile-photo-preview",
-    "wakhan2-me"
+    "wakhan2-me",
+    "launch-intro-live",
+    "languages-15",
+    "language-search",
+    "signin-wakhan2",
+    "no-telegram-stars",
+    "payments-in-me-only",
+    "help-center",
+    "badges"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.13-beta",
-  "build": 27,
-  "shell_sha256": "87cc60ff7c621a62baf12e8762213355c841d944b2e8530466bd3df9f3d21a08"
+  "version": "0.2.14-beta",
+  "build": 28,
+  "shell_sha256": "2fee4cca637a3e8bc2c0b92568e2013ecf8dc1c9104e18674e3f4d16aadf4361"
 }

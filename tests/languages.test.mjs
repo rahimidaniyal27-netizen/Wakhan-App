@@ -5,10 +5,10 @@ import {COPY} from '../src/auth-locales.mjs';
 import {LANGUAGE_CATALOG} from '../src/language-catalog.mjs';
 import {chooseLocale,matchLanguage} from '../src/locale.mjs';
 
-test('all 18 languages can open a complete translated sign-in flow from a phone locale',()=>{
- const codes=['fa','ps','en','de','fr','es','pt','it','ru','ar','tr','ur','hi','bn','zh','ja','ko','id'];
+test('all 15 languages can open a complete translated sign-in flow from a phone locale',()=>{
+ const codes=['fa','ps','en','de','ar','tr','ur','hi','ru','es','fr','pt','zh','id','uz'];
  assert.deepEqual(LANGUAGE_CATALOG.map(l=>l.c),codes);
- assert.equal(new Set(codes).size,18);
+ assert.equal(new Set(codes).size,15);
  for(const code of codes){
   assert.equal(chooseLocale({preferred:[code+'-XX']}).c,code);
   for(const key of Object.keys(COPY.en))assert.ok(typeof COPY[code][key]==='string'&&COPY[code][key].trim(),`${code}: ${key}`);
