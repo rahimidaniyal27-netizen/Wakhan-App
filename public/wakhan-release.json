@@ -31,11 +31,12 @@
     "no-telegram-stars",
     "payments-in-me-only",
     "help-center",
-    "badges"
+    "badges",
+    "no-frames"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.14-beta",
-  "build": 29,
-  "shell_sha256": "2ffee897083f391a4895630b421ce097f2173df6703c213dd42c0840dd046d7f"
+  "version": "0.2.15-beta",
+  "build": 30,
+  "shell_sha256": "f0872223df1d71164981d8740d5ed6e704218df33fab32456624511695e6ff69"
 }
