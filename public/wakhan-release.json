@@ -32,11 +32,12 @@
     "payments-in-me-only",
     "help-center",
     "badges",
-    "no-frames"
+    "no-frames",
+    "salon-list"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.15-beta",
-  "build": 30,
-  "shell_sha256": "f0872223df1d71164981d8740d5ed6e704218df33fab32456624511695e6ff69"
+  "version": "0.2.16-beta",
+  "build": 31,
+  "shell_sha256": "69e89ae4a44d78d7f54906baf589b5c45b1478a97b54837070606282b0b6d919"
 }
