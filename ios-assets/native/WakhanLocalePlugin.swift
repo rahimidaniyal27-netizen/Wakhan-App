@@ -8,7 +8,8 @@ public class WakhanLocalePlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "WakhanLocale"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "preferred", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "bars", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "bars", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "orientation", returnType: CAPPluginReturnPromise)
     ]
 
     @objc func preferred(_ call: CAPPluginCall) {
@@ -23,6 +24,27 @@ public class WakhanLocalePlugin: CAPPlugin, CAPBridgedPlugin {
         DispatchQueue.main.async {
             let vc = self.bridge?.viewController
             (vc?.parent?.view ?? vc?.view)?.backgroundColor = c
+            call.resolve()
+        }
+    }
+
+    /// Full screen film: the app turns to landscape (and back to portrait) for real, so the keyboard turns with it.
+    @objc func orientation(_ call: CAPPluginCall) {
+        let full = call.getBool("fullscreen") ?? false
+        DispatchQueue.main.async {
+            WakhanOrientationState.landscape = full
+            let mask: UIInterfaceOrientationMask = full ? .landscape : .portrait
+            var root = self.bridge?.viewController
+            while let p = root?.parent { root = p }
+            if #available(iOS 16.0, *) {
+                root?.setNeedsUpdateOfSupportedInterfaceOrientations()
+                if let scene = root?.view.window?.windowScene {
+                    scene.requestGeometryUpdate(.iOS(interfaceOrientations: mask)) { _ in }
+                }
+            } else {
+                UIDevice.current.setValue((full ? UIInterfaceOrientation.landscapeRight : .portrait).rawValue, forKey: "orientation")
+                UIViewController.attemptRotationToDeviceOrientation()
+            }
             call.resolve()
         }
     }

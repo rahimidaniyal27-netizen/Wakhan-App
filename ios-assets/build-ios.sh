@@ -15,6 +15,8 @@ set_kv CFBundleDisplayName "Wakhan"
 set_kv NSMicrophoneUsageDescription "Wakhan uses the microphone when you speak in a hall."
 set_kv NSCameraUsageDescription "Wakhan uses the camera when you take a profile photo."
 set_kv NSPhotoLibraryUsageDescription "Wakhan uses your photos when you choose a profile photo."
+# portrait, plus landscape for full-screen films (the app itself decides when)
+for K in UISupportedInterfaceOrientations "UISupportedInterfaceOrientations~ipad"; do $B -c "Delete :$K" "$PL" 2>/dev/null || true; $B -c "Add :$K array" "$PL"; i=0; for O in UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight; do $B -c "Add :$K:$i string $O" "$PL"; i=$((i+1)); done; done
 $B -c "Delete :UIBackgroundModes" "$PL" 2>/dev/null || true
 $B -c "Add :UIBackgroundModes array" "$PL" && $B -c "Add :UIBackgroundModes:0 string audio" "$PL"
 # app icon (single 1024 image, Xcode makes the rest)

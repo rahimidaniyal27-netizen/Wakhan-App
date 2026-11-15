@@ -33,11 +33,16 @@
     "help-center",
     "badges",
     "no-frames",
-    "salon-list"
+    "salon-list",
+    "salon-room",
+    "salon-queue",
+    "wakhan-archive",
+    "salon-profile",
+    "salon-minimize"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.16-beta",
-  "build": 31,
-  "shell_sha256": "69e89ae4a44d78d7f54906baf589b5c45b1478a97b54837070606282b0b6d919"
+  "version": "0.2.17-beta",
+  "build": 32,
+  "shell_sha256": "d440a00b5401eb554be35388007526acb020adab468420ca0725378589be65e0"
 }

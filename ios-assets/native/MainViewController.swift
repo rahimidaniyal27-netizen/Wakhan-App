@@ -11,6 +11,9 @@ class WakhanBridgeViewController: CAPBridgeViewController {
     }
 }
 
+/// Portrait everywhere; landscape only while a film is full screen.
+enum WakhanOrientationState { static var landscape = false }
+
 class MainViewController: UIViewController {
     private let child = WakhanBridgeViewController()
 
@@ -31,6 +34,8 @@ class MainViewController: UIViewController {
         child.didMove(toParent: self)
     }
 
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask { WakhanOrientationState.landscape ? .landscape : .portrait }
+    override var shouldAutorotate: Bool { true }
     override var childForStatusBarStyle: UIViewController? { child }
     override var childForStatusBarHidden: UIViewController? { child }
 }
