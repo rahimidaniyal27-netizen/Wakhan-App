@@ -38,11 +38,13 @@
     "salon-queue",
     "wakhan-archive",
     "salon-profile",
-    "salon-minimize"
+    "salon-minimize",
+    "salon-close-screen",
+    "salon-chat-fresh"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.17-beta",
-  "build": 32,
-  "shell_sha256": "d440a00b5401eb554be35388007526acb020adab468420ca0725378589be65e0"
+  "version": "0.2.18-beta",
+  "build": 33,
+  "shell_sha256": "0719a4c841ae7e6dd93e3320c48bf4a3599f8aaa418b3781e67e695dd93be1ff"
 }
