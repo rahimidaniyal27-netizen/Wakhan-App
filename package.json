@@ -1,6 +1,6 @@
 {
   "name": "wakhan-standalone",
-  "version": "0.2.27-beta",
+  "version": "0.2.28-beta",
   "description": "Wakhan independent iOS and Android client",
   "main": "index.js",
   "scripts": {

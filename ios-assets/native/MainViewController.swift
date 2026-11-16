@@ -49,6 +49,26 @@ class MainViewController: UIViewController {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         nc.addObserver(self, selector: #selector(keyboardFrame(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        nc.addObserver(self, selector: #selector(keyboardGone(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+        // Nothing of the page is ever drawn behind the clock or the home bar, even for a moment.
+        web.clipsToBounds = true
+        child.webView?.clipsToBounds = true
+        child.webView?.scrollView.clipsToBounds = true
+    }
+
+    /// iPhone pushes the whole page up to show a text field, and with «resize: none» it does not always bring it back when the
+    /// keyboard closes: the next pages then sit under the clock. The page's position from before the keyboard is kept and put
+    /// back exactly when the keyboard has gone.
+    private var beforeKeyboard: CGPoint?
+    private func restoreScroll(animated: Bool) {
+        guard let sv = child.webView?.scrollView, let p = beforeKeyboard else { return }
+        let maxY = max(0, sv.contentSize.height - sv.bounds.height)
+        let target = CGPoint(x: p.x, y: min(max(0, p.y), maxY))
+        if abs(sv.contentOffset.y - target.y) > 0.5 || abs(sv.contentOffset.x - target.x) > 0.5 { sv.setContentOffset(target, animated: animated) }
+    }
+    @objc private func keyboardGone(_ note: Notification) {
+        restoreScroll(animated: false)
+        beforeKeyboard = nil
     }
 
     @objc private func keyboardFrame(_ note: Notification) {
@@ -62,6 +82,8 @@ class MainViewController: UIViewController {
             let page = web.convert(web.bounds, to: win)
             if kb.height > 0 && kb.minY < win.bounds.maxY { overlap = max(0, page.maxY - kb.minY) }
         }
+        if overlap > 0 && beforeKeyboard == nil { beforeKeyboard = web.scrollView.contentOffset }
+        if note.name == UIResponder.keyboardWillHideNotification || overlap == 0 { restoreScroll(animated: true) }
         let js = "window.dispatchEvent(new CustomEvent('wakhanKeyboardFrame',{detail:{overlap:\(Double(overlap)),duration:\(duration),curve:\(curve)}}))"
         web.evaluateJavaScript(js, completionHandler: nil)
     }
