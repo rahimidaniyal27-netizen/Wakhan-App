@@ -50,7 +50,7 @@
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.21-beta",
-  "build": 36,
-  "shell_sha256": "840f4e109446bc4e95ef7460afb8ad3fbed1befcab8361fa86a9e156eee1e283"
+  "version": "0.2.22-beta",
+  "build": 37,
+  "shell_sha256": "e43ae48b01c19921a4c51ee5ce8b1c7638d63f5810423267d42036ebb22dfd32"
 }
