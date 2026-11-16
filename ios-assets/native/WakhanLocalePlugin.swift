@@ -9,7 +9,8 @@ public class WakhanLocalePlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "preferred", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "bars", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "orientation", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "orientation", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "edge", returnType: CAPPluginReturnPromise)
     ]
 
     @objc func preferred(_ call: CAPPluginCall) {
@@ -45,6 +46,16 @@ public class WakhanLocalePlugin: CAPPlugin, CAPBridgedPlugin {
                 UIDevice.current.setValue((full ? UIInterfaceOrientation.landscapeRight : .portrait).rawValue, forKey: "orientation")
                 UIViewController.attemptRotationToDeviceOrientation()
             }
+            call.resolve()
+        }
+    }
+
+    /// Cinema and salon screens are drawn to the very edges of the screen (behind the clock and the home bar);
+    /// every other page stays inside the visible part, as before.
+    @objc func edge(_ call: CAPPluginCall) {
+        let full = call.getBool("full") ?? false
+        DispatchQueue.main.async {
+            MainViewController.current?.setEdge(full)
             call.resolve()
         }
     }

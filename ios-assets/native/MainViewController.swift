@@ -15,7 +15,11 @@ class WakhanBridgeViewController: CAPBridgeViewController {
 enum WakhanOrientationState { static var landscape = false }
 
 class MainViewController: UIViewController {
+    static weak var current: MainViewController?
     private let child = WakhanBridgeViewController()
+    private var inside: [NSLayoutConstraint] = []
+    private var edges: [NSLayoutConstraint] = []
+    private var full = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,13 +29,36 @@ class MainViewController: UIViewController {
         web.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(web)
         let g = view.safeAreaLayoutGuide
-        NSLayoutConstraint.activate([
+        inside = [
             web.topAnchor.constraint(equalTo: g.topAnchor),
             web.bottomAnchor.constraint(equalTo: g.bottomAnchor),
             web.leadingAnchor.constraint(equalTo: g.leadingAnchor),
             web.trailingAnchor.constraint(equalTo: g.trailingAnchor)
-        ])
+        ]
+        edges = [
+            web.topAnchor.constraint(equalTo: view.topAnchor),
+            web.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            web.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            web.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ]
+        NSLayoutConstraint.activate(inside)
         child.didMove(toParent: self)
+        MainViewController.current = self
+    }
+
+    /// true: the page fills the whole screen (its own design keeps clear of the clock and the home bar).
+    func setEdge(_ on: Bool) {
+        guard isViewLoaded, on != full else { return }
+        full = on
+        if on {
+            NSLayoutConstraint.deactivate(inside)
+            NSLayoutConstraint.activate(edges)
+        } else {
+            NSLayoutConstraint.deactivate(edges)
+            NSLayoutConstraint.activate(inside)
+        }
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask { WakhanOrientationState.landscape ? .landscape : .portrait }

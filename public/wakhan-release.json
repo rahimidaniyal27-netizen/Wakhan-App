@@ -43,11 +43,14 @@
     "salon-chat-fresh",
     "youtube-wakhan-page",
     "archive-covers",
-    "salon-audience-chat"
+    "salon-audience-chat",
+    "salon-full-screen",
+    "salon-talk-meter",
+    "youtube-tap-start"
   ],
   "device_verified": false,
   "store_ready": false,
-  "version": "0.2.19-beta",
-  "build": 34,
-  "shell_sha256": "21fa1a0cfe8dbd83857c6f65574bc848239d6d5b4170f1d7b28e4590b84f54e9"
+  "version": "0.2.20-beta",
+  "build": 35,
+  "shell_sha256": "855f9f96e8d411322e5d828a71833f6b6a6314a1a75b724bf40964ee73cc278b"
 }
