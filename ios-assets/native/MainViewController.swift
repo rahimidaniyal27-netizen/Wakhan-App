@@ -44,6 +44,26 @@ class MainViewController: UIViewController {
         NSLayoutConstraint.activate(inside)
         child.didMove(toParent: self)
         MainViewController.current = self
+        // The page is not resized for the keyboard (Keyboard resize: none). Instead it is told exactly how much of it the
+        // keyboard covers, with the keyboard's own timing, so message bars can sit right on top of the keyboard.
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(keyboardFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        nc.addObserver(self, selector: #selector(keyboardFrame(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardFrame(_ note: Notification) {
+        guard let web = child.webView, let info = note.userInfo else { return }
+        let end = (info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue ?? .zero
+        let duration = (info[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0.25
+        let curve = (info[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue ?? 7
+        var overlap: CGFloat = 0
+        if note.name != UIResponder.keyboardWillHideNotification, let win = web.window {
+            let kb = win.convert(end, from: nil)
+            let page = web.convert(web.bounds, to: win)
+            if kb.height > 0 && kb.minY < win.bounds.maxY { overlap = max(0, page.maxY - kb.minY) }
+        }
+        let js = "window.dispatchEvent(new CustomEvent('wakhanKeyboardFrame',{detail:{overlap:\(Double(overlap)),duration:\(duration),curve:\(curve)}}))"
+        web.evaluateJavaScript(js, completionHandler: nil)
     }
 
     /// true: the page fills the whole screen (its own design keeps clear of the clock and the home bar).
