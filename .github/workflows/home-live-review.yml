@@ -1,0 +1,21 @@
+name: Package read-only Home review tool
+on:
+  push:
+    branches: [codex/home-0237]
+    paths: [.github/workflows/home-live-review.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review-tool:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate the review tool without executing it
+        run: python3 -m py_compile review-tools/collect-home-live.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-Home-Live-Review-Tool
+          path: review-tools/collect-home-live.py
+          if-no-files-found: error
+          retention-days: 7
