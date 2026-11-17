@@ -1,0 +1,80 @@
+name: Package Wakhan Home 0.2.35
+on:
+  push:
+    branches: [codex/home-0235]
+    paths: [.github/workflows/home-0235-delivery.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.35-build50
+          run-id: 44141336700
+          github-token: ${{ github.token }}
+          path: ios235
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.35-build50-unsigned
+          run-id: 44141542089
+          github-token: ${{ github.token }}
+          path: android235
+      - name: Assemble verified source and both native platforms
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,shutil,zipfile,plistlib
+          from pathlib import Path
+          out=Path('release235');out.mkdir()
+          items={
+            'Wakhan-0.2.35-beta.ipa':Path('ios235/Wakhan-0.2.35-beta.ipa'),
+            'ios-build-result.json':Path('ios235/ios-build-result.json'),
+            'app-release-unsigned.apk':Path('android235/android/app/build/outputs/apk/release/app-release-unsigned.apk'),
+            'app-release.aab':Path('android235/android/app/build/outputs/bundle/release/app-release.aab'),
+            'android-build-result.json':Path('android235/android-build-result.json'),
+            'Wakhan-0.2.35-source.zip':Path('home0235/Wakhan-0.2.35-source.zip'),
+            'sign-and-publish.py':Path('delivery0235/sign-and-publish.py'),
+            'base0234.json':Path('delivery0235/base0234.json')
+          }
+          for name,path in items.items():shutil.copyfile(path,out/name)
+          assert hashlib.sha256((out/'Wakhan-0.2.35-source.zip').read_bytes()).hexdigest()=='97561a69975c048687c048a5bd4be10b2f75c973e582642af34ac0910f5df5a0'
+          android=json.loads((out/'android-build-result.json').read_text())
+          ios=json.loads((out/'ios-build-result.json').read_text())
+          assert hashlib.sha256((out/'app-release-unsigned.apk').read_bytes()).hexdigest()==android['apk_sha256']
+          assert hashlib.sha256((out/'app-release.aab').read_bytes()).hexdigest()==android['aab_sha256']
+          assert hashlib.sha256((out/'Wakhan-0.2.35-beta.ipa').read_bytes()).hexdigest()==ios['sha256']
+          assert android['version']==ios['version']=='0.2.35-beta' and android['build']==ios['build']==50
+          with zipfile.ZipFile(out/'Wakhan-0.2.35-source.zip') as z:
+              source=z.read('project/public/wakhan-shell.json')
+              current_home=z.read('project/public/home-ui/src/home.js')
+              current_css=z.read('project/public/home-ui/src/native-home.css')
+          assert hashlib.sha256(source).hexdigest()=='6aa00eb8134dffd47e394005be1b50d2d8087aef0960d41d9dae5a96fa72a30d'
+          with zipfile.ZipFile(out/'app-release-unsigned.apk') as z:
+              assert z.testzip() is None
+              assert z.read('assets/public/wakhan-shell.json')==source
+              assert z.read('assets/public/home-ui/src/home.js')==current_home
+              assert z.read('assets/public/home-ui/src/native-home.css')==current_css
+          with zipfile.ZipFile(out/'Wakhan-0.2.35-beta.ipa') as z:
+              assert z.testzip() is None
+              info=next(n for n in z.namelist() if n.endswith('.app/Info.plist') and n.count('/')==2)
+              v=plistlib.loads(z.read(info));base=info.rsplit('/',1)[0]
+              assert v['CFBundleShortVersionString']=='0.2.35' and str(v['CFBundleVersion'])=='50'
+              assert z.read(base+'/public/wakhan-shell.json')==source
+              assert z.read(base+'/public/home-ui/src/home.js')==current_home
+              assert z.read(base+'/public/home-ui/src/native-home.css')==current_css
+          compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          manifest={'version':'0.2.35-beta','build':50,'base_version':'0.2.34-beta','shell_byte_unchanged':True,'physical_device_verified':False,'android_requires_original_server_key':True,'ios_requires_sideload_signing':True,'sha256':{name:hashlib.sha256((out/name).read_bytes()).hexdigest() for name in items}}
+          (out/'PACKAGE.json').write_text(json.dumps(manifest,indent=2))
+          print(json.dumps(manifest,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.35-Home-iPhone-Android
+          path: release235/
+          if-no-files-found: error
+          retention-days: 14
