@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('games0239/Wakhan-0.2.39-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='4389ad367b93e41baadace0036b9f791e74c55b6d22acf528e494c4246540a47'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='c2fd893ffc5e12878319a01ec5130caf1c33b2ee6fb01e58c5ac471a3b5f41b4'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input239')
@@ -69,7 +69,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: Wakhan-iPhone-0238-build-log
+          name: Wakhan-iPhone-0239-build-log
           path: /tmp/xb.log
           if-no-files-found: ignore
   android:
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('games0239/Wakhan-0.2.39-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='4389ad367b93e41baadace0036b9f791e74c55b6d22acf528e494c4246540a47'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='c2fd893ffc5e12878319a01ec5130caf1c33b2ee6fb01e58c5ac471a3b5f41b4'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input239')
@@ -151,7 +151,7 @@ jobs:
           import zipfile,hashlib,json
           from pathlib import Path
           p=Path('games0239/Wakhan-0.2.39-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='4389ad367b93e41baadace0036b9f791e74c55b6d22acf528e494c4246540a47'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='c2fd893ffc5e12878319a01ec5130caf1c33b2ee6fb01e58c5ac471a3b5f41b4'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('rules239')
