@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('home0237/Wakhan-0.2.37-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='6fb1ef1c5289a209ce207b9a9a22d6abfb8192008a11715c95abafaa1ac7251d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='43766e996a6bf3973e86420379c7eee1da632edc2206e95cdd67982c76139884'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input237')
@@ -79,7 +79,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('home0237/Wakhan-0.2.37-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='6fb1ef1c5289a209ce207b9a9a22d6abfb8192008a11715c95abafaa1ac7251d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='43766e996a6bf3973e86420379c7eee1da632edc2206e95cdd67982c76139884'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input237')
@@ -157,7 +157,7 @@ jobs:
             'base0236.json':Path('delivery0237/base0236.json')
           }
           for name,path in items.items():shutil.copyfile(path,out/name)
-          assert hashlib.sha256((out/'Wakhan-0.2.37-source.zip').read_bytes()).hexdigest()=='6fb1ef1c5289a209ce207b9a9a22d6abfb8192008a11715c95abafaa1ac7251d'
+          assert hashlib.sha256((out/'Wakhan-0.2.37-source.zip').read_bytes()).hexdigest()=='43766e996a6bf3973e86420379c7eee1da632edc2206e95cdd67982c76139884'
           android=json.loads((out/'android-build-result.json').read_text())
           ios=json.loads((out/'ios-build-result.json').read_text())
           assert hashlib.sha256((out/'app-release-unsigned.apk').read_bytes()).hexdigest()==android['apk_sha256']
