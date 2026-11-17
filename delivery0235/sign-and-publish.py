@@ -211,6 +211,7 @@ BUILD = 50
 CERTIFICATE = 'eb3eab7d1e1b109187295ebe26e36d7ec4e260c12810f74c2c8114be8dbee1b4'
 SHELL = '6aa00eb8134dffd47e394005be1b50d2d8087aef0960d41d9dae5a96fa72a30d'
 SOURCE = Path('/opt/wakhan-android/wakhan-beta234-home-20261117-164104-y_yf9_fe/project')
+STATE = Path('/root/wakhan-0235-state.json')
 PATCHES = ['android/app/build.gradle', 'package-lock.json', 'package.json',
            'public/home-ui/src/home.js', 'public/home-ui/src/native-home.css',
            'public/home-ui/assets/wakhan-coin-mark.svg', 'public/wakhan-release.json',
@@ -251,6 +252,17 @@ def execute(directory, report):
         path = directory / name
         require(not path.is_symlink() and path.resolve().is_relative_to(directory.resolve())
                 and sha(path) == digest, 'PACKAGE_FILE_CHANGED')
+    saved_state = STATE
+    if saved_state.exists():
+        require(not saved_state.is_symlink(), 'STATE_PATH_INVALID')
+        saved = json.loads(saved_state.read_text())
+        require(saved.get('package_sha256') == sha(directory / 'PACKAGE.json'), 'PREVIOUS_PACKAGE_DIFFERS')
+        for field, digest in [('signed_apk', 'apk_sha256'), ('signed_aab', 'aab_sha256'), ('published_path', 'apk_sha256')]:
+            path = Path(saved[field])
+            require(not path.is_symlink() and path.is_file() and sha(path) == saved[digest], 'PREVIOUS_OUTPUT_CHANGED')
+        report.update(saved)
+        print('ALREADY_COMPLETED_AND_VERIFIED', flush=True)
+        return
     baseline = json.loads((directory / 'base0234.json').read_text())
     require(not SOURCE.is_symlink() and SOURCE.is_dir(), 'CURRENT_0234_SOURCE_MISSING')
     for name, digest in baseline.items():
@@ -338,7 +350,22 @@ def execute(directory, report):
                   signed_apk='/root/Wakhan-0.2.35-beta-test.apk', apk_sha256=sha(signed),
                   signed_aab='/root/Wakhan-0.2.35-beta-release.aab', aab_sha256=sha(bundle),
                   source_project=str(stage), download_published=True, previous_apk_retained=True,
-                  services_changed=False, database_changed=False, physical_device_verified=False)
+                  services_changed=False, database_changed=False, physical_device_verified=False,
+                  published_path=str(target), package_sha256=sha(directory / 'PACKAGE.json'))
+    fd, temporary = tempfile.mkstemp(prefix='.wakhan-0235-state-', dir='/root')
+    try:
+        with os.fdopen(fd, 'w') as out:
+            json.dump(report, out, indent=2)
+            out.flush()
+            os.fsync(out.fileno())
+        os.replace(temporary, saved_state)
+    except BaseException:
+        copy_atomic(backup, target)
+        report['ok'] = False
+        report['download_rolled_back'] = True
+        raise
+    finally:
+        Path(temporary).unlink(missing_ok=True)
 
 if __name__ == '__main__':
     report = {'ok': False, 'services_changed': False, 'database_changed': False}
@@ -348,6 +375,7 @@ if __name__ == '__main__':
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         execute(Path(__file__).resolve().parent, report)
     except Exception as error:
+        report['ok'] = False
         report['error'] = str(error) if isinstance(error, RuntimeError) else type(error).__name__
         print('STOP:', report['error'], flush=True)
     finally:
