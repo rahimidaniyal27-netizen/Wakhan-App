@@ -1,0 +1,194 @@
+name: Wakhan Home 0.2.36
+on:
+  push:
+    branches: [codex/home-0236]
+    paths: [.github/workflows/home-0236.yml, home0236/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: home-0236-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify current source and unpack
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          p=Path('home0236/Wakhan-0.2.36-source.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='d07f330c7868cb95308e8cbd91ec48de2c4e0ca706105648a3b2983c47a01c5e'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              z.extractall('input236')
+          m=json.loads(Path('input236/source-verification.json').read_text())
+          for name,digest in m['source_sha256'].items():
+              assert hashlib.sha256((Path('input236/project')/name).read_bytes()).hexdigest()==digest,name
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build current iPhone client
+        working-directory: input236/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          bash ios-assets/build-ios.sh
+          python3 - <<'PY'
+          import hashlib,json,plistlib,zipfile
+          from pathlib import Path
+          p=Path('Wakhan-0.2.36-beta.ipa')
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              info=next(n for n in z.namelist() if n.count('/')==2 and n.endswith('.app/Info.plist'))
+              v=plistlib.loads(z.read(info))
+              assert v['CFBundleIdentifier']=='app.wakhan.music'
+              assert v['CFBundleShortVersionString']=='0.2.36' and str(v['CFBundleVersion'])=='51'
+              base=info.rsplit('/',1)[0]
+              assert hashlib.sha256(z.read(base+'/public/wakhan-shell.json')).hexdigest()=='6aa00eb8134dffd47e394005be1b50d2d8087aef0960d41d9dae5a96fa72a30d'
+              assert 'hc-wallet-coin-turn 3s' in z.read(base+'/public/home-ui/src/native-home.css').decode()
+          Path('ios-build-result.json').write_text(json.dumps({'version':'0.2.36-beta','build':51,'signed':False,'installation':'Sideloadly','device_verified':False,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.36-build51
+          path: |
+            input236/project/Wakhan-0.2.36-beta.ipa
+            input236/project/ios-build-result.json
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: Wakhan-iPhone-0236-build-log
+          path: /tmp/xb.log
+          if-no-files-found: ignore
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify current source and unpack
+        run: |
+          python3 - <<'PY'
+          import hashlib,zipfile
+          from pathlib import Path
+          p=Path('home0236/Wakhan-0.2.36-source.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='d07f330c7868cb95308e8cbd91ec48de2c4e0ca706105648a3b2983c47a01c5e'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              z.extractall('input236')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          log-accepted-android-sdk-licenses: false
+      - name: Build Android without exporting the owner's signing key
+        working-directory: input236/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          npm run build
+          npx cap sync android
+          gradle -p android --no-daemon :app:assembleRelease :app:bundleRelease -q
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          apk=Path('android/app/build/outputs/apk/release/app-release-unsigned.apk')
+          aab=Path('android/app/build/outputs/bundle/release/app-release.aab')
+          with zipfile.ZipFile(apk) as z:
+              assert z.testzip() is None
+              assert hashlib.sha256(z.read('assets/public/wakhan-shell.json')).hexdigest()=='6aa00eb8134dffd47e394005be1b50d2d8087aef0960d41d9dae5a96fa72a30d'
+          Path('android-build-result.json').write_text(json.dumps({'version':'0.2.36-beta','build':51,'signed':False,'needs_original_server_signing':True,'device_verified':False,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),'aab_sha256':hashlib.sha256(aab.read_bytes()).hexdigest()},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.36-build51-unsigned
+          path: |
+            input236/project/android/app/build/outputs/apk/release/app-release-unsigned.apk
+            input236/project/android/app/build/outputs/bundle/release/app-release.aab
+            input236/project/android-build-result.json
+          if-no-files-found: error
+          retention-days: 14
+
+  delivery:
+    needs: [ios, android]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.36-build51
+          path: ios236
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.36-build51-unsigned
+          path: android236
+      - name: Assemble verified source and both native platforms
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,shutil,zipfile,plistlib
+          from pathlib import Path
+          out=Path('release236');out.mkdir()
+          items={
+            'Wakhan-0.2.36-beta.ipa':Path('ios236/Wakhan-0.2.36-beta.ipa'),
+            'ios-build-result.json':Path('ios236/ios-build-result.json'),
+            'app-release-unsigned.apk':Path('android236/android/app/build/outputs/apk/release/app-release-unsigned.apk'),
+            'app-release.aab':Path('android236/android/app/build/outputs/bundle/release/app-release.aab'),
+            'android-build-result.json':Path('android236/android-build-result.json'),
+            'Wakhan-0.2.36-source.zip':Path('home0236/Wakhan-0.2.36-source.zip'),
+            'sign-and-publish.py':Path('delivery0236/sign-and-publish.py'),
+            'base0234.json':Path('delivery0235/base0234.json')
+          }
+          for name,path in items.items():shutil.copyfile(path,out/name)
+          assert hashlib.sha256((out/'Wakhan-0.2.36-source.zip').read_bytes()).hexdigest()=='d07f330c7868cb95308e8cbd91ec48de2c4e0ca706105648a3b2983c47a01c5e'
+          android=json.loads((out/'android-build-result.json').read_text())
+          ios=json.loads((out/'ios-build-result.json').read_text())
+          assert hashlib.sha256((out/'app-release-unsigned.apk').read_bytes()).hexdigest()==android['apk_sha256']
+          assert hashlib.sha256((out/'app-release.aab').read_bytes()).hexdigest()==android['aab_sha256']
+          assert hashlib.sha256((out/'Wakhan-0.2.36-beta.ipa').read_bytes()).hexdigest()==ios['sha256']
+          assert android['version']==ios['version']=='0.2.36-beta' and android['build']==ios['build']==51
+          with zipfile.ZipFile(out/'Wakhan-0.2.36-source.zip') as z:
+              source=z.read('project/public/wakhan-shell.json')
+              current_home=z.read('project/public/home-ui/src/home.js')
+              current_css=z.read('project/public/home-ui/src/native-home.css')
+          assert hashlib.sha256(source).hexdigest()=='6aa00eb8134dffd47e394005be1b50d2d8087aef0960d41d9dae5a96fa72a30d'
+          with zipfile.ZipFile(out/'app-release-unsigned.apk') as z:
+              assert z.testzip() is None
+              assert z.read('assets/public/wakhan-shell.json')==source
+              assert z.read('assets/public/home-ui/src/home.js')==current_home
+              assert z.read('assets/public/home-ui/src/native-home.css')==current_css
+          with zipfile.ZipFile(out/'Wakhan-0.2.36-beta.ipa') as z:
+              assert z.testzip() is None
+              info=next(n for n in z.namelist() if n.endswith('.app/Info.plist') and n.count('/')==2)
+              v=plistlib.loads(z.read(info));base=info.rsplit('/',1)[0]
+              assert v['CFBundleShortVersionString']=='0.2.36' and str(v['CFBundleVersion'])=='51'
+              assert z.read(base+'/public/wakhan-shell.json')==source
+              assert z.read(base+'/public/home-ui/src/home.js')==current_home
+              assert z.read(base+'/public/home-ui/src/native-home.css')==current_css
+          compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          manifest={'version':'0.2.36-beta','build':51,'base_version':'0.2.34-beta','shell_byte_unchanged':True,'physical_device_verified':False,'android_requires_original_server_key':True,'ios_requires_sideload_signing':True,'sha256':{name:hashlib.sha256((out/name).read_bytes()).hexdigest() for name in items}}
+          (out/'PACKAGE.json').write_text(json.dumps(manifest,indent=2))
+          print(json.dumps(manifest,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.36-Home-iPhone-Android
+          path: release236/
+          if-no-files-found: error
+          retention-days: 14
