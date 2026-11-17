@@ -1,0 +1,57 @@
+name: Wakhan 0.2.39 verified combined delivery
+on:
+  push:
+    branches: [codex/games-0239]
+    paths: [.github/workflows/delivery-0239.yml, delivery0239/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.39-build54
+          path: ios239
+          run-id: 44185571478
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.39-build54-unsigned
+          path: android239
+          run-id: 44185571478
+          github-token: ${{ github.token }}
+      - name: Assemble and independently verify the delivery
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,shutil,subprocess,sys,zipfile
+          from pathlib import Path
+          out=Path('release239');out.mkdir()
+          inp=Path('delivery0239/delivery-input.zip')
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='b67215a5f7412e33e98fd8adfa18438c93ca12e780495b5a1270d1d4959f0c04'
+          with zipfile.ZipFile(inp) as z:
+              assert z.testzip() is None
+              z.extractall(out)
+          for name,folder in [('Wakhan-0.2.39-beta.ipa','ios239'),('app-release-unsigned.apk','android239'),('app-release.aab','android239')]:
+              paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
+              shutil.copy2(paths[0],out/name)
+          shutil.copy2('games0239/Wakhan-0.2.39-source.zip',out/'Wakhan-0.2.39-source.zip')
+          assert hashlib.sha256((out/'Wakhan-0.2.39-source.zip').read_bytes()).hexdigest()=='c2fd893ffc5e12878319a01ec5130caf1c33b2ee6fb01e58c5ac471a3b5f41b4'
+          subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
+          manifest=json.loads((out/'PACKAGE.json').read_text())
+          assert manifest['version']=='0.2.39-beta' and manifest['build']==54 and manifest['server_update_required']
+          for name,digest in manifest['sha256'].items():
+              assert hashlib.sha256((out/name).read_bytes()).hexdigest()==digest,name
+          compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          print('VERIFIED: original build53 baseline, source archive, both build54 native packages, guarded installer and all review evidence')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.39-iPhone-Android
+          path: release239/
+          if-no-files-found: error
+          retention-days: 14
