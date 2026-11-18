@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('music0243/Wakhan-0.2.43-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='6586ffea6532eb54be2de77bc4e10eb388250694f218abafaf57ffc15e17387d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='51688a2261b1cab21c28687d362816b42fbd24e74c57b2e635765fe51f9c6d8d'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input243')
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('music0243/Wakhan-0.2.43-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='6586ffea6532eb54be2de77bc4e10eb388250694f218abafaf57ffc15e17387d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='51688a2261b1cab21c28687d362816b42fbd24e74c57b2e635765fe51f9c6d8d'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input243')
@@ -154,7 +154,7 @@ jobs:
           import zipfile,hashlib
           from pathlib import Path
           p=Path('music0243/Wakhan-0.2.43-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='6586ffea6532eb54be2de77bc4e10eb388250694f218abafaf57ffc15e17387d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='51688a2261b1cab21c28687d362816b42fbd24e74c57b2e635765fe51f9c6d8d'
           with zipfile.ZipFile(p) as z:z.extractall('boot243')
           PY
       - name: Install browser engines
