@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='c07525d045f8aa90d59655d10d77d1771a0d3a4b3b7d8a159e396747c2f49340'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='c07525d045f8aa90d59655d10d77d1771a0d3a4b3b7d8a159e396747c2f49340'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -98,6 +98,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.14.3
+          cache-read-only: false
       - uses: android-actions/setup-android@v3
         with:
           packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
@@ -154,7 +155,7 @@ jobs:
           import zipfile,hashlib,json
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='c07525d045f8aa90d59655d10d77d1771a0d3a4b3b7d8a159e396747c2f49340'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('rules240')
