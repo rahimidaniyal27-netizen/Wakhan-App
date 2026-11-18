@@ -1,0 +1,72 @@
+name: Wakhan startup, salon and music 0.2.41 verified delivery
+on:
+  push:
+    branches: [codex/startup-0241]
+    paths: [.github/workflows/delivery-0241.yml, delivery0241/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.41-build56
+          path: ios241
+          run-id: 44277934633
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.41-build56-unsigned
+          path: android241
+          run-id: 44277934633
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-bootstrap-0.2.41-build56
+          path: bootstrap241
+          run-id: 44277934633
+          github-token: ${{ github.token }}
+      - name: Assemble and verify source, native assets and guarded installer
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,shutil,subprocess,sys,zipfile
+          from pathlib import Path
+          out=Path('release241');out.mkdir()
+          inp=Path('delivery0241/delivery-input.zip')
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='ce1cc6725df3ee5819f609c226f494998e1bd8c99ccae6b90142f23acf974f67'
+          with zipfile.ZipFile(inp) as z:
+              assert z.testzip() is None
+              z.extractall(out)
+          for name,folder in [('Wakhan-0.2.41-beta.ipa','ios241'),('app-release-unsigned.apk','android241'),('app-release.aab','android241')]:
+              paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
+              shutil.copy2(paths[0],out/name)
+          shutil.copy2('startup0241/Wakhan-0.2.41-source.zip',out/'Wakhan-0.2.41-source.zip')
+          assert hashlib.sha256((out/'Wakhan-0.2.41-source.zip').read_bytes()).hexdigest()=='5b90e1f303eb53abad5ebdca66fff9036fc146a3a7c276578d8edcdc03aa636a'
+          subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
+          compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          evidence=list(Path('bootstrap241').rglob('bootstrap-results.json'));assert len(evidence)==1
+          browser=json.loads(evidence[0].read_text());assert {x['engine'] for x in browser}=={'chromium','webkit'}
+          assert all(x['full_bootstrap'] and x['intro_removed'] and x['no_mutation_loop'] and not x['errors'] and x['room']['media']['fifo'] and x['room']['media']['empty_queue_repeats'] for x in browser)
+          shutil.copy2(evidence[0],out/'review/ci-bootstrap-results.json')
+          for image in Path('bootstrap241').rglob('*.png'):shutil.copy2(image,out/'review'/('ci-'+image.name))
+
+          with zipfile.ZipFile(out/'Wakhan-0.2.41-source.zip') as z:assert z.read('source-verification.json')==(out/'source-verification.json').read_bytes()
+          source=json.loads((out/'source-verification.json').read_text())
+          assert source['version']=='0.2.41-beta' and source['build']==56
+          manifest=dict(version='0.2.41-beta',build=56,server_update_required=False,physical_device_verified=False,installer_revision='0241-current040-client-only-preserve-local-build-files',base_version='0.2.40-beta',base_build=55,build_run=44277934633,source_commit='8673e60de8a152c9278b69497ac4ea4f02b63d1e',sha256={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='PACKAGE.json'})
+          (out/'PACKAGE.json').write_text(json.dumps(manifest,indent=2))
+          for name,digest in manifest['sha256'].items():
+              assert hashlib.sha256((out/name).read_bytes()).hexdigest()==digest,name
+          print('VERIFIED build56: exact reviewed public assets, native download plugins, current build55 baseline, guarded signer and installer.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.41-iPhone-Android
+          path: release241/
+          if-no-files-found: error
+          retention-days: 14
