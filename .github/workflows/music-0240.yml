@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ec42636926aeea855719a46407e4fce6393ff1cbf048e043747a74024fdd82a5'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -50,7 +50,7 @@ jobs:
               assert v['CFBundleShortVersionString']=='0.2.40' and str(v['CFBundleVersion'])=='55'
               base=info.rsplit('/',1)[0]
               assert b'safeArea:' in z.read(base+'/'+v['CFBundleExecutable']), 'Native safe-area bridge missing'
-              assert hashlib.sha256(z.read(base+'/public/wakhan-shell.json')).hexdigest()=='7b72dbd067a966fc2183eb4d96e2c902890e25f66148cf917f6c19f7439afda0'
+              assert hashlib.sha256(z.read(base+'/public/wakhan-shell.json')).hexdigest()=='4ad752a593ffa76c215449eab89441cc2727fa1d72f0e6945487030184d0b9e7'
               assert 'hc-wallet-coin-turn 3s' in z.read(base+'/public/home-ui/src/native-home.css').decode()
               js=b''.join(z.read(n) for n in z.namelist() if n.startswith(base+'/public/assets/index-') and n.endswith('.js'))
               for filename in ('app.js','bridge.js','voice.js','renderers/world.js','renderers/cards.js','renderers/ludo.js','renderers/chess.js'):
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ec42636926aeea855719a46407e4fce6393ff1cbf048e043747a74024fdd82a5'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -123,7 +123,7 @@ jobs:
               js=b''.join(z.read(n) for n in z.namelist() if n.startswith('assets/public/assets/index-') and n.endswith('.js'))
               assert b'wk-shared-nav' in js and b'/api/app/home/rankings' in js and b'wakhan-games-v1' in js and b'wakhan-music-v1' in js
               assert z.read('assets/public/games-ui/renderers/world.js')==Path('public/games-ui/renderers/world.js').read_bytes()
-              assert hashlib.sha256(z.read('assets/public/wakhan-shell.json')).hexdigest()=='7b72dbd067a966fc2183eb4d96e2c902890e25f66148cf917f6c19f7439afda0'
+              assert hashlib.sha256(z.read('assets/public/wakhan-shell.json')).hexdigest()=='4ad752a593ffa76c215449eab89441cc2727fa1d72f0e6945487030184d0b9e7'
           Path('android-build-result.json').write_text(json.dumps({'version':'0.2.40-beta','build':55,'signed':False,'needs_original_server_signing':True,'device_verified':False,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),'aab_sha256':hashlib.sha256(aab.read_bytes()).hexdigest()},indent=2))
           PY
       - uses: actions/upload-artifact@v4
@@ -154,7 +154,7 @@ jobs:
           import zipfile,hashlib,json
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ec42636926aeea855719a46407e4fce6393ff1cbf048e043747a74024fdd82a5'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('rules240')
