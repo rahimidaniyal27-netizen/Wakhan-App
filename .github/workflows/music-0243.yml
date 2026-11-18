@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('music0243/Wakhan-0.2.43-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='51688a2261b1cab21c28687d362816b42fbd24e74c57b2e635765fe51f9c6d8d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ef3db7e3677eb5a411b9ad502acc1b8515e81f4e82c86ba5fc0cd04f8928c1bd'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input243')
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('music0243/Wakhan-0.2.43-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='51688a2261b1cab21c28687d362816b42fbd24e74c57b2e635765fe51f9c6d8d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ef3db7e3677eb5a411b9ad502acc1b8515e81f4e82c86ba5fc0cd04f8928c1bd'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input243')
@@ -138,29 +138,26 @@ jobs:
           retention-days: 14
 
   bootstrap:
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
+    runs-on: ubuntu-24.04
+    container: mcr.microsoft.com/playwright/python:v1.62.0-noble
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
       - name: Unpack exact candidate
         run: |
           python - <<'PY'
           import zipfile,hashlib
           from pathlib import Path
           p=Path('music0243/Wakhan-0.2.43-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='51688a2261b1cab21c28687d362816b42fbd24e74c57b2e635765fe51f9c6d8d'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ef3db7e3677eb5a411b9ad502acc1b8515e81f4e82c86ba5fc0cd04f8928c1bd'
           with zipfile.ZipFile(p) as z:z.extractall('boot243')
           PY
       - name: Install browser engines
         run: |
           python -m pip install aiohttp playwright==1.62.0 --quiet
-          python -m playwright install --with-deps chromium webkit
       - name: Exercise real native bootstrap on Chrome and WebKit
         run: |
           cd boot243/project
