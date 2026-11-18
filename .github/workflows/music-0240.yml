@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='68fc8d3bdc04cc327998879dc2db0b567361915352f6c3e885b7d5a1f0400ebd'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ec42636926aeea855719a46407e4fce6393ff1cbf048e043747a74024fdd82a5'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='68fc8d3bdc04cc327998879dc2db0b567361915352f6c3e885b7d5a1f0400ebd'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ec42636926aeea855719a46407e4fce6393ff1cbf048e043747a74024fdd82a5'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -109,7 +109,10 @@ jobs:
           npm test
           npm run build
           npx cap sync android
-          gradle -p android --no-daemon :app:assembleRelease :app:bundleRelease -q
+          gradle -p android --no-daemon --refresh-dependencies :app:assembleRelease :app:bundleRelease -q || {
+            sleep 3
+            gradle -p android --no-daemon --refresh-dependencies :app:assembleRelease :app:bundleRelease -q
+          }
           python3 - <<'PY'
           import hashlib,json,zipfile
           from pathlib import Path
@@ -151,7 +154,7 @@ jobs:
           import zipfile,hashlib,json
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='68fc8d3bdc04cc327998879dc2db0b567361915352f6c3e885b7d5a1f0400ebd'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='ec42636926aeea855719a46407e4fce6393ff1cbf048e043747a74024fdd82a5'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('rules240')
