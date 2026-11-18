@@ -17,13 +17,13 @@ jobs:
         with:
           name: Wakhan-iPhone-0.2.40-build55
           path: ios240
-          run-id: 44248565773
+          run-id: 44249718331
           github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
           name: Wakhan-Android-0.2.40-build55-unsigned
           path: android240
-          run-id: 44248565773
+          run-id: 44249718331
           github-token: ${{ github.token }}
       - name: Assemble and verify source, native assets and guarded installer
         run: |
@@ -32,7 +32,7 @@ jobs:
           from pathlib import Path
           out=Path('release240');out.mkdir()
           inp=Path('delivery0240/delivery-input.zip')
-          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='0ce0d23bef3533ea40d0f6a249bff0199aadee00b4323176169d9e8486c618e2'
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='5fee00ed6d409e5547446f22fb57ac5b07214ca95f32ce29e0b1cd0c87bc833d'
           with zipfile.ZipFile(inp) as z:
               assert z.testzip() is None
               z.extractall(out)
@@ -40,7 +40,7 @@ jobs:
               paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
               shutil.copy2(paths[0],out/name)
           shutil.copy2('music0240/Wakhan-0.2.40-source.zip',out/'Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256((out/'Wakhan-0.2.40-source.zip').read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
+          assert hashlib.sha256((out/'Wakhan-0.2.40-source.zip').read_bytes()).hexdigest()=='c07525d045f8aa90d59655d10d77d1771a0d3a4b3b7d8a159e396747c2f49340'
           subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
           compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
           with zipfile.ZipFile(out/'Wakhan-0.2.40-source.zip') as z:assert z.read('source-verification.json')==(out/'source-verification.json').read_bytes()
