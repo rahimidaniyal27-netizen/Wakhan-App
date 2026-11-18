@@ -17,19 +17,19 @@ jobs:
         with:
           name: Wakhan-iPhone-0.2.43-build58
           path: ios243
-          run-id: 44334063680
+          run-id: 44341367254
           github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
           name: Wakhan-Android-0.2.43-build58-unsigned
           path: android243
-          run-id: 44334063680
+          run-id: 44341367254
           github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
           name: Wakhan-bootstrap-0.2.43-build58
           path: bootstrap243
-          run-id: 44334063680
+          run-id: 44341367254
           github-token: ${{ github.token }}
       - name: Assemble and verify source, native assets and guarded installer
         run: |
@@ -38,7 +38,7 @@ jobs:
           from pathlib import Path
           out=Path('release243');out.mkdir()
           inp=Path('delivery0243/delivery-input.zip')
-          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='5deed85889d9d61cd15d65109a74120b07c0ada647ac8e027fb758c04e0e98e8'
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='92c7313c912712f13b63a2bb9557e749ce0a22b6ad767d6e86d3c0539e035fa1'
           with zipfile.ZipFile(inp) as z:
               assert z.testzip() is None
               z.extractall(out)
@@ -46,7 +46,7 @@ jobs:
               paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
               shutil.copy2(paths[0],out/name)
           shutil.copy2('music0243/Wakhan-0.2.43-source.zip',out/'Wakhan-0.2.43-source.zip')
-          assert hashlib.sha256((out/'Wakhan-0.2.43-source.zip').read_bytes()).hexdigest()=='6586ffea6532eb54be2de77bc4e10eb388250694f218abafaf57ffc15e17387d'
+          assert hashlib.sha256((out/'Wakhan-0.2.43-source.zip').read_bytes()).hexdigest()=='ef3db7e3677eb5a411b9ad502acc1b8515e81f4e82c86ba5fc0cd04f8928c1bd'
           subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
           compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
           evidence=list(Path('bootstrap243').rglob('bootstrap-results.json'));assert len(evidence)==1
@@ -55,13 +55,15 @@ jobs:
           assert all(x['sources']['duplicate_ended_advanced_once'] and x['room']['latest_after_delayed_image'] for x in browser)
           assert all(x['offline']['cold_start_without_server'] and x['offline']['other_account_excluded'] for x in browser)
           assert all(x['sources']['legacy_authenticated_audio'] and x['sources']['no_video_iframe'] and x['sources']['mini_stop_and_close'] and x['changes']['pull_requested_once'] and x['changes']['search_icon_at_right_edge'] for x in browser)
+          assert all(x['navigation']['retained_music_nodes'] and x['navigation']['refresh_independent_of_tab_paint'] and x['navigation']['unchanged_chart_does_not_rebuild'] and x['navigation']['no_full_page_blur_animation'] and x['navigation']['native_insets_reused'] and x['navigation']['native_insets_refresh_on_resize'] for x in browser)
           shutil.copy2(evidence[0],out/'review/ci-bootstrap-results.json')
           for image in Path('bootstrap243').rglob('*.png'):shutil.copy2(image,out/'review'/('ci-'+image.name))
 
           with zipfile.ZipFile(out/'Wakhan-0.2.43-source.zip') as z:assert z.read('source-verification.json')==(out/'source-verification.json').read_bytes()
           source=json.loads((out/'source-verification.json').read_text())
-          assert source['version']=='0.2.43-beta' and source['build']==58
-          manifest=dict(version='0.2.43-beta',build=58,server_update_required=False,physical_device_verified=False,installer_revision='0243-current042-client-only-preserve-local-build-files',base_version='0.2.42-beta',base_build=57,build_run=44334063680,source_commit='2f42911d5f2d836efd4e5d6c5d12980535e0eecb',sha256={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='PACKAGE.json'})
+          assert source['version']=='0.2.43-beta' and source['build']==58 and source['server_update_required'] is True
+          assert {n for n,h in source['backend_package_sha256'].items() if h!=source['previous_backend_package_sha256'][n]}=={'__init__.py'}
+          manifest=dict(version='0.2.43-beta',build=58,server_update_required=True,physical_device_verified=False,installer_revision='0243-current042-media-lease-transaction-preserve-local-build-files',base_version='0.2.42-beta',base_build=57,build_run=44341367254,source_commit='7a94911de81ea3045fc1f57543753c1ba4c0ed15',sha256={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='PACKAGE.json'})
           (out/'PACKAGE.json').write_text(json.dumps(manifest,indent=2))
           for name,digest in manifest['sha256'].items():
               assert hashlib.sha256((out/name).read_bytes()).hexdigest()==digest,name
