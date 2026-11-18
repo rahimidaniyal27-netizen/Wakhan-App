@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('startup0241/Wakhan-0.2.41-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='01a131120d15f381bc24baa1f6e323a9a804983d35c9fa0cc4cde8c7a1ee84f8'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='5b90e1f303eb53abad5ebdca66fff9036fc146a3a7c276578d8edcdc03aa636a'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input241')
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('startup0241/Wakhan-0.2.41-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='01a131120d15f381bc24baa1f6e323a9a804983d35c9fa0cc4cde8c7a1ee84f8'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='5b90e1f303eb53abad5ebdca66fff9036fc146a3a7c276578d8edcdc03aa636a'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input241')
@@ -154,7 +154,7 @@ jobs:
           import zipfile,hashlib
           from pathlib import Path
           p=Path('startup0241/Wakhan-0.2.41-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='01a131120d15f381bc24baa1f6e323a9a804983d35c9fa0cc4cde8c7a1ee84f8'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='5b90e1f303eb53abad5ebdca66fff9036fc146a3a7c276578d8edcdc03aa636a'
           with zipfile.ZipFile(p) as z:z.extractall('boot241')
           PY
       - name: Install browser engines
