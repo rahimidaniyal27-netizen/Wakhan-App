@@ -1,0 +1,59 @@
+name: Wakhan Music 0.2.40 verified delivery
+on:
+  push:
+    branches: [codex/music-0240]
+    paths: [.github/workflows/music-delivery-0240.yml, delivery0240/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.40-build55
+          path: ios240
+          run-id: 44247343528
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.40-build55-unsigned
+          path: android240
+          run-id: 44247343528
+          github-token: ${{ github.token }}
+      - name: Assemble and verify source, native assets and guarded installer
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,shutil,subprocess,sys,zipfile
+          from pathlib import Path
+          out=Path('release240');out.mkdir()
+          inp=Path('delivery0240/delivery-input.zip')
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='0f63e58d1d5e9cd034d2b24e42b74e6f90d47e8f71fdf144ed487422dfcf5925'
+          with zipfile.ZipFile(inp) as z:
+              assert z.testzip() is None
+              z.extractall(out)
+          for name,folder in [('Wakhan-0.2.40-beta.ipa','ios240'),('app-release-unsigned.apk','android240'),('app-release.aab','android240')]:
+              paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
+              shutil.copy2(paths[0],out/name)
+          shutil.copy2('music0240/Wakhan-0.2.40-source.zip',out/'Wakhan-0.2.40-source.zip')
+          assert hashlib.sha256((out/'Wakhan-0.2.40-source.zip').read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
+          subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
+          compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          source=json.loads((out/'source-verification.json').read_text())
+          assert source['version']=='0.2.40-beta' and source['build']==55
+          manifest=dict(version='0.2.40-beta',build=55,server_update_required=True,physical_device_verified=False,installer_revision='0240-current039-preserve-local-build-files',base_version='0.2.39-beta',base_build=54,sha256={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='PACKAGE.json'})
+          (out/'PACKAGE.json').write_text(json.dumps(manifest,indent=2))
+          for name,digest in manifest['sha256'].items():
+              assert hashlib.sha256((out/name).read_bytes()).hexdigest()==digest,name
+          print('VERIFIED build55: exact reviewed public assets, native download plugins, current build54 baseline, guarded signer and installer.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.40-iPhone-Android
+          path: release240/
+          if-no-files-found: error
+          retention-days: 14
