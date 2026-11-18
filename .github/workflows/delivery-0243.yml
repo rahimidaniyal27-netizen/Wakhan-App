@@ -1,0 +1,75 @@
+name: Wakhan unified music and regression fixes 0.2.43 verified delivery
+on:
+  push:
+    branches: [codex/music-0243]
+    paths: [.github/workflows/delivery-0243.yml, delivery0243/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.43-build58
+          path: ios243
+          run-id: 44334063680
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.43-build58-unsigned
+          path: android243
+          run-id: 44334063680
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-bootstrap-0.2.43-build58
+          path: bootstrap243
+          run-id: 44334063680
+          github-token: ${{ github.token }}
+      - name: Assemble and verify source, native assets and guarded installer
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,shutil,subprocess,sys,zipfile
+          from pathlib import Path
+          out=Path('release243');out.mkdir()
+          inp=Path('delivery0243/delivery-input.zip')
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='5deed85889d9d61cd15d65109a74120b07c0ada647ac8e027fb758c04e0e98e8'
+          with zipfile.ZipFile(inp) as z:
+              assert z.testzip() is None
+              z.extractall(out)
+          for name,folder in [('Wakhan-0.2.43-beta.ipa','ios243'),('app-release-unsigned.apk','android243'),('app-release.aab','android243')]:
+              paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
+              shutil.copy2(paths[0],out/name)
+          shutil.copy2('music0243/Wakhan-0.2.43-source.zip',out/'Wakhan-0.2.43-source.zip')
+          assert hashlib.sha256((out/'Wakhan-0.2.43-source.zip').read_bytes()).hexdigest()=='6586ffea6532eb54be2de77bc4e10eb388250694f218abafaf57ffc15e17387d'
+          subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
+          compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          evidence=list(Path('bootstrap243').rglob('bootstrap-results.json'));assert len(evidence)==1
+          browser=json.loads(evidence[0].read_text());assert {x['engine'] for x in browser}=={'chromium','webkit'}
+          assert all(x['full_bootstrap'] and x['intro_removed'] and x['no_mutation_loop'] and not x['errors'] and x['salon']['media']['fifo'] and x['salon']['media']['empty_queue_repeats'] for x in browser)
+          assert all(x['sources']['duplicate_ended_advanced_once'] and x['room']['latest_after_delayed_image'] for x in browser)
+          assert all(x['offline']['cold_start_without_server'] and x['offline']['other_account_excluded'] for x in browser)
+          assert all(x['sources']['legacy_authenticated_audio'] and x['sources']['no_video_iframe'] and x['sources']['mini_stop_and_close'] and x['changes']['pull_requested_once'] and x['changes']['search_icon_at_right_edge'] for x in browser)
+          shutil.copy2(evidence[0],out/'review/ci-bootstrap-results.json')
+          for image in Path('bootstrap243').rglob('*.png'):shutil.copy2(image,out/'review'/('ci-'+image.name))
+
+          with zipfile.ZipFile(out/'Wakhan-0.2.43-source.zip') as z:assert z.read('source-verification.json')==(out/'source-verification.json').read_bytes()
+          source=json.loads((out/'source-verification.json').read_text())
+          assert source['version']=='0.2.43-beta' and source['build']==58
+          manifest=dict(version='0.2.43-beta',build=58,server_update_required=False,physical_device_verified=False,installer_revision='0243-current042-client-only-preserve-local-build-files',base_version='0.2.42-beta',base_build=57,build_run=44334063680,source_commit='2f42911d5f2d836efd4e5d6c5d12980535e0eecb',sha256={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='PACKAGE.json'})
+          (out/'PACKAGE.json').write_text(json.dumps(manifest,indent=2))
+          for name,digest in manifest['sha256'].items():
+              assert hashlib.sha256((out/name).read_bytes()).hexdigest()==digest,name
+          print('VERIFIED build58: exact reviewed public assets, native download plugins, current build57 baseline, guarded signer and installer.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.43-iPhone-Android
+          path: release243/
+          if-no-files-found: error
+          retention-days: 14
