@@ -1,0 +1,181 @@
+name: Wakhan startup and glass 0.2.41
+on:
+  push:
+    branches: [codex/startup-0241]
+    paths: [.github/workflows/startup-0241.yml, startup0241/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: startup-0241-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify current source and unpack
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          p=Path('startup0241/Wakhan-0.2.41-source.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='a80e9c2d6232c05002ba799d43c0ec230a6ad3b1089a523e8cc3d082a746c76f'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              z.extractall('input241')
+          m=json.loads(Path('input241/source-verification.json').read_text())
+          for name,digest in m['source_sha256'].items():
+              assert hashlib.sha256((Path('input241/project')/name).read_bytes()).hexdigest()==digest,name
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build current iPhone client
+        working-directory: input241/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          bash ios-assets/build-ios.sh
+          python3 - <<'PY'
+          import hashlib,json,plistlib,zipfile
+          from pathlib import Path
+          p=Path('Wakhan-0.2.41-beta.ipa')
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              info=next(n for n in z.namelist() if n.count('/')==2 and n.endswith('.app/Info.plist'))
+              v=plistlib.loads(z.read(info))
+              assert v['CFBundleIdentifier']=='app.wakhan.music'
+              assert v['CFBundleShortVersionString']=='0.2.41' and str(v['CFBundleVersion'])=='56'
+              base=info.rsplit('/',1)[0]
+              assert b'safeArea:' in z.read(base+'/'+v['CFBundleExecutable']), 'Native safe-area bridge missing'
+              assert hashlib.sha256(z.read(base+'/public/wakhan-shell.json')).hexdigest()=='4ad752a593ffa76c215449eab89441cc2727fa1d72f0e6945487030184d0b9e7'
+              assert 'hc-wallet-coin-turn 3s' in z.read(base+'/public/home-ui/src/native-home.css').decode()
+              js=b''.join(z.read(n) for n in z.namelist() if n.startswith(base+'/public/assets/index-') and n.endswith('.js'))
+              for filename in ('app.js','bridge.js','voice.js','renderers/world.js','renderers/cards.js','renderers/ludo.js','renderers/chess.js'):
+                  assert z.read(base+'/public/games-ui/'+filename)==Path('public/games-ui/'+filename).read_bytes()
+              assert b'wk-shared-nav' in js and b'/api/app/home/rankings' in js and b'wakhan-games-v1' in js and b'wakhan-music-v1' in js
+          Path('ios-build-result.json').write_text(json.dumps({'version':'0.2.41-beta','build':56,'signed':False,'installation':'Sideloadly','device_verified':False,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.41-build56
+          path: |
+            input241/project/Wakhan-0.2.41-beta.ipa
+            input241/project/ios-build-result.json
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: Wakhan-iPhone-0239-build-log
+          path: /tmp/xb.log
+          if-no-files-found: ignore
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify current source and unpack
+        run: |
+          python3 - <<'PY'
+          import hashlib,zipfile
+          from pathlib import Path
+          p=Path('startup0241/Wakhan-0.2.41-source.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='a80e9c2d6232c05002ba799d43c0ec230a6ad3b1089a523e8cc3d082a746c76f'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              z.extractall('input241')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
+          cache-read-only: false
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          log-accepted-android-sdk-licenses: false
+      - name: Build Android without exporting the owner's signing key
+        working-directory: input241/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          npm run build
+          npx cap sync android
+          gradle -p android --no-daemon --refresh-dependencies :app:assembleRelease :app:bundleRelease -q || {
+            sleep 3
+            gradle -p android --no-daemon --refresh-dependencies :app:assembleRelease :app:bundleRelease -q
+          }
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          apk=Path('android/app/build/outputs/apk/release/app-release-unsigned.apk')
+          aab=Path('android/app/build/outputs/bundle/release/app-release.aab')
+          with zipfile.ZipFile(apk) as z:
+              assert z.testzip() is None
+              js=b''.join(z.read(n) for n in z.namelist() if n.startswith('assets/public/assets/index-') and n.endswith('.js'))
+              assert b'wk-shared-nav' in js and b'/api/app/home/rankings' in js and b'wakhan-games-v1' in js and b'wakhan-music-v1' in js
+              assert z.read('assets/public/games-ui/renderers/world.js')==Path('public/games-ui/renderers/world.js').read_bytes()
+              assert hashlib.sha256(z.read('assets/public/wakhan-shell.json')).hexdigest()=='4ad752a593ffa76c215449eab89441cc2727fa1d72f0e6945487030184d0b9e7'
+          Path('android-build-result.json').write_text(json.dumps({'version':'0.2.41-beta','build':56,'signed':False,'needs_original_server_signing':True,'device_verified':False,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),'aab_sha256':hashlib.sha256(aab.read_bytes()).hexdigest()},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.41-build56-unsigned
+          path: |
+            input241/project/android/app/build/outputs/apk/release/app-release-unsigned.apk
+            input241/project/android/app/build/outputs/bundle/release/app-release.aab
+            input241/project/android-build-result.json
+          if-no-files-found: error
+          retention-days: 14
+
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unpack exact candidate
+        run: |
+          python - <<'PY'
+          import zipfile,hashlib
+          from pathlib import Path
+          p=Path('startup0241/Wakhan-0.2.41-source.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='a80e9c2d6232c05002ba799d43c0ec230a6ad3b1089a523e8cc3d082a746c76f'
+          with zipfile.ZipFile(p) as z:z.extractall('boot241')
+          PY
+      - name: Install browser engines
+        run: |
+          python -m pip install playwright==1.62.0 --quiet
+          python -m playwright install --with-deps chromium webkit
+      - name: Exercise real native bootstrap on Chrome and WebKit
+        run: |
+          cd boot241/project
+          npm ci --no-audit --no-fund --loglevel=error
+          npm run dev -- --port 5176 > /tmp/wakhan-vite.log 2>&1 &
+          cd ../..
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:5176/ > /dev/null; then break; fi
+            sleep 1
+          done
+          python boot241/review/check_boot.py --both
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-bootstrap-0.2.41-build56
+          path: |
+            boot241/review/bootstrap-results.json
+            boot241/review/*-home-after-intro.png
+          if-no-files-found: error
