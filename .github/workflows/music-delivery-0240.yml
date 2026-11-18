@@ -17,13 +17,13 @@ jobs:
         with:
           name: Wakhan-iPhone-0.2.40-build55
           path: ios240
-          run-id: 44247343528
+          run-id: 44248565773
           github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
           name: Wakhan-Android-0.2.40-build55-unsigned
           path: android240
-          run-id: 44247343528
+          run-id: 44248565773
           github-token: ${{ github.token }}
       - name: Assemble and verify source, native assets and guarded installer
         run: |
@@ -32,7 +32,7 @@ jobs:
           from pathlib import Path
           out=Path('release240');out.mkdir()
           inp=Path('delivery0240/delivery-input.zip')
-          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='0f63e58d1d5e9cd034d2b24e42b74e6f90d47e8f71fdf144ed487422dfcf5925'
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='0ce0d23bef3533ea40d0f6a249bff0199aadee00b4323176169d9e8486c618e2'
           with zipfile.ZipFile(inp) as z:
               assert z.testzip() is None
               z.extractall(out)
@@ -40,9 +40,10 @@ jobs:
               paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
               shutil.copy2(paths[0],out/name)
           shutil.copy2('music0240/Wakhan-0.2.40-source.zip',out/'Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256((out/'Wakhan-0.2.40-source.zip').read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
+          assert hashlib.sha256((out/'Wakhan-0.2.40-source.zip').read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
           subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
           compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          with zipfile.ZipFile(out/'Wakhan-0.2.40-source.zip') as z:assert z.read('source-verification.json')==(out/'source-verification.json').read_bytes()
           source=json.loads((out/'source-verification.json').read_text())
           assert source['version']=='0.2.40-beta' and source['build']==55
           manifest=dict(version='0.2.40-beta',build=55,server_update_required=True,physical_device_verified=False,installer_revision='0240-current039-preserve-local-build-files',base_version='0.2.39-beta',base_build=54,sha256={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='PACKAGE.json'})
