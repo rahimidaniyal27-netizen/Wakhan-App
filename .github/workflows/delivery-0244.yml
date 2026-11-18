@@ -1,0 +1,78 @@
+name: Wakhan Salon and Cinema regression fixes 0.2.44 verified delivery
+on:
+  push:
+    branches: [codex/salon-0244]
+    paths: [.github/workflows/delivery-0244.yml, delivery0244/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.44-build59
+          path: ios244
+          run-id: 44387806829
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.44-build59-unsigned
+          path: android244
+          run-id: 44387806829
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-bootstrap-0.2.44-build59
+          path: bootstrap244
+          run-id: 44387806829
+          github-token: ${{ github.token }}
+      - name: Assemble and verify source, native assets and guarded installer
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,shutil,subprocess,sys,zipfile
+          from pathlib import Path
+          out=Path('release244');out.mkdir()
+          inp=Path('delivery0244/delivery-input.zip')
+          assert hashlib.sha256(inp.read_bytes()).hexdigest()=='cc24d652eb56d8ecbe75b86824c5a107e645ecc7fe65fcf35afb55278a3b1547'
+          with zipfile.ZipFile(inp) as z:
+              assert z.testzip() is None
+              z.extractall(out)
+          for name,folder in [('Wakhan-0.2.44-beta.ipa','ios244'),('app-release-unsigned.apk','android244'),('app-release.aab','android244')]:
+              paths=list(Path(folder).rglob(name));assert len(paths)==1,(name,paths)
+              shutil.copy2(paths[0],out/name)
+          shutil.copy2('salon0244/Wakhan-0.2.44-source.zip',out/'Wakhan-0.2.44-source.zip')
+          assert hashlib.sha256((out/'Wakhan-0.2.44-source.zip').read_bytes()).hexdigest()=='d7e1e713210d445d058da2a0cfcc76fbbc493cf48f21221252eef274273ef215'
+          subprocess.run([sys.executable,str(out/'verify-native.py'),str(out)],check=True)
+          compile((out/'sign-and-publish.py').read_text(),'sign-and-publish.py','exec')
+          evidence=list(Path('bootstrap244').rglob('bootstrap-results.json'));assert len(evidence)==1
+          browser=json.loads(evidence[0].read_text());assert {x['engine'] for x in browser}=={'chromium','webkit'}
+          assert all(x['full_bootstrap'] and x['intro_removed'] and x['no_mutation_loop'] and not x['errors'] and x['salon']['media']['fifo'] and x['salon']['media']['empty_queue_repeats'] for x in browser)
+          assert all(x['sources']['duplicate_ended_advanced_once'] and x['room']['latest_after_delayed_image'] for x in browser)
+          assert all(x['offline']['cold_start_without_server'] and x['offline']['other_account_excluded'] for x in browser)
+          assert all(x['sources']['legacy_authenticated_audio'] and x['sources']['no_video_iframe'] and x['sources']['mini_stop_and_close'] and x['changes']['pull_requested_once'] and x['changes']['search_icon_at_right_edge'] for x in browser)
+          assert all(x['navigation']['retained_music_nodes'] and x['navigation']['refresh_independent_of_tab_paint'] and x['navigation']['unchanged_chart_does_not_rebuild'] and x['navigation']['no_full_page_blur_animation'] and x['navigation']['native_insets_reused'] and x['navigation']['native_insets_refresh_on_resize'] for x in browser)
+          assert all(x['salon_audit']['actual_slr3'] and x['salon_audit']['announcement_saved_and_pinned'] and x['salon_audit']['game_actions_preserve_voice'] and x['salon_audit']['game_mic_controls_salon'] and x['salon_audit']['media_stop_preserves_live_voice'] and x['salon_audit']['cinema_tab_opens_list'] and x['salon_audit']['mini_removed_on_card_and_game_return'] and x['salon_audit']['youtube_search_uses_youtube_endpoint'] and x['salon_audit']['cinema_results_immediately_visible'] and x['salon_audit']['android_composer_above_keyboard'] and x['salon_audit']['follow_icon_only'] for x in browser)
+          shutil.copy2(evidence[0],out/'review/ci-bootstrap-results.json')
+          for image in Path('bootstrap244').rglob('*.png'):shutil.copy2(image,out/'review'/('ci-'+image.name))
+
+          with zipfile.ZipFile(out/'Wakhan-0.2.44-source.zip') as z:assert z.read('source-verification.json')==(out/'source-verification.json').read_bytes()
+          source=json.loads((out/'source-verification.json').read_text())
+          assert source['version']=='0.2.44-beta' and source['build']==59 and source['server_update_required'] is False
+          assert source['backend_package_sha256']==source['previous_backend_package_sha256']
+          manifest=dict(version='0.2.44-beta',build=59,server_update_required=False,physical_device_verified=False,installer_revision='0244-salon-current043-client-only-preserve-local-build-files',base_version='0.2.43-beta',base_build=58,build_run=44387806829,source_commit='a0c0b9a842a64b4c682df9d88d842ef77d4792e1',sha256={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='PACKAGE.json'})
+          (out/'PACKAGE.json').write_text(json.dumps(manifest,indent=2))
+          for name,digest in manifest['sha256'].items():
+              assert hashlib.sha256((out/name).read_bytes()).hexdigest()==digest,name
+          print('VERIFIED build59: exact reviewed public assets, native download plugins, current build58 baseline, guarded signer and installer.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.44-iPhone-Android
+          path: release244/
+          if-no-files-found: error
+          retention-days: 14
