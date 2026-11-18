@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -83,7 +83,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input240')
@@ -154,7 +154,7 @@ jobs:
           import zipfile,hashlib,json
           from pathlib import Path
           p=Path('music0240/Wakhan-0.2.40-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='97526763871dc2e2ae76eeabbaab867c677ccf6d75d923bd3af22dcf78b46343'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='03a6292c5b10d43b4ae9000f2c4f9f80c6f417f708500f38a2e3a61c8bb86c4f'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('rules240')
