@@ -21,7 +21,7 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           p=Path('salon0244/Wakhan-0.2.44-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='e2ef4bd225239745a7b45db42c16cabf32768b48f3ca79551f2b2a58ee56edd0'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='fd856c21d0cd2657dfc1a99e197ccb445fe460a9cb26e0df70da0154d2fd6b51'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input244')
@@ -52,7 +52,7 @@ jobs:
               binary=z.read(base+'/'+v['CFBundleExecutable'])
               for marker in (b'safeArea:',b'orientation:',b'wakhanKeyboardFrame',b'supportedInterfaceOrientations'):assert marker in binary,marker
               assert {'UIInterfaceOrientationPortrait','UIInterfaceOrientationLandscapeLeft','UIInterfaceOrientationLandscapeRight'}<=set(v['UISupportedInterfaceOrientations'])
-              assert hashlib.sha256(z.read(base+'/public/wakhan-shell.json')).hexdigest()=='2529f4f180b0e9ca82b1bd914ca7a4a814ecc47cd0d0ea2dcc71c244839b45d1'
+              assert hashlib.sha256(z.read(base+'/public/wakhan-shell.json')).hexdigest()=='0db753cd3c4449be25cf193c2c683afbf92b901b541a5b4ada664df5814d3391'
               assert 'hc-wallet-coin-turn 3s' in z.read(base+'/public/home-ui/src/native-home.css').decode()
               js=b''.join(z.read(n) for n in z.namelist() if n.startswith(base+'/public/assets/index-') and n.endswith('.js'))
               for filename in ('app.js','bridge.js','voice.js','renderers/world.js','renderers/cards.js','renderers/ludo.js','renderers/chess.js'):
@@ -85,7 +85,7 @@ jobs:
           import hashlib,zipfile
           from pathlib import Path
           p=Path('salon0244/Wakhan-0.2.44-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='e2ef4bd225239745a7b45db42c16cabf32768b48f3ca79551f2b2a58ee56edd0'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='fd856c21d0cd2657dfc1a99e197ccb445fe460a9cb26e0df70da0154d2fd6b51'
           with zipfile.ZipFile(p) as z:
               assert z.testzip() is None
               z.extractall('input244')
@@ -126,7 +126,7 @@ jobs:
               js=b''.join(z.read(n) for n in z.namelist() if n.startswith('assets/public/assets/index-') and n.endswith('.js'))
               assert b'wk-shared-nav' in js and b'/api/app/home/rankings' in js and b'wakhan-games-v1' in js and b'wakhan-music-v1' in js
               assert z.read('assets/public/games-ui/renderers/world.js')==Path('public/games-ui/renderers/world.js').read_bytes()
-              assert hashlib.sha256(z.read('assets/public/wakhan-shell.json')).hexdigest()=='2529f4f180b0e9ca82b1bd914ca7a4a814ecc47cd0d0ea2dcc71c244839b45d1'
+              assert hashlib.sha256(z.read('assets/public/wakhan-shell.json')).hexdigest()=='0db753cd3c4449be25cf193c2c683afbf92b901b541a5b4ada664df5814d3391'
           Path('android-build-result.json').write_text(json.dumps({'version':'0.2.44-beta','build':59,'signed':False,'needs_original_server_signing':True,'device_verified':False,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),'aab_sha256':hashlib.sha256(aab.read_bytes()).hexdigest()},indent=2))
           PY
       - uses: actions/upload-artifact@v4
@@ -154,7 +154,7 @@ jobs:
           import zipfile,hashlib
           from pathlib import Path
           p=Path('salon0244/Wakhan-0.2.44-source.zip')
-          assert hashlib.sha256(p.read_bytes()).hexdigest()=='e2ef4bd225239745a7b45db42c16cabf32768b48f3ca79551f2b2a58ee56edd0'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='fd856c21d0cd2657dfc1a99e197ccb445fe460a9cb26e0df70da0154d2fd6b51'
           with zipfile.ZipFile(p) as z:z.extractall('boot244')
           PY
       - name: Install browser engines
