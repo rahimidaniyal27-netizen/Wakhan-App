@@ -1,0 +1,41 @@
+name: Wakhan Cinema rebuilt 0.2.45 verified delivery
+on:
+  push:
+    branches: [codex/cinema-0245]
+    paths: [.github/workflows/delivery-0245.yml, delivery0245/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.45-build60
+          path: ios245
+          run-id: 44503893061
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.45-build60-unsigned
+          path: android245
+          run-id: 44503893061
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Cinema-0.2.45-browser-tests
+          path: browser245
+          run-id: 44503893061
+          github-token: ${{ github.token }}
+      - name: Verify and assemble exact native packages, fresh backend and installer
+        run: python3 delivery0245/assemble-delivery.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.45-iPhone-Android
+          path: release245/
+          if-no-files-found: error
+          retention-days: 14
