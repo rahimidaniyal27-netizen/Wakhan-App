@@ -1,0 +1,35 @@
+name: Wakhan Salon announcements 0.2.47 verified delivery
+on:
+  push:
+    branches: [codex/announcement-0247]
+    paths: [.github/workflows/delivery-0247.yml, delivery0247/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.47-build62
+          path: ios247
+          run-id: 44552159813
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.47-build62-unsigned
+          path: android247
+          run-id: 44552159813
+          github-token: ${{ github.token }}
+      - name: Verify and assemble exact native packages, fresh backend and installer
+        run: python3 delivery0247/assemble-delivery.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.47-iPhone-Android
+          path: release247/
+          if-no-files-found: error
+          retention-days: 14
