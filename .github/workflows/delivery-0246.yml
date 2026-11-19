@@ -1,0 +1,41 @@
+name: Wakhan Cinema rebuilt 0.2.46 verified delivery
+on:
+  push:
+    branches: [codex/restore-0246]
+    paths: [.github/workflows/delivery-0246.yml, delivery0246/**]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.46-build61
+          path: ios246
+          run-id: 44510995609
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.46-build61-unsigned
+          path: android246
+          run-id: 44510995609
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: Wakhan-bootstrap-0.2.46-build61
+          path: browser246
+          run-id: 44510995609
+          github-token: ${{ github.token }}
+      - name: Verify and assemble exact native packages, fresh backend and installer
+        run: python3 delivery0246/assemble-delivery.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-0.2.46-iPhone-Android
+          path: release246/
+          if-no-files-found: error
+          retention-days: 14
