@@ -1,7 +1,20 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  // Support both 'Bearer <token>' and 'wka1 <token>' formats
+  let token = null;
+  const authHeader = req.headers.authorization;
+  
+  if (authHeader) {
+    // Try Bearer format first
+    const bearerParts = authHeader.split(' ');
+    if (bearerParts.length === 2) {
+      token = bearerParts[1];
+    } else {
+      token = authHeader;
+    }
+  }
+  
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
