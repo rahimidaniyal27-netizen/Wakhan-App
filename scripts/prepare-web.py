@@ -3,7 +3,9 @@ from pathlib import Path
 from urllib.parse import urlsplit
 import hashlib,json,re,shutil
 MOBILE=Path(__file__).resolve().parents[1];ROOT=MOBILE;SNAP=MOBILE/'snapshots/server';PUBLIC=MOBILE/'public';PUBLIC.mkdir(exist_ok=True);ASSETS=PUBLIC/'s';ASSETS.mkdir(exist_ok=True)
-manifest=json.loads((SNAP/'MANIFEST.json').read_text());# Origin updated to new server;page=(SNAP/'index.html').read_text();assert hashlib.sha256((SNAP/'index.html').read_bytes()).hexdigest()==manifest['index_sha256']
+manifest=json.loads((SNAP/'MANIFEST.json').read_text())
+page=(SNAP/'index.html').read_text()
+assert hashlib.sha256((SNAP/'index.html').read_bytes()).hexdigest()==manifest['index_sha256']
 # The native bootstrap supplies a Keystore-backed key. Never run M81's localStorage key loader.
 page=re.sub(r'<!--WK81-->[\s\S]*?<!--/WK81-->','',page)
 programs=[]
