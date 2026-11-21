@@ -13,6 +13,8 @@ const UserSchema = new mongoose.Schema({
   isOnline: { type: Boolean, default: false },
   lastSeen: { type: Date, default: Date.now },
   pushToken: { type: String },
+  blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  pinnedMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
   createdAt: { type: Date, default: Date.now }
 });
 
