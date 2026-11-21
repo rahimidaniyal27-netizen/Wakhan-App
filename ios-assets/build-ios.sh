@@ -16,9 +16,7 @@ set_kv NSMicrophoneUsageDescription "Wakhan uses the microphone when you speak i
 set_kv NSCameraUsageDescription "Wakhan uses the camera when you take a profile photo."
 set_kv NSPhotoLibraryUsageDescription "Wakhan uses your photos when you choose a profile photo."
 # Allow HTTP for dev server (no SSL yet)
-$B -c "Delete :NSAppTransportSecurity" "$PL" 2>/dev/null || true
-$B -c "Add :NSAppTransportSecurity dict" "$PL"
-$B -c "Add :NSAppTransportSecurity:NSAllowsArbitraryLoads bool true" "$PL"
+python3 ios-assets/ats-fix.py "$PL"
 $B -c "Delete :UIBackgroundModes" "$PL" 2>/dev/null || true
 $B -c "Add :UIBackgroundModes array" "$PL" && $B -c "Add :UIBackgroundModes:0 string audio" "$PL"
 # app icon (single 1024 image, Xcode makes the rest)
