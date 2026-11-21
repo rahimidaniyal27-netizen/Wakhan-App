@@ -33,12 +33,24 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/wakhan')
   .catch(err => console.error('MongoDB error:', err));
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/chat', require('./routes/chat'));
-app.use('/api/music', require('./routes/music'));
-app.use('/api/user', require('./routes/user'));
-app.use('/api/call', require('./routes/call'));
-app.use('/api/upload', require('./routes/upload'));
+const authRoutes = require('./routes/auth');
+const chatRoutes = require('./routes/chat');
+const musicRoutes = require('./routes/music');
+const userRoutes = require('./routes/user');
+const callRoutes = require('./routes/call');
+const uploadRoutes = require('./routes/upload');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/music', musicRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/call', callRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// App aliases for frontend compatibility
+app.use('/api/app', authRoutes);
+app.use('/api/app', userRoutes);
+app.use('/api/app', chatRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
