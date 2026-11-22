@@ -1,0 +1,75 @@
+name: Wakhan 0.2.48 salon liquid dock (iPhone)
+on:
+  push:
+    branches: [wakhan-0.2.48]
+    paths: [.github/workflows/delivery-0248.yml, delivery0248/**]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: delivery-0248-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source and unpack
+        run: |
+          python3 - <<'PY'
+          import hashlib,zipfile
+          from pathlib import Path
+          p=Path('delivery0248/Wakhan-0.2.48-source.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='698ac77674557cb5e50c9f00ac3f81f4ccc15db62c67dfa59009a707a3f62340'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              z.extractall('input248')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build iPhone client
+        working-directory: input248/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          bash ios-assets/build-ios.sh
+          python3 - <<'PY'
+          import hashlib,json,plistlib,zipfile
+          from pathlib import Path
+          p=Path('Wakhan-0.2.48-beta.ipa')
+          shell=hashlib.sha256(Path('public/wakhan-shell.json').read_bytes()).hexdigest()
+          assert shell=='f416f603482011826441f0773f61df97e11ec156b9dd523c22cb44ea68d8f468'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              info=next(n for n in z.namelist() if n.count('/')==2 and n.endswith('.app/Info.plist'))
+              v=plistlib.loads(z.read(info))
+              assert v['CFBundleIdentifier']=='app.wakhan.music'
+              assert v['CFBundleShortVersionString']=='0.2.48' and str(v['CFBundleVersion'])=='63'
+              base=info.rsplit('/',1)[0]
+              binary=z.read(base+'/'+v['CFBundleExecutable'])
+              for marker in (b'safeArea:',b'orientation:',b'wakhanKeyboardFrame',b'supportedInterfaceOrientations'):assert marker in binary,marker
+              assert hashlib.sha256(z.read(base+'/public/wakhan-shell.json')).hexdigest()==shell
+              b=json.loads(z.read(base+'/public/wakhan-shell.json'))
+              slr3=next(x['code'] for x in b['programs'] if x['id']=='slr3.js')
+              assert 'r-lq' in slr3 and 'micBusy' in slr3 and 'await vcMute()' in slr3
+              js=b''.join(z.read(n) for n in z.namelist() if n.startswith(base+'/public/assets/index-') and n.endswith('.js'))
+              assert b'https://music.kabulcafe.uk' in js and b'2.31.72.140' not in js
+          Path('ios-build-result.json').write_text(json.dumps({'version':'0.2.48-beta','build':63,'signed':False,'installation':'Sideloadly','sha256':hashlib.sha256(p.read_bytes()).hexdigest()},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.48-build63
+          path: |
+            input248/project/Wakhan-0.2.48-beta.ipa
+            input248/project/ios-build-result.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish the IPA as a release (direct download)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          F=input248/project/Wakhan-0.2.48-beta.ipa
+          gh release delete "ios-0.2.48-beta" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "ios-0.2.48-beta" "$F" --target "$GITHUB_SHA" --prerelease --title "Wakhan 0.2.48 (iPhone, for Sideloadly)" --notes "Salon bottom bar: clear liquid glass, one-tap mic and speaker. Built from 0.2.47."
