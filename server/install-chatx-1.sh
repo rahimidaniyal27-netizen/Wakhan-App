@@ -32,7 +32,7 @@ assert s.count(old)==1,'hook point not found'
 s=s.replace(old,old+'    from native_chat_plus import install as install_chat_plus\n    install_chat_plus(app,ns)\n')
 open(p,'w',encoding='utf-8').write(s)
 PY
-sudo -u "$(stat -c %U native_chat.py)" python3 -m py_compile native_chat_plus.py native_runtime.py 2>&1 || rollback
+python3 -c "import ast,sys;[ast.parse(open(f,encoding='utf-8').read(),f) for f in sys.argv[1:]];print('✅ بررسی کد درست است')" native_chat_plus.py native_runtime.py 2>&1 || rollback
 systemctl restart $SVC; sleep 6
 systemctl is-active --quiet $SVC || { journalctl -u $SVC -n 15 --no-pager | grep -iv "token\|secret\|key=" ; rollback; }
 A=$(curl -s -o /dev/null -w '%{http_code}' -X POST http://127.0.0.1:10010/api/app/chatx/version)
