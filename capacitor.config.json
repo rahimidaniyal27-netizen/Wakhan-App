@@ -2,8 +2,12 @@
   "appId": "app.wakhan.music",
   "appName": "Wakhan",
   "webDir": "www",
+  "server": {
+    "cleartext": true,
+    "allowNavigation": ["*"]
+  },
   "android": {
-    "allowMixedContent": false,
+    "allowMixedContent": true,
     "webContentsDebuggingEnabled": false,
     "backgroundColor": "#0047FF"
   },
