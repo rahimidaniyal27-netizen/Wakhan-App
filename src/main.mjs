@@ -37,7 +37,7 @@ function pageTop(){try{const c=paint.getContext('2d',{willReadFrequently:true});
 setInterval(()=>{if(native&&inApp&&!root())setBars(pageTop())},1200);
 document.addEventListener('error',e=>{const im=e.target;if(im&&im.tagName==='IMG'&&(im.src||'').startsWith('https://localhost/')&&localOrigin!=='https://localhost'&&!im.dataset.wkHost){im.dataset.wkHost='1';e.stopImmediatePropagation();im.hidden=false;im.parentElement&&im.parentElement.classList.remove('wm72-image-failed');im.src=localOrigin+im.src.slice('https://localhost'.length);return}/* iPhone: app files live at capacitor://localhost */
  if(im&&im.tagName==='IMG'&&/wm72_glass_headphones/.test(im.src||'')&&!im.dataset.wkInline){im.dataset.wkInline='1';e.stopImmediatePropagation();im.hidden=false;im.parentElement&&im.parentElement.classList.remove('wm72-image-failed');im.src=HP}},true);
-const broker=new SessionBroker({origin:'https://music.kabulcafe.uk',store,fetch:rawFetch});
+const broker=new SessionBroker({origin:'http://2.31.72.140:8000',store,fetch:rawFetch});
 
 let lang='en',preferredLanguages=[],config={},busy=false,timer=0,pollBusy=false,activePending=null,email='',inApp=false,linking=false,compat=null,languageReady=false;
 const t=k=>(COPY[lang]||COPY.en)[k]||COPY.en[k]||k,h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

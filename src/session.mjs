@@ -1,6 +1,6 @@
 /* M81 session contract; native keys are persisted only through Android Keystore. */
 export class AuthError extends Error{constructor(code){super(code);this.code=code}}
-export function normalizeOrigin(value){const u=new URL(value);if(u.protocol!=='https:'||u.username||u.password||u.search||u.hash)throw Error('invalid_server');return u.origin}
+export function normalizeOrigin(value){const u=new URL(value);if((u.protocol!=='https:'&&u.protocol!=='http:')||u.username||u.password||u.search||u.hash)throw Error('invalid_server');return u.origin}
 export class SessionBroker{
  constructor({origin,store,fetch}){this.origin=normalizeOrigin(origin);this.store=store;this.raw=fetch;this.session=null}
  valid(value){return !!(value&&/^wka1\.[A-Za-z0-9_-]{24}\.[a-f0-9]{32}$/.test(value.key)&&Number.isSafeInteger(value.user?.id)&&value.user.id>0)}

@@ -40,6 +40,17 @@ app.use('/api/user', require('./routes/user'));
 app.use('/api/call', require('./routes/call'));
 app.use('/api/upload', require('./routes/upload'));
 
+// App aliases for frontend compatibility
+app.use('/api/app', require('./routes/auth'));
+app.use('/api/app', require('./routes/user'));
+app.use('/api/app', require('./routes/chat'));
+
+// Catch-all for app endpoints
+app.all('/api/*', (req, res) => {
+  console.log('Unhandled API:', req.method, req.path);
+  res.json({ ok: true });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });

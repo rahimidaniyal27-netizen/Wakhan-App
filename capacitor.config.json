@@ -9,7 +9,7 @@
   },
   "plugins": {
     "CapacitorHttp": {
-      "enabled": true
+      "enabled": false
     },
     "SplashScreen": {
       "launchAutoHide": false,
@@ -31,5 +31,11 @@
       ]
     }
   },
-  "loggingBehavior": "none"
+  "loggingBehavior": "none",
+  "server": {
+    "cleartext": true,
+    "allowNavigation": [
+      "*"
+    ]
+  }
 }
