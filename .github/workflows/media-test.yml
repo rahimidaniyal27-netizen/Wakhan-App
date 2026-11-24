@@ -19,7 +19,7 @@ jobs:
   wheels:
     runs-on: ubuntu-latest
     steps:
-      - run: pip download -q -d w --only-binary=:all: --python-version 3.13 --platform manylinux2014_x86_64 --platform manylinux_2_17_x86_64 aiohttp
+      - run: "pip download -q -d w --only-binary=:all: --python-version 3.13 --platform manylinux2014_x86_64 --platform manylinux_2_17_x86_64 aiohttp"
       - uses: actions/upload-artifact@v4
         with:
           name: wheels
