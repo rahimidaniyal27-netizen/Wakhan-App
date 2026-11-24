@@ -44,7 +44,7 @@ env=dict(os.environ,WK_SP=sp,WK_KP=kp)
 r=subprocess.run([bt+'/zipalign','-f','-P','16','4',w+'/u.apk',w+'/a.apk'],capture_output=True)
 if r.returncode: print('❌ zipalign:',r.stderr.decode()[-200:]); sys.exit(1)
 cmd=[bt+'/apksigner','sign','--ks',store,'--ks-pass','env:WK_SP','--key-pass','env:WK_KP','--out',w+'/s.apk']
-if alias: cmd[3:3]=['--ks-key-alias',alias]
+if alias: cmd[4:4]=['--ks-key-alias',alias]
 r=subprocess.run(cmd+[w+'/a.apk'],capture_output=True,env=env)
 if r.returncode: print('❌ امضا ناکام شد:',r.stderr.decode().replace(sp,'***').replace(kp,'***')[-300:]); sys.exit(1)
 print('✅ با کلید اصلی امضا شد')
