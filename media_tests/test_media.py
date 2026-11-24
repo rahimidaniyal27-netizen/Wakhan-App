@@ -77,6 +77,9 @@ class Env:
         return self
 
     async def __aexit__(self, *a):
+        for j in list(self.m.engine.jobs.values()):
+            await j.finished.wait()
+        await asyncio.sleep(0)
         await self.c.close()
 
     async def get(self, path, uid=None, **kw):

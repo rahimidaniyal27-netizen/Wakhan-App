@@ -332,6 +332,9 @@ class Media:
         path = os.path.join(folder, name)
         if name == 'master.m3u8':
             row = self.engine.row(aid)
+            if row and not row['variants'] and aid in self.engine.jobs:      # still probing: wait for the job's first segments
+                await self.engine.wait_ready(aid, 20)
+                row = self.engine.row(aid)
             if not row or not row['variants']:
                 raise web.HTTPNotFound()
             from .engine import master_text
