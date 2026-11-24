@@ -18,9 +18,11 @@ jobs:
         shell: bash
   wheels:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - run: "pip download -q -d w --only-binary=:all: --python-version 3.13 --platform manylinux2014_x86_64 --platform manylinux_2_17_x86_64 aiohttp"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: wheels
-          path: w
+      - run: |
+          cd w && git init -q && git checkout -q -b media-wheels && git add -A
+          git -c user.name=ci -c user.email=ci@local commit -qm wheels
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" media-wheels

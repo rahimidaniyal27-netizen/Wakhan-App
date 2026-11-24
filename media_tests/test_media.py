@@ -111,7 +111,10 @@ class Env:
 async def recv(ws, kind, timeout=8.0, pred=None):
     end = time.time() + timeout
     while time.time() < end:
-        m = await ws.receive(timeout=max(0.05, end - time.time()))
+        try:
+            m = await ws.receive(timeout=max(0.05, end - time.time()))
+        except asyncio.TimeoutError:
+            break
         if m.type.name != 'TEXT':
             continue
         d = json.loads(m.data)
