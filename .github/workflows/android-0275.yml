@@ -1,0 +1,69 @@
+name: Wakhan 0.2.75 (Android)
+on:
+  push:
+    branches: [wakhan-0.2.75]
+    paths: [.github/workflows/android-0275.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source and unpack
+        run: |
+          python3 - <<'PY'
+          import hashlib,zipfile
+          from pathlib import Path
+          p=Path('delivery0275/Wakhan-0.2.75-source.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='e40efa2bf128a26e2829506a15bf1a1dca742e5b30900936e0ff550d42a67b6f'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              z.extractall('input275')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          log-accepted-android-sdk-licenses: false
+      - name: Build Android (unsigned; it is signed on the owner's server with the original key)
+        working-directory: input275/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          npm run build
+          npx cap sync android
+          gradle -p android --no-daemon :app:assembleRelease -q
+          python3 - <<'PY'
+          import hashlib,json,zipfile,re
+          from pathlib import Path
+          apk=Path('android/app/build/outputs/apk/release/app-release-unsigned.apk')
+          with zipfile.ZipFile(apk) as z:
+              assert z.testzip() is None
+              shell=z.read('assets/public/wakhan-shell.json')
+              assert hashlib.sha256(shell).hexdigest()=='419ee22243c426c9f370bb3a373459fd579f6d58584774edc05a7042a40ed354'
+              b=json.loads(shell);slr3=next(x['code'] for x in b['programs'] if x['id']=='slr3.js');slr6=next(x['code'] for x in b['programs'] if x['id']=='slr6.js')
+              assert "classList.add('wk-android')" in slr3 and 'function salonBack()' in slr3 and 'window.WKM' in slr6 and '__slKinoDark' in next(x['code'] for x in b['programs'] if x['id']=='sln3.js')
+          g=Path('android/app/build.gradle').read_text();assert 'versionCode 90' in g and 'versionName "0.2.75-beta"' in g
+          out=Path('Wakhan-0.2.75-unsigned.apk');out.write_bytes(apk.read_bytes())
+          Path('android-build-result.json').write_text(json.dumps({'version':'0.2.75-beta','build':90,'signed':False,'sha256':hashlib.sha256(out.read_bytes()).hexdigest()},indent=2))
+          print(Path('android-build-result.json').read_text())
+          PY
+      - name: Publish the unsigned APK (signed on the server)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd input275/project
+          gh release delete "android-0.2.75-beta" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "android-0.2.75-beta" Wakhan-0.2.75-unsigned.apk android-build-result.json --target "$GITHUB_SHA" --prerelease --title "Wakhan 0.2.75 (Android, unsigned)" --notes "Signed on the WAKHAN server with the original key before it is published."
