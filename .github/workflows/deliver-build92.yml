@@ -1,0 +1,50 @@
+name: Deliver verified Wakhan build92
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for both verified native builds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,subprocess,time
+          for i in range(100):
+            value=json.loads(subprocess.check_output(['gh','api','repos/${{ github.repository }}/actions/runs/45852712297']))
+            assert value['head_sha']=='41aaafe90a4bf2ac60160eb3849bae9865b010b6'
+            if value['status']=='completed':
+              assert value['conclusion']=='success', 'Native build failed; do not publish'
+              break
+            time.sleep(10)
+          else:raise RuntimeError('Build has not completed')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 45852712297
+          github-token: ${{ github.token }}
+          pattern: Wakhan-*-0.2.77-build92*
+          path: output
+          merge-multiple: true
+      - name: Verify build manifests and make beta downloads available
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          out=Path('output');source=json.loads(Path('delivery0277/SOURCE.json').read_text())
+          for kind,filename in [('ios','Wakhan-0.2.77-beta.ipa'),('android','Wakhan-0.2.77-unsigned.apk')]:
+            result=json.loads((out/(kind+'-build-result.json')).read_text())
+            assert result['build']==92 and result['version']=='0.2.77-beta' and result['signed'] is False
+            assert result['shell_sha256']==source['shell_sha256']
+            assert result['sha256']==hashlib.sha256((out/filename).read_bytes()).hexdigest()
+            with zipfile.ZipFile(out/filename)as z:assert z.testzip()is None
+          PY
+          gh release create native-0.2.77-beta output/* --target 41aaafe90a4bf2ac60160eb3849bae9865b010b6 --prerelease --title 'Wakhan 0.2.77 / build92 — iPhone and Android' --notes 'Verified native compilation and 174 client tests. iPhone IPA requires Sideloadly signing. Android APK is unsigned and must be signed with the original key on the owner server before installation. Matching server update is required for backend fixes. No App Store, Play Store or production server deployment. Real-device behavior remains to be checked.'
