@@ -1,0 +1,29 @@
+{
+  "version": "0.2.77-beta",
+  "build": 92,
+  "native_build_run": "https://github.com/rahimidaniyal27-netizen/Wakhan-App/actions/runs/45852712297",
+  "native_build_conclusion": "success",
+  "client_tests": 174,
+  "backend_tests": 113,
+  "installer_tests": 9,
+  "android_manifest_verified": {
+    "package": "app.wakhan.music",
+    "versionName": "0.2.77-beta",
+    "versionCode": 92
+  },
+  "ios_plist_verified": {
+    "bundle": "app.wakhan.music",
+    "version": "0.2.77",
+    "build": "92"
+  },
+  "shell_sha256": "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
+  "source_sha256": "60e5155d2adadfedd68d0af8fe4cbf79cba43299261b5504682fa96d148b4079",
+  "device_verified": false,
+  "production_deployed": false,
+  "android_signed": false,
+  "ios_signed": false,
+  "google_browser_compatibility": true,
+  "native_oauth_configured": false,
+  "email_smtp_configured": false,
+  "apple_enabled": false
+}

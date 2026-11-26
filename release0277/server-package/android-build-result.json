@@ -1,0 +1,9 @@
+{
+  "version": "0.2.77-beta",
+  "build": 92,
+  "signed": false,
+  "installation": "Requires original release key signing on owner server; raw APK is not installable",
+  "sha256": "4bbe4b29a358ba9a0c2573ab6afa61f5b8fdc95b32cbb08cd10195fa6b1d411d",
+  "shell_sha256": "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
+  "device_verified": false
+}

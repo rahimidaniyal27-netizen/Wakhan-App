@@ -1,0 +1,93 @@
+{
+  "version": "0.2.77-beta",
+  "build": 92,
+  "files": {
+    "wakhan_security.py": {
+      "sha256": "f63935b4234ece1dd14d4d065d5a969d4a3fd347d98af19718ded08c4a29872c",
+      "before": null
+    },
+    "native_runtime.py": {
+      "sha256": "0eff6f9a66fdd3633150ef223f6752c4a601cb2599123d3e6b59119686b2d965",
+      "before": "b2d31d81f4d62d88c849c35a631473c2257a3eefe7318bc40c4b9e0f1c3554d0"
+    },
+    "wakhan_app_native_n1.py": {
+      "sha256": "9202abe7a65ac63408a2059817f6e82c89f17c9db1211044bac45147b28f532e",
+      "before": "30e5b7bc951165aa09f7efc9c8e0ed2e14361b03260a3d97280696c0c92e227b"
+    },
+    "wakhan_app.py": {
+      "sha256": "f0c610a2574b4537c139ea2a47dee58d433dc1feb21c4dd53decf447e933e81d",
+      "before": "35b39fa5faf3dcbe04bb2b9eccffef6f372c270437c8bee98d1c3437d1713d2e"
+    },
+    "wakhan_storage_security.py": {
+      "sha256": "130c50d42c6ed9ed951136c972cde223cbd3810161621b55b6a9b51df1619da7",
+      "before": null
+    },
+    "wakhan_signin.py": {
+      "sha256": "0fb5a9bf2d2eeddb4753f36630bde0deeaf69a6a3dfb33021ca49beee271c182",
+      "before": null
+    },
+    "wakhan_media/engine.py": {
+      "sha256": "5e8937376641fc97a3532271bc98a26299c701fd4096ec6097d0fcac204a4504",
+      "before": "46eeba96ad8afd6a3b4e102a80cef2a30df858827e56e82be825a9cedb6918ba"
+    },
+    "wakhan_media/sync.py": {
+      "sha256": "141c83f7743909488dd0f84d79f40e51741504ee12432ce822c22a9940020ea4",
+      "before": "8591e8bd1531dfacce876d65d925ef3a2f2bba434c8526dbaefccec5ac1ae614"
+    },
+    "wakhan_media/__init__.py": {
+      "sha256": "22a3fbe49014aee2093ab5e71c8728ae726c9ca96f93f0931408355288fa02ff",
+      "before": "19bb4b45611841498c6694f6eb00d4296202c941359ff74a7db8cb49bf8b6a24"
+    },
+    "wakhan_media/salon_music.py": {
+      "sha256": "43536263269af74c61fdd1b7df9f28a5187510ff613087cf368c51366bf8d282",
+      "before": null
+    },
+    "wakhan_media/adapters.py": {
+      "sha256": "f7967112c991950e17f1a8e86a06d2e718ff260ac774b62a2b2825e01308bcba",
+      "before": "f7967112c991950e17f1a8e86a06d2e718ff260ac774b62a2b2825e01308bcba"
+    },
+    "wakhan_media/api.py": {
+      "sha256": "7df245df7d27cd94fbdc756aa32df427bc8821bb07e9d489ee60284d1f48cdfb",
+      "before": "859432f5f0dffa95c00ec5bdc775a72377b54a8028e55741a77f328f4b3ebe54"
+    },
+    "wakhan_media/delivery.py": {
+      "sha256": "4051bc1f1e00738e51c69e53bb34d6acc507dcb80d4e5bed452b37473e6efcdc",
+      "before": "3471d9d5500c6a480bf426dd072e9468ee92f952d665a54c9f43820c79a90505"
+    },
+    "wakhan_media/config.py": {
+      "sha256": "64e760b890eb324699945e3eec23e59c940bcf5e598a2f1e734ea346bac89ef0",
+      "before": "0246a1156d84df071d18f25bf240f501b340fc89ce61a03f9a371bdb9dcc48c1"
+    },
+    "wakhan_music/playback.py": {
+      "sha256": "261f7661b6e92d77426ff812df79968d2f3e4086e6351d9c6319a25a28641cf1",
+      "before": null
+    },
+    "wakhan_music/__init__.py": {
+      "sha256": "a2368f2c5bd2fb5b92b8d04dfd10742019614d0be77bfc607cda296240a913ad",
+      "before": "04b1a9897a129b626f4d294fd1584a8c0d71b7abda4b77bd79d642d0af4b89cb"
+    },
+    "wakhan_music/providers.py": {
+      "sha256": "b37bf7f19770c1783539fad6fd60476ef3bb485f3464bf5ba43a31ee2ed02c48",
+      "before": "b37bf7f19770c1783539fad6fd60476ef3bb485f3464bf5ba43a31ee2ed02c48"
+    },
+    "wakhan_music/discovery.py": {
+      "sha256": "dfc7e95cb8855ddb92b7fb96a58789f250dadeed92189cb8311664fc3113ef2c",
+      "before": "dfc7e95cb8855ddb92b7fb96a58789f250dadeed92189cb8311664fc3113ef2c"
+    },
+    "wakhan_music/audio_resolver.py": {
+      "sha256": "4fb89344a83e969e0c0553a1aa697d9b53da4d19d24d2df97ef3b1670bb9a053",
+      "before": null
+    },
+    "wakhan_music/preferences.py": {
+      "sha256": "d9782f97d04ce1b6d68be22e8acde84c04932e3a54e1bc36768925e147e78a22",
+      "before": "d9782f97d04ce1b6d68be22e8acde84c04932e3a54e1bc36768925e147e78a22"
+    }
+  },
+  "unchanged": {
+    "session_keys.py": "dc0e9c5739e599931abf04aaadc658ebc3c4459f7c8f99d55c46be1a695e469b"
+  },
+  "android_sha256": "4bbe4b29a358ba9a0c2573ab6afa61f5b8fdc95b32cbb08cd10195fa6b1d411d",
+  "ios_sha256": "57cab74dbc54e802bf82ac40afe91055a19a61c2ceab93507f18fff519bf37b0",
+  "shell_sha256": "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
+  "build_commit": "41aaafe90a4bf2ac60160eb3849bae9865b010b6"
+}

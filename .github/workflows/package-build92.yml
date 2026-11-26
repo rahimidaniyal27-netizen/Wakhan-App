@@ -1,0 +1,24 @@
+name: Package Wakhan build92 owner installer
+on:
+  push:
+    branches: [wakhan-0.2.77]
+    paths: [release0277/**, .github/workflows/package-build92.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download verified native build pair
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download native-0.2.77-beta --pattern 'Wakhan-0.2.77-unsigned.apk' --pattern 'Wakhan-0.2.77-beta.ipa' --dir release0277/server-package
+          python3 release0277/package.py
+      - name: Publish owner-operated installer and its checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload native-0.2.77-beta release0277/Wakhan-0.2.77-iPhone-Android.zip release0277/SHA256SUMS.txt
