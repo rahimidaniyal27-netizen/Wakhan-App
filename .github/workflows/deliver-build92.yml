@@ -1,5 +1,8 @@
 name: Deliver verified Wakhan build92
 on:
+  push:
+    branches: [wakhan-0.2.77]
+    paths: [.github/workflows/deliver-build92.yml]
   workflow_dispatch:
 permissions:
   contents: write
