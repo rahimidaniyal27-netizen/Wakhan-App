@@ -1,7 +1,7 @@
 {
   "version": "0.2.77-beta",
   "build": 92,
-  "source_sha256": "e95f15bd31f9fbad015b82f1d5c223eaef965770084e24ff972879e093710062",
+  "source_sha256": "60e5155d2adadfedd68d0af8fe4cbf79cba43299261b5504682fa96d148b4079",
   "shell_sha256": "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
   "native_oauth_configured": false,
   "google_browser_compatibility": true,
