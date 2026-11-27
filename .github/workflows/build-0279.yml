@@ -1,0 +1,109 @@
+name: Wakhan 0.2.79 native build (iPhone + Android)
+on:
+  push:
+    branches: [wakhan-0.2.79]
+    paths: [.github/workflows/build-0279.yml, delivery0279/**]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: build-0279-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify and unpack exact reviewed source
+        run: python3 delivery0279/verify-source.py
+      - name: Test and compile iPhone
+        working-directory: input279/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          bash ios-assets/build-ios.sh
+          python3 ../../delivery0279/verify-ios.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.79-build94
+          path: |
+            input279/project/Wakhan-0.2.79-beta.ipa
+            input279/project/ios-build-result.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-build94-diagnostics
+          path: /tmp/xb.log
+          if-no-files-found: ignore
+          retention-days: 7
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          log-accepted-android-sdk-licenses: false
+      - name: Verify and unpack exact reviewed source
+        run: python3 delivery0279/verify-source.py
+      - name: Test and compile Android
+        working-directory: input279/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          npm run build
+          npx cap sync android
+          gradle -p android --no-daemon :app:assembleRelease -q
+          python3 ../../delivery0279/verify-android.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.79-build94-for-server-signing
+          path: |
+            input279/project/Wakhan-0.2.79-unsigned.apk
+            input279/project/android-build-result.json
+          if-no-files-found: error
+          retention-days: 30
+
+  deliver:
+    needs: [ios, android]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Wakhan-*-0.2.79-build94*
+          merge-multiple: true
+          path: output
+      - name: Verify and deliver matching iPhone and Android
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          import hashlib,json
+          source=json.loads(Path('delivery0279/SOURCE.json').read_text())
+          for kind,filename in [('ios','Wakhan-0.2.79-beta.ipa'),('android','Wakhan-0.2.79-unsigned.apk')]:
+            meta=json.loads(Path('output',kind+'-build-result.json').read_text())
+            assert meta['build']==94 and meta['version']=='0.2.79-beta' and meta['shell_sha256']==source['shell_sha256']
+            assert meta['sha256']==hashlib.sha256(Path('output',filename).read_bytes()).hexdigest()
+          PYCODE
+          gh release create native-0.2.79-beta output/* --target "$GITHUB_SHA" --prerelease --title 'Wakhan 0.2.79 / build94 — iPhone and Android' --notes 'Matching source on both platforms. Distinct verified login/register modes, existing-account protection, explicit tab feedback and recovery actions, raised controls and iOS native entrypoint fix. Matching backend intent update required before using new login/register flows. iPhone IPA requires Sideloadly signing; Android APK requires original-key signing on owner server. No production deployment from CI. Real-device confirmation still needed.'

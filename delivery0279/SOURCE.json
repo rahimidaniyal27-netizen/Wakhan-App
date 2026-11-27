@@ -1,0 +1,13 @@
+{
+  "version": "0.2.79-beta",
+  "build": 94,
+  "source_sha256": "2eceb47ee4fab2774af3855a6c151940c617a2c29b5ff856a5efec16fd499732",
+  "shell_sha256": "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
+  "scene_sha256": "85c7e69ccd00e9e85b18154666098ffc920d6bf4d3045ab49a64a143bc0fd501",
+  "ios_controller_sha256": "9dc93c8bc5b06fd3b508145c3dc8851ad23b094f981e3957980377b21734517a",
+  "server_update_required": true,
+  "google_browser_compatibility": true,
+  "client_tests": 180,
+  "backend_tests": 143,
+  "requires_account_intent_version": 1
+}
