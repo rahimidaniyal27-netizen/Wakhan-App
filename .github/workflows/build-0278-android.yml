@@ -1,0 +1,53 @@
+name: Wakhan 0.2.78 Android matching sign-in and layout
+on:
+  push:
+    branches: [wakhan-0.2.78]
+    paths: [android0278/**, .github/workflows/build-0278-android.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: build-0278-android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          log-accepted-android-sdk-licenses: false
+      - name: Verify exact same source as iPhone build93
+        run: python3 delivery0278/verify-source.py
+      - name: Test and compile Android
+        working-directory: input278/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          npm run build
+          npx cap sync android
+          gradle -p android --no-daemon :app:assembleRelease -q
+          python3 ../../android0278/verify-android.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-Android-0.2.78-build93-for-server-signing
+          path: |
+            input278/project/Wakhan-0.2.78-unsigned.apk
+            input278/project/android-build-result.json
+          if-no-files-found: error
+      - name: Deliver Android beta for original-key signing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create android-0.2.78-beta input278/project/Wakhan-0.2.78-unsigned.apk input278/project/android-build-result.json --target "$GITHUB_SHA" --prerelease --title 'Wakhan 0.2.78 / build93 — Android' --notes 'Same reviewed client source as iPhone0.2.78/build93: preserves Google browser sign-in independently of optional provider SDK and raises welcome controls. UNSIGNED APK; sign with original release key on owner server before installation. No backend update/restart required. Real-device confirmation still required.'
