@@ -23,3 +23,23 @@
 6. برنامهٔ آیفون/اندروید را کامل ببندید و دوباره باز کنید تا email=true خوانده شود. برای همین تغییر SMTP بیلد تازه لازم نیست. ورود/ثبت‌نام با ایمیل هم باید در برنامه تست شود.
 
 بدون `--configure` ابزار فقط وضعیت وجود کلیدها را به صورت تنظیم‌شده/خالی چاپ می‌کند. هیچ مقدار خصوصی در گزارش چاپ نمی‌شود. اگر تنظیم systemd با JSON تضاد داشته باشد، ابزار به‌جای حدس‌زدن یا ویرایش سرویس‌ها متوقف می‌شود. SSH، VPN، فایروال، DB و تنظیم Google تغییر نمی‌کنند.10 آزمون محلی موفق‌اند؛ ارسال واقعی تا اجرای مالک با حساب خودش تأیید نشده است.
+
+### بلاک دریافت اطلاعات عمومی Google
+
+این بلاک فقط اطلاعات لازم برای فرم Android در Google Cloud را چاپ می‌کند؛ نصب یا restart ندارد:
+
+```bash
+curl -fsSL 'https://raw.githubusercontent.com/rahimidaniyal27-netizen/Wakhan-App/2e17038d3d3e1926a8227ffe05db19682d695483/auth-setup/google-public-info.py' -o /root/wakhan-google-public-info.py &&
+echo 'c9c378a8f325c4333de8cc50cb7c9dd802e319de0e596a2edc48c4cfb20650fd  /root/wakhan-google-public-info.py' | sha256sum -c - &&
+python3 /root/wakhan-google-public-info.py
+```
+
+### بلاک تنظیم خصوصی Gmail
+
+پس از ساخت App Password در همان حساب Gmail فرستنده، این بلاک روی سرور اجرا شود. رمز فقط در prompt مخفی ترمینال وارد شود:
+
+```bash
+curl -fsSL 'https://raw.githubusercontent.com/rahimidaniyal27-netizen/Wakhan-App/2e17038d3d3e1926a8227ffe05db19682d695483/auth-setup/setup-email.py' -o /root/wakhan-setup-email.py &&
+echo '2dd188d8b9848d5cda139eaba0e0e172aa6ce16bae504643d22945f434e4326f  /root/wakhan-setup-email.py' | sha256sum -c - &&
+python3 /root/wakhan-setup-email.py --configure
+```
