@@ -1,0 +1,16 @@
+{
+  "version": "0.2.80-beta",
+  "build": 95,
+  "source_sha256": "acd7d085b8383b0da216e3c5d47674b35141b723e02b610bdaf0e741d7159ed2",
+  "shell_sha256": "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
+  "scene_sha256": "85c7e69ccd00e9e85b18154666098ffc920d6bf4d3045ab49a64a143bc0fd501",
+  "ios_controller_sha256": "9dc93c8bc5b06fd3b508145c3dc8851ad23b094f981e3957980377b21734517a",
+  "server_update_required": true,
+  "google_browser_compatibility": "old-binaries-only",
+  "client_tests": 182,
+  "backend_tests": 150,
+  "requires_account_intent_version": 1,
+  "google_native_configured": true,
+  "requires_provider_capability_version": 1,
+  "public_signin_sha256": "e9aea5289d7c8dad42899870ab2f93bb11f382d26056eaead894206b2e7febc3"
+}
