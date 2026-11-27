@@ -50,4 +50,5 @@ jobs:
       - name: Deliver Android beta for original-key signing
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create android-0.2.78-beta input278/project/Wakhan-0.2.78-unsigned.apk input278/project/android-build-result.json --target "$GITHUB_SHA" --prerelease --title 'Wakhan 0.2.78 / build93 — Android' --notes 'Same reviewed client source as iPhone0.2.78/build93: preserves Google browser sign-in independently of optional provider SDK and raises welcome controls. UNSIGNED APK; sign with original release key on owner server before installation. No backend update/restart required. Real-device confirmation still required.'
+        run: |
+          gh release create android-0.2.78-beta input278/project/Wakhan-0.2.78-unsigned.apk input278/project/android-build-result.json --target "$GITHUB_SHA" --prerelease --title 'Wakhan 0.2.78 / build93 — Android' --notes 'Same reviewed client source as iPhone0.2.78/build93: preserves Google browser sign-in independently of optional provider SDK and raises welcome controls. UNSIGNED APK; sign with original release key on owner server before installation. No backend update/restart required. Real-device confirmation still required.'
