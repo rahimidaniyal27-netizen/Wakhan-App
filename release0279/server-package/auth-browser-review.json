@@ -1,0 +1,63 @@
+{
+  "native_bridge": "simulated; not a real device test",
+  "results": [
+    {
+      "platform": "ios",
+      "passed": true,
+      "google_y": 373.6875,
+      "requests": [
+        {
+          "path": "/api/app/native/start",
+          "intent": "register"
+        },
+        {
+          "path": "/api/app/native/poll"
+        },
+        {
+          "path": "/api/app/native/start",
+          "intent": "signin"
+        },
+        {
+          "path": "/api/app/native/poll"
+        },
+        {
+          "path": "/api/app/email/send",
+          "intent": "register"
+        },
+        {
+          "path": "/api/app/email/verify",
+          "intent": "register"
+        }
+      ]
+    },
+    {
+      "platform": "android",
+      "passed": true,
+      "google_y": 373.6875,
+      "requests": [
+        {
+          "path": "/api/app/native/start",
+          "intent": "register"
+        },
+        {
+          "path": "/api/app/native/poll"
+        },
+        {
+          "path": "/api/app/native/start",
+          "intent": "signin"
+        },
+        {
+          "path": "/api/app/native/poll"
+        },
+        {
+          "path": "/api/app/email/send",
+          "intent": "register"
+        },
+        {
+          "path": "/api/app/email/verify",
+          "intent": "register"
+        }
+      ]
+    }
+  ]
+}

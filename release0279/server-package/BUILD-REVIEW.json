@@ -1,0 +1,13 @@
+{
+  "version": "0.2.79-beta",
+  "build": 94,
+  "client_tests": 180,
+  "backend_tests": 143,
+  "installer_tests": 9,
+  "browser_ios_android_modes_verified": true,
+  "native_bridge_for_browser_test": "simulated",
+  "real_device_verified": false,
+  "production_deployed": false,
+  "requires_account_intent_version": 1,
+  "prior_deployed_backend": "0.2.77/build92"
+}

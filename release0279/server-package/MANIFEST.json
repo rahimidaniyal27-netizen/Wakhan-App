@@ -1,0 +1,26 @@
+{
+  "version": "0.2.79-beta",
+  "build": 94,
+  "files": {
+    "wakhan_app.py": {
+      "sha256": "98a4d336d5d8912f830d8522bd0a1330201b04701a2d4aa2fd9ee7a4b383fa00",
+      "before": "f0c610a2574b4537c139ea2a47dee58d433dc1feb21c4dd53decf447e933e81d"
+    },
+    "wakhan_app_native_n1.py": {
+      "sha256": "782365847803cc749cbae94b9256edbc9afc216203fd139208a35a472310ba9d",
+      "before": "9202abe7a65ac63408a2059817f6e82c89f17c9db1211044bac45147b28f532e"
+    },
+    "wakhan_signin.py": {
+      "sha256": "f7cfb3cb35b11d2c42640a75e91026ef8c07492ad5d60a27d342f1b0a587850d",
+      "before": "0fb5a9bf2d2eeddb4753f36630bde0deeaf69a6a3dfb33021ca49beee271c182"
+    }
+  },
+  "unchanged": {
+    "session_keys.py": "dc0e9c5739e599931abf04aaadc658ebc3c4459f7c8f99d55c46be1a695e469b",
+    "native_runtime.py": "0eff6f9a66fdd3633150ef223f6752c4a601cb2599123d3e6b59119686b2d965",
+    "wakhan_security.py": "f63935b4234ece1dd14d4d065d5a969d4a3fd347d98af19718ded08c4a29872c",
+    "wakhan_storage_security.py": "130c50d42c6ed9ed951136c972cde223cbd3810161621b55b6a9b51df1619da7"
+  },
+  "android_sha256": "PENDING",
+  "required_account_intent_version": 1
+}
