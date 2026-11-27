@@ -1,9 +1,21 @@
 # Active audio/salon follow-up
 
-`collect-audio-salon.py` is an owner-operated read-only collector. It does not install these client files.
+Source-only work after deployed0.2.80/build95. No native installer or production update has been created.
 
-`client-source/` contains the two corrected salon programs extracted from the isolated current build95 source. No APK/IPA or live backend change is included. The aggregate client tests pass182/182; eight browser scenarios verify profile refresh and retry behavior.
+## Reviewed input
 
-The stale24-hour thumbnail/background cache was removed. Chosen photos now refresh from authoritative responses, late pre-save responses are discarded, concurrent directory requests are shared, unchanged cards are retained, and inactive tabs do not poll. Failed same-server hash-named photo loads have up to three retries. Unconfigured rooms are omitted when the server marks `configured:false`; current backend enforcement remains pending review.
+The owner supplied the current server-source report ZIP SHA256 `f30b069ab401f8156cec5465cdb125073cd3a5474f4a16a3a2947425d7a12ce0`. Its photo file and directory are present and readable. The archived source does not contain audio samples or device playback state.
 
-Music-without-sound is NOT diagnosed or fixed yet. Awaiting the owner review ZIP and affected device/platform information. Do not treat these source files as an installable release or deploy historical salon sources.
+## Prepared changes
+
+`client-source/`: canonical photo-save refresh, removal of stale24-hour background-as-photo caching,5s visible directory/participant metadata refresh, bounded failed-photo retries, stale-response protection and unchanged-DOM preservation. Native autoplay that becomes paused is no longer incorrectly reported successful. The original layout is preserved.
+
+`server-source/`: configured-only salon listings, optional real photos, reserved-room setup with stable code/UID, atomic photo persistence, explicit removal and photo validation before name publication. `MANIFEST.json` pins actual reviewed input/output hashes. These files are NOT deployed; do not overwrite an unrelated or changed server.
+
+Validation:187Node tests,8Chromium profile scenarios,10SQLite/server profile tests pass. These are not physical-phone or live-provider verification. Reported silence remains unresolved.
+
+## Owner live sound diagnosis
+
+`check-live-audio.py` makes ordinary GETs using ONLY the configured owner’s existing session. It creates no account/session and sends no queue/control commands. The private key is read only locally to reconstruct that existing session; credentials, URLs, account names and audio samples are never exported. API requests cannot go through environment proxies or redirects. FFmpeg runs asmusicbot, receives media URLs onstdin, decodes five seconds and exports only codec/signal metrics. Normal authentication/presence timestamps may refresh as when the owner opens their salon. Code, settings, service state, SSH and VPN are unchanged.
+
+Run while music is playing in the owner’s own salon. Optional `--link` accepts a public YouTube/SoundCloud song link. Output is a private `wakhan-live-audio-*.zip` containing only `AUDIO-RESULT.json`.5tests pass including real local file/HLS decoding, session-owner scoping/no DBwrite, redaction and both SoundCloud audio paths. This diagnostic is not an installer.
