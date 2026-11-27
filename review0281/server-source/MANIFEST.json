@@ -1,0 +1,30 @@
+{
+  "input_archive_sha256": "f30b069ab401f8156cec5465cdb125073cd3a5474f4a16a3a2947425d7a12ce0",
+  "changes": [
+    {
+      "path": "room_tools.py",
+      "before_sha256": "1b59f9dfd6e985e60562408f92ba25036f17183fb387143c2cb35800dafba233",
+      "after_sha256": "88b5f178c272c68c8ed0319ba97b43542f378beddbcf0f8bc4d8d527580fc194"
+    },
+    {
+      "path": "wakhan_hall51.py",
+      "before_sha256": "08e7a9c4ca2aebc6724e4227a3f936e44ee30099a8f34c26715dcc95090afb60",
+      "after_sha256": "5fc1ef162c495c0b10d2a253b3031f2d3b6ba87487351d686cf7af7b1468f813"
+    },
+    {
+      "path": "wakhan_room_tools.py",
+      "before_sha256": "1b59f9dfd6e985e60562408f92ba25036f17183fb387143c2cb35800dafba233",
+      "after_sha256": "88b5f178c272c68c8ed0319ba97b43542f378beddbcf0f8bc4d8d527580fc194"
+    },
+    {
+      "path": "wakhan_salon.py",
+      "before_sha256": "962b8238e8c7d4ab656c4b9795051a20c917c089802d91427c76c638a5f17d90",
+      "after_sha256": "eb8709f0ff94083b93b9baf34133931053d77153914b695576662ca2f2959038"
+    }
+  ],
+  "deployed": false,
+  "native_build_created": false,
+  "database_schema_changed": false,
+  "salon_policy": "Only a nonempty explicitly saved wm51_halls.name completes setup; account-name fallbacks and reserved room codes do not publish a salon. A photo is optional.",
+  "sound_status": "Unresolved; awaiting real-stream probe and affected track/device behavior."
+}

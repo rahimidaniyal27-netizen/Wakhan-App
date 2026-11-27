@@ -8,12 +8,12 @@
     "async function load(){if(S.loading)return;S.loading=true;\n try{const r=await call('/api/app/salon/ho",
     "},warm,reload:load,enter,create,join,tx,esc,sv,style,push,sheet,photo,wide,call};"
   ],
-  "output_shell_sha256": "b42d730819b871d3d8db20788bc30d3c3f5d3ea0f799ab3a0302a48ada2f669b",
+  "output_shell_sha256": "3882802cfccbed162092b85b64a298adb351f1b79f22804d1a7200063f6c9ce2",
   "native_built": false,
   "server_deployed": false,
   "tests": {
     "node": {
-      "passed": 182,
+      "passed": 187,
       "failed": 0
     },
     "browser": {
@@ -23,8 +23,16 @@
     "collector": {
       "passed": 2,
       "failed": 0
+    },
+    "backend_profiles": {
+      "passed": 10,
+      "failed": 0
+    },
+    "live_audio_probe": {
+      "passed": 5,
+      "failed": 0
     }
   },
-  "sound_status": "Not fixed or reproduced yet; awaiting device/platform information and current server review ZIP",
+  "sound_status": "Fixed false success when native autoplay returns paused, but reported silence is NOT confirmed fixed. Actual stream probe pending.",
   "server_status": "Not changed; actual salon source required before enforcing configured-only listing"
 }
