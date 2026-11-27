@@ -1,0 +1,47 @@
+name: Wakhan 0.2.78 iPhone entrypoint fix
+on:
+  push:
+    branches: [wakhan-0.2.78]
+    paths: [delivery0278/**, .github/workflows/build-0278-ios.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: build-0278-ios-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact source
+        run: python3 delivery0278/verify-source.py
+      - name: Verify tests and compile native iPhone
+        working-directory: input278/project
+        run: |
+          npm ci --no-audit --no-fund --loglevel=error
+          npm test
+          bash ios-assets/build-ios.sh
+          python3 ../../delivery0278/verify-ios.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-0.2.78-build93
+          path: |
+            input278/project/Wakhan-0.2.78-beta.ipa
+            input278/project/ios-build-result.json
+          if-no-files-found: error
+      - name: Deliver iPhone beta for Sideloadly
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create ios-0.2.78-beta input278/project/Wakhan-0.2.78-beta.ipa input278/project/ios-build-result.json --target "$GITHUB_SHA" --prerelease --title 'Wakhan 0.2.78 / build93 — iPhone sign-in fix' --notes 'Routes the actual Capacitor 8 scene through Wakhan native controller, registers secure vault/sign-in/media plugins, preserves Google browser compatibility, and raises sign-in controls. Unsigned IPA for Sideloadly. No backend restart or deployment; original mobile UI and user data preserved. Real-device confirmation still required.'
+      - name: Build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wakhan-iPhone-build93-diagnostics
+          path: /tmp/xb.log
+          if-no-files-found: ignore
