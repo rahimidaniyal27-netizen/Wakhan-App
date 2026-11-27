@@ -1,0 +1,30 @@
+{
+  "baseline_shell_sha256": "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
+  "changes": [
+    "const photo=s=>s&&s.photo?s.photo:(s&&s.decor&&DECOR.includes(s.decor)?ART+s.decor+'.jpg':ART+'pamir",
+    "Removed persistent 24-hour background-as-photo cache and permanently retained request promises",
+    "const S={srch:false,top:'salon',sec:'mine',filter:'followed',data:null,loading:false,offline:false};",
+    "async function getDisc(){const seq=++D.seq;try{const r=await call('/api/app/salon/discover?f='+D.f+'",
+    "async function load(){if(S.loading)return;S.loading=true;\n try{const r=await call('/api/app/salon/ho",
+    "},warm,reload:load,enter,create,join,tx,esc,sv,style,push,sheet,photo,wide,call};"
+  ],
+  "output_shell_sha256": "b42d730819b871d3d8db20788bc30d3c3f5d3ea0f799ab3a0302a48ada2f669b",
+  "native_built": false,
+  "server_deployed": false,
+  "tests": {
+    "node": {
+      "passed": 182,
+      "failed": 0
+    },
+    "browser": {
+      "passed": 8,
+      "real_device": false
+    },
+    "collector": {
+      "passed": 2,
+      "failed": 0
+    }
+  },
+  "sound_status": "Not fixed or reproduced yet; awaiting device/platform information and current server review ZIP",
+  "server_status": "Not changed; actual salon source required before enforcing configured-only listing"
+}
