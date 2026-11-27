@@ -1,0 +1,36 @@
+{
+  "files": [
+    {
+      "path": "native_room_video.py",
+      "before": "58db10a4c09b7496c6fa74e66e496ecd866cf17a5b9561e4bc367cb630759778",
+      "after": "3013b62884487d0ed356b332ac6dc6383f0dc8ccdfc7663d66c66d2e6e182dd4"
+    },
+    {
+      "path": "wakhan_music/audio_resolver.py",
+      "before": "4fb89344a83e969e0c0553a1aa697d9b53da4d19d24d2df97ef3b1670bb9a053",
+      "after": "424bae62e9a966e9a1ba3efd70cd3afa85f1dd303289b5c6ac65dee7d4d6d31f"
+    },
+    {
+      "path": "wakhan_hall51.py",
+      "before": "08e7a9c4ca2aebc6724e4227a3f936e44ee30099a8f34c26715dcc95090afb60",
+      "after": "5fc1ef162c495c0b10d2a253b3031f2d3b6ba87487351d686cf7af7b1468f813"
+    },
+    {
+      "path": "wakhan_salon.py",
+      "before": "962b8238e8c7d4ab656c4b9795051a20c917c089802d91427c76c638a5f17d90",
+      "after": "eb8709f0ff94083b93b9baf34133931053d77153914b695576662ca2f2959038"
+    },
+    {
+      "path": "wakhan_room_tools.py",
+      "before": "1b59f9dfd6e985e60562408f92ba25036f17183fb387143c2cb35800dafba233",
+      "after": "88b5f178c272c68c8ed0319ba97b43542f378beddbcf0f8bc4d8d527580fc194"
+    },
+    {
+      "path": "room_tools.py",
+      "before": "1b59f9dfd6e985e60562408f92ba25036f17183fb387143c2cb35800dafba233",
+      "after": "88b5f178c272c68c8ed0319ba97b43542f378beddbcf0f8bc4d8d527580fc194"
+    }
+  ],
+  "native_build_created": false,
+  "database_schema_changed": false
+}
