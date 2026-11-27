@@ -1,0 +1,7 @@
+{
+  "path": "wakhan_room_video_resolver.py",
+  "before": "a57068d5f802d2d95297ad21726b149cac26cab40b8caa2fb2405212516790cc",
+  "after": "6f01aaa2b627dc2999f6982752e5248ba4e52fed232a684d40d812f91eca264c",
+  "deployed": false,
+  "requires_private_js_runtime": true
+}
