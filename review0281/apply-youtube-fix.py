@@ -48,7 +48,7 @@ def regular(path):
     require(path.is_file() and not path.is_symlink() and path.stat().st_size<=2_000_000,'SOURCE_FILE_UNAVAILABLE')
 
 
-def command(args,timeout=35,**kw):
+def command(args,timeout=60,**kw):
     try:p=subprocess.run([str(v)for v in args],capture_output=True,timeout=timeout,**kw)
     except (OSError,subprocess.TimeoutExpired):raise RuntimeError('COMMAND_UNAVAILABLE_OR_TIMEOUT')from None
     require(p.returncode==0,'SERVICE_OR_CHECK_COMMAND_FAILED')
@@ -231,8 +231,8 @@ def apply_files(app,stage,backup,verify):
         for r in records:atomic(app/r['path'],(stage/r['path']).read_bytes(),r['uid'],r['gid'],r['mode'])
         command(['systemctl','start',SERVICE]);verify()
     except BaseException:
-        command(['systemctl','stop',SERVICE])
-        try:restore(app,backup)
+        try:
+            command(['systemctl','stop',SERVICE]);restore(app,backup)
         finally:command(['systemctl','start',SERVICE])
         raise
 
@@ -254,8 +254,8 @@ def main():
     status,config=public_json('/api/app/config');require(status==200,'CONFIG_HEALTH_FAILED')
     if args.rollback:
         require(str(args.rollback.resolve()).startswith('/root/wakhan-youtube-code-backup-'),'INVALID_BACKUP_PATH')
-        command(['systemctl','stop',SERVICE])
-        try:restore(APP,args.rollback.resolve())
+        try:
+            command(['systemctl','stop',SERVICE]);restore(APP,args.rollback.resolve())
         finally:command(['systemctl','start',SERVICE])
         healthy(config);print('کد قبلی برگشت؛ داده‌های کاربران حذف یا بازگردانی نشدند.');return
     if already:
