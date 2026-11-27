@@ -1,0 +1,29 @@
+[
+  {
+    "viewport": {
+      "width": 430,
+      "height": 932
+    },
+    "before": 655.8125,
+    "after": 378.09375,
+    "moved_up": 277.71875
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "before": 567.8125,
+    "after": 373.6875,
+    "moved_up": 194.125
+  },
+  {
+    "viewport": {
+      "width": 360,
+      "height": 640
+    },
+    "before": 363.8125,
+    "after": 327.296875,
+    "moved_up": 36.515625
+  }
+]
