@@ -69,7 +69,7 @@ class RoomVideo:
                 self.metadata[vid]={'height':0}
                 if len(self.metadata)>128:self.metadata.pop(next(iter(self.metadata)))
                 return {'path':audio['url'],'_v_headers':audio.get('headers',{}),
-                        '_v_proxy':audio.get('proxy'),'_v_audio_only':True}
+                        '_v_proxy':audio.get('proxy'),'_v_audio_only':True,'_v_muxed':audio.get('muxed') is True}
             # Do not hand an upstream playlist with unscoped keys/segments to
             # a phone. The existing muxed-video route remains the HLS fallback.
             if audio.get('kind')!='hls':raise ValueError('room_audio_format')
@@ -116,6 +116,7 @@ class RoomVideo:
             response=await self.upstream(track,range_value)
             if response.status not in (200,206,416):raise web.HTTPBadGateway()
             types=('audio/mp4','audio/mpeg','audio/aac','audio/x-m4a','application/octet-stream') if track.get('_v_audio_only') else ('video/mp4','application/octet-stream')
+            if track.get('_v_muxed'):types=(*types,'video/mp4')
             if response.status!=416 and response.headers.get('Content-Type','application/octet-stream').split(';')[0] not in types:raise web.HTTPBadGateway()
             headers={key:value for key,value in response.headers.items() if key.lower() in ('content-type','content-length','content-range','accept-ranges','etag','last-modified')}
             headers.update({'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'})

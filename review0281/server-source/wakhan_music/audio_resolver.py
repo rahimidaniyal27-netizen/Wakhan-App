@@ -112,10 +112,25 @@ def worker_source_options(provider, options, source_root=None):
         raise AudioUnavailable('youtube_setup', 503) from None
 
 
+def compatible_muxed(fmt,provider):
+    # Keep audio-only first. A bounded H.264/AAC progressive MP4 is the
+    # compatible fallback when YouTube offers no separate audio resource.
+    try:height=float(fmt.get('height') or 0)
+    except (ValueError,TypeError):return False
+    video=str(fmt.get('vcodec') or '');audio=str(fmt.get('acodec') or '')
+    return (provider=='youtube' and fmt.get('ext')=='mp4' and fmt.get('protocol')=='https'
+        and not fmt.get('has_drm') and not fmt.get('fragments') and math.isfinite(height) and 0<height<=360
+        and (video=='h264' or video.startswith('avc1.'))
+        and (audio=='aac' or audio=='mp4a' or audio.startswith('mp4a.')))
+
+
 def resolve_audio(url, provider, options, workspace=None, source_root=None):
     options = worker_source_options(provider, options, source_root)
     import yt_dlp
-    options.update(format='bestaudio[ext=m4a][protocol=https]/bestaudio[ext=m4a][protocol=http]/bestaudio[ext=mp3][protocol=https]/bestaudio[ext=mp3][protocol=http]/bestaudio[protocol^=m3u8]',
+    selector='bestaudio[ext=m4a][protocol=https]/bestaudio[ext=m4a][protocol=http]/bestaudio[ext=mp3][protocol=https]/bestaudio[ext=mp3][protocol=http]/bestaudio[protocol^=m3u8]'
+    if provider=='youtube':
+        selector+='/best[ext=mp4][protocol=https][height<=360][vcodec^=avc1][acodec^=mp4a]/best[ext=mp4][protocol=https][height<=360][vcodec=h264][acodec=aac]'
+    options.update(format=selector,
                    skip_download=True, noplaylist=True, check_formats=False, quiet=True,
                    no_warnings=True, socket_timeout=5, retries=0, extractor_retries=0,
                    cachedir=False, nocheckcertificate=False)
@@ -148,10 +163,13 @@ def resolve_audio(url, provider, options, workspace=None, source_root=None):
         if not math.isfinite(duration) or not 0 < duration <= 21600:
             raise AudioUnavailable()
         selected = info.get('requested_formats') or [info]
-        selected = [f for f in selected if f.get('vcodec') == 'none' and f.get('acodec') not in (None, 'none')]
+        selected = [f for f in selected if f.get('acodec') not in (None, 'none')]
         if len(selected) != 1:
             raise AudioUnavailable()
         fmt = selected[0]
+        muxed=compatible_muxed(fmt,provider)
+        if fmt.get('has_drm') or fmt.get('vcodec')!='none' and not muxed:
+            raise AudioUnavailable()
         src = fmt.get('url')
         if not allowed_audio_url(src, provider):
             raise AudioUnavailable()
@@ -162,8 +180,10 @@ def resolve_audio(url, provider, options, workspace=None, source_root=None):
             if fmt.get('ext') not in ('m4a','mp4','mp3') or not str(fmt.get('acodec')).startswith(('mp4a','aac','mp3')):
                 raise AudioUnavailable()
         headers = audio_headers(dict(info.get('http_headers') or {}, **(fmt.get('http_headers') or {})))
-        return {'url': src, 'kind': 'hls' if hls else 'file', 'ext': 'm3u8' if hls else 'mp3' if fmt.get('ext') == 'mp3' else 'm4a',
+        result = {'url': src, 'kind': 'hls' if hls else 'file', 'ext': 'm3u8' if hls else 'mp3' if fmt.get('ext') == 'mp3' else 'm4a',
                 'duration': duration, 'headers': headers, 'proxy':options.get('proxy'), 'title': str(info.get('title') or '')[:200]}
+        if muxed:result['muxed']=True
+        return result
 
 
 async def run_worker(url, provider, options, timeout=12, command=None, source_root=None):
