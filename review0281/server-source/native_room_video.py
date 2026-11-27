@@ -95,6 +95,8 @@ class RoomVideo:
             proxy=track.get('_v_proxy') if audio else None
             http_proxy=proxy if proxy and urlsplit(proxy).scheme in ('http','https') else None
             response=await session.get(url,headers=headers,allow_redirects=False,**({'proxy':http_proxy} if audio else {}))
+            if audio and response.headers.get('Content-Encoding','identity').lower()!='identity':
+                response.close();raise ValueError('audio_encoding')
             if response.status not in (301,302,303,307,308):return response
             url=urljoin(url,response.headers.get('Location',''));response.close()
         raise ValueError('video_redirect')
