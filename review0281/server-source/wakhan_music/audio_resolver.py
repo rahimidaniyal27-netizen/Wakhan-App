@@ -19,7 +19,36 @@ from urllib.parse import parse_qs, urlsplit
 class AudioUnavailable(Exception):
     def __init__(self, code='audio_unavailable', status=502):
         self.code, self.status = code, status
+        self.reason = None
         super().__init__(code)
+
+
+SOURCE_REASONS = frozenset(('youtube_verification_required', 'youtube_token_service_unavailable',
+    'audio_format_unavailable', 'source_tls_error', 'source_access_denied', 'source_timeout',
+    'source_network_error', 'audio_metadata_rejected', 'source_extraction_failed'))
+
+
+def source_failure(error):
+    # Only fixed enum values can leave a worker, never extractor messages which
+    # may include signed CDN URLs, cookies, keys or local configuration paths.
+    if isinstance(error, AudioUnavailable):
+        return 'audio_metadata_rejected'
+    message = str(error).lower()
+    if 'not a bot' in message or 'sign in to confirm' in message:
+        return 'youtube_verification_required'
+    if 'token' in message and any(x in message for x in ('failed', 'unavailable', 'error')):
+        return 'youtube_token_service_unavailable'
+    if 'requested format' in message or 'format is not available' in message:
+        return 'audio_format_unavailable'
+    if any(x in message for x in ('certificate', 'ssl', 'tls')):
+        return 'source_tls_error'
+    if '403' in message or 'forbidden' in message:
+        return 'source_access_denied'
+    if any(x in message for x in ('timed out', 'timeout')):
+        return 'source_timeout'
+    if any(x in message for x in ('connection', 'network', 'resolve host')):
+        return 'source_network_error'
+    return 'source_extraction_failed'
 
 
 def allowed_audio_url(url, provider):
@@ -152,7 +181,9 @@ async def run_worker(url, provider, options, timeout=12, command=None, source_ro
             value = json.loads(stdout)
             if not value.get('ok'):
                 code = value.get('err') if value.get('err') in ('audio_timeout', 'youtube_setup') else 'audio_unavailable'
-                raise AudioUnavailable(code, {'audio_timeout':504, 'youtube_setup':503}.get(code, 422))
+                error = AudioUnavailable(code, {'audio_timeout':504, 'youtube_setup':503}.get(code, 422))
+                error.reason = value.get('reason') if value.get('reason') in SOURCE_REASONS else None
+                raise error
             return value['audio']
         except asyncio.TimeoutError:
             raise AudioUnavailable('audio_timeout', 504) from None
@@ -238,4 +269,6 @@ if __name__ == '__main__' and '--worker' in sys.argv:
         result = {'ok': True, 'audio': resolve_audio(data['url'], data['provider'], data['options'],data.get('workspace'),data.get('source_root'))}
     except Exception as error:
         result = {'ok': False, 'err': error.code if isinstance(error, AudioUnavailable) and error.code == 'youtube_setup' else 'audio_timeout' if isinstance(error, TimeoutError) else 'audio_unavailable'}
+        if result['err'] == 'audio_unavailable':
+            result['reason'] = source_failure(error)
     print(json.dumps(result, ensure_ascii=True), flush=True)
