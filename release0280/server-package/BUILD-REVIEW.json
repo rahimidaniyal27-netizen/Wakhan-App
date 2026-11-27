@@ -1,0 +1,14 @@
+{
+  "version": "0.2.80-beta",
+  "build": 95,
+  "client_tests": 182,
+  "backend_tests": 150,
+  "installer_tests": 11,
+  "native_google_public_ids_owner_supplied": true,
+  "new_client_opens_wakhan_browser": false,
+  "legacy_client_compatible": true,
+  "browser_native_bridge": "simulated",
+  "real_google_account_verified": false,
+  "real_device_verified": false,
+  "production_deployed": false
+}

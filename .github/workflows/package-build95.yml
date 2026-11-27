@@ -1,0 +1,39 @@
+name: Package matching Wakhan build95 owner update
+on:
+  push:
+    branches: [wakhan-0.2.80]
+    paths: [release0280/**, .github/workflows/package-build95.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for verified native pair
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PYCODE'
+          import subprocess,json,time
+          for _ in range(100):
+            run=json.loads(subprocess.check_output(['gh','api','repos/${{ github.repository }}/actions/runs/45963740945']))
+            if run['status']=='completed':
+              assert run['conclusion']=='success','Native build failed'
+              break
+            time.sleep(10)
+          else:raise RuntimeError('Native build still pending')
+          PYCODE
+      - name: Download exact native outputs and package reviewed update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download native-0.2.80-beta --pattern 'Wakhan-0.2.80-unsigned.apk' --pattern 'Wakhan-0.2.80-beta.ipa' --pattern '*-build-result.json' --dir release0280/server-package
+          python3 release0280/package.py
+      - name: Deliver owner update archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload native-0.2.80-beta release0280/Wakhan-0.2.80-iPhone-Android.zip release0280/SHA256SUMS.txt
