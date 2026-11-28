@@ -1,0 +1,17 @@
+{
+  "passed": [
+    "Old guard selects the embedded branch for a valid leased YouTube source",
+    "Native source loads; blocked autoplay stays unmuted and offers a real button",
+    "Trusted local click starts AAC-in-MP4 without global play/pause or seat changes",
+    "Audio graph contains an actual decoded signal",
+    "Buffering polls do not repeatedly seek",
+    "Ready playback drift is corrected once",
+    "A genuine end advances once; stale ended events and polls cannot restart the finished song",
+    "Authoritative repeat restarts the buffered file without a new source or a first-second retry loop",
+    "Authoritative pause/resume preserves the local unlock button",
+    "Audio-only salon keeps its unlock button visible outside the hidden stage",
+    "Untrusted media host is still rejected"
+  ],
+  "native_installer_built": false,
+  "physical_phone_test": false
+}

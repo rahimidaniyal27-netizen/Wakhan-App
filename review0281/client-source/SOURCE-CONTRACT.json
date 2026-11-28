@@ -1,0 +1,29 @@
+{
+  "app_id": "app.wakhan.music",
+  "shell_before": [
+    "41cc7da5877e3ed768ad2baf649b85944a97e78f36530aaec56b8f9da0d8c93a",
+    "3882802cfccbed162092b85b64a298adb351f1b79f22804d1a7200063f6c9ce2"
+  ],
+  "shell_after": "0ab49ebc4687ddcd98b4abab39d3c19351c41b67b8f5aca90f6d67e96ba4ec3a",
+  "native_music_before": [
+    "6920060730306deb13bb4833ca97f22b07a45fe04ad73d9e6a21769db0f7cb28"
+  ],
+  "native_music_after": "1fe9d132cedeeb7696cea198e172375a3566c2a88649f379149fe4d48716a01c",
+  "manifest_allowed": [
+    "b9d2f623e05c746d1b6528787d0d15ad453f85f0e5929b3ef672ebdd913b90f3",
+    "ad8c2e4f297b9d6fc4cc3d5dcd55dd5868cb8e16f004dc64e78769e878deacda",
+    "3518274c563dcd7bb9efe99ed668752b61f06d91bfde81c904026b05c7e82b9b"
+  ],
+  "payloads": {
+    "sln3.js": "3983f22b70f9faba8dea6a3497d6097ac9b66a7b04f500c1d2bd6216ac1bef12",
+    "slr3.js": "3cd3c54702084aeb48f04ca3c2393462605fa7dd5c92efb46fd44ed730043e39",
+    "slr8.js": "6ac9d8912c9009e335b802d0d455670a4fb00418c6c525c524f12a1512d90a66",
+    "native-music.mjs": "1fe9d132cedeeb7696cea198e172375a3566c2a88649f379149fe4d48716a01c",
+    "salon-patch-manifest.json": "a6346f51665e44c90f557a94106c335e3570cdc5dd62ae2f4e4e153c09b93a46",
+    "tests/salon-native-routing.browser.cjs": "b396f7f2e6d7979cb1018bc37a77b03ac08264613623f5afd37c554d1a7e5ada",
+    "tests/BROWSER-RESULT.json": "e0bf3437ca80ef94dff14733b6792d6769aade5fb49a53d489bab70da9a62021",
+    "tests/fixtures/salon-native-routing-build95.json": "9dc144ebdf2bc31869f0ba183d5dbe7eb2110a2774cfad8dcf6758d341e8c3b3",
+    "tests/fixtures/salon-native-aac.mp4": "8a75337f22094f46f7250fc20049de2ee482c7fc6e753c3d9cff8435c5889689"
+  },
+  "native_built": false
+}

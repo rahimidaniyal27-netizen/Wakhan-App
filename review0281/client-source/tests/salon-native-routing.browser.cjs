@@ -1,0 +1,47 @@
+/* Actual bundled salon functions + Chromium AAC playback; no installer/device claim. */
+const {chromium}=require('/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const base=path.resolve(__dirname,'../..'),project=path.resolve(__dirname,'..');
+const candidate=JSON.parse(fs.readFileSync(project+'/public/wakhan-shell.json')).programs.find(p=>p.id==='slr3.js').code;
+const old=JSON.parse(fs.readFileSync(__dirname+'/fixtures/salon-native-routing-build95.json')),media=fs.readFileSync(__dirname+'/fixtures/salon-native-aac.mp4');
+const source=fs.readFileSync(project+'/src/salon-media.mjs','utf8');
+const validation=source.slice(source.indexOf('export function nativeRoomMedia'),source.indexOf('export function createSalonControls')).replace('export function','function');
+const origin='https://music.kabulcafe.uk',vid='abcdefghijk',url='/api/app/rooms/ROOM/video?vid='+vid+'&lease=fixture';
+function functions(code){if(typeof code!=='string')return code.native_functions+code.stage_function;const a=code.indexOf('function isNat('),b=code.indexOf('function guardEngine(',a),c=code.indexOf('function stageH('),d=code.indexOf('/* full screen:',c);assert(a>=0&&b>a&&c>=0&&d>c);return code.slice(a,b)+code.slice(c,d)}
+(async()=>{
+ const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--autoplay-policy=user-gesture-required']});const results=[];
+ try{
+  async function setup(code,change){
+   const context=await browser.newContext({viewport:{width:430,height:932},hasTouch:true}),page=await context.newPage(),requests=[];
+   await page.route('**/*',async route=>{
+    const req=route.request(),u=new URL(req.url());if(u.origin!==origin)return route.abort();
+    if(u.pathname==='/qa')return route.fulfill({contentType:'text/html',body:html});
+    if(!u.pathname.startsWith('/api/app/rooms/ROOM/video'))return route.abort();requests.push(req.headers().range||null);
+    let start=0,end=media.length-1,status=200;const r=/^bytes=(\d+)-(\d*)$/.exec(req.headers().range||'');if(r){start=+r[1];end=Math.min(r[2]?+r[2]:end,end);status=206}
+    if(start>=media.length)return route.fulfill({status:416,headers:{'Content-Range':'bytes */'+media.length}});
+    return route.fulfill({status,headers:{'Content-Type':'video/mp4','Content-Length':String(end-start+1),'Accept-Ranges':'bytes',...(status===206?{'Content-Range':`bytes ${start}-${end}/${media.length}`}:{})},body:media.subarray(start,end+1)});
+   });
+   const css=typeof code==='string'?code.match(/\.slr \.r-native-start\{[^\n]+/)?.[0]||'':'';
+   const boot="    window.CS={vid,media:{kind:'native',provider:'youtube',formats:[{height:0,url}]},playing:true,timeline_revision:1,mine:0,can:false};window.R={fmute:false};window.BG={on:false};window.CID='ROOM';window.root=()=>document.querySelector('.slr');window.cs=()=>CS;window.cid=()=>CID;window.expectedPosition=0;window.cExp=()=>expectedPosition;\n    window.owner=()=>false;window.canCtl=()=>false;window.fsH=()=>'';window.esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/\"/g,'&quot;').replace(/</g,'&lt;');window.tx=s=>s;window.sv=()=>'<svg viewBox=\"0 0 24 24\"><path d=\"M8 5v14l11-7z\"/></svg>';window.LNG=()=>false;window.G=s=>s;window.globalCommands=[];window.api=(...a)=>globalCommands.push(a);window.wmcFinishMedia=(...a)=>globalCommands.push(['end',...a.map(x=>typeof x==='string'?x:'video')]);\n";
+   const hide=typeof code==='string'?code.match(/html body \.slr\.r-music \.r-stw\{[^\n]+/)?.[0]||'':'';
+   const html='<!doctype html><html><head><style>.slr{width:400px}.r-scr{position:relative;width:400px;height:225px}.r-zw{position:absolute;inset:0}.r-zw video{position:absolute;inset:0;width:100%;height:100%}'+css+hide+'</style></head><body><div class="slr"></div><script>const vid='+JSON.stringify(vid)+',url='+JSON.stringify(url)+';'+boot+(change?'('+change.toString()+')();':'')+validation+';window.WakhanSalonMedia={native:nativeRoomMedia};'+functions(code)+';root().innerHTML=\'<div class="r-audw"></div><div class="r-stw">\'+stageH()+\'</div>\';reNat();</script></body></html>';
+   page.on('pageerror',error=>console.error('page fixture error',error.message));await page.goto(origin+'/qa');
+   return{page,context,requests};
+  }
+  let f=await setup(old);assert.equal(await f.page.locator('video.r-nv').count(),0);assert.equal(await f.page.locator('.r-ytc').count(),1);assert.equal(f.requests.length,0);results.push('Old guard selects the embedded branch for a valid leased YouTube source');await f.context.close();
+  f=await setup(candidate);assert.equal(await f.page.locator('video.r-nv').count(),1);assert.equal(await f.page.locator('.r-ytc').count(),0);await f.page.waitForSelector('.r-native-start');assert.equal(await f.page.locator('video').evaluate(v=>v.muted),false);assert(f.requests.length>0);results.push('Native source loads; blocked autoplay stays unmuted and offers a real button');
+  await f.page.locator('.r-native-start').click();await f.page.waitForFunction(()=>{const v=natV();return !v.paused&&!v.muted&&v.currentTime>.15});assert.equal(await f.page.locator('.r-native-start').count(),0);assert.deepEqual(await f.page.evaluate(()=>globalCommands),[]);results.push('Trusted local click starts AAC-in-MP4 without global play/pause or seat changes');
+  const signal=await f.page.evaluate(async()=>{const ctx=new AudioContext(),input=ctx.createMediaElementSource(natV()),an=ctx.createAnalyser();input.connect(an);an.connect(ctx.destination);await ctx.resume();await new Promise(r=>setTimeout(r,100));const data=new Float32Array(an.fftSize);an.getFloatTimeDomainData(data);const rms=Math.sqrt(data.reduce((sum,x)=>sum+x*x,0)/data.length);window.audioQA=ctx;return rms});assert(signal>.001,signal);results.push('Audio graph contains an actual decoded signal');
+  await f.page.evaluate(()=>{const v=natV();window.seeks=0;Object.defineProperties(v,{readyState:{configurable:true,get:()=>2},paused:{configurable:true,get:()=>false},duration:{configurable:true,get:()=>60},currentTime:{configurable:true,get:()=>0,set:t=>{seeks++}}});expectedPosition=30;v.__slrNative.initial=false;v.__slrNative.lastSeek=-10000;for(let i=0;i<10;i++)reNat()});assert.equal(await f.page.evaluate(()=>seeks),0);results.push('Buffering polls do not repeatedly seek');
+  await f.page.evaluate(()=>{Object.defineProperty(natV(),'readyState',{configurable:true,get:()=>4});reNat()});assert.equal(await f.page.evaluate(()=>seeks),1);results.push('Ready playback drift is corrected once');await f.context.close();
+  f=await setup(candidate);await f.page.waitForSelector('.r-native-start');await f.page.locator('.r-native-start').click();await f.page.waitForFunction(()=>!natV().paused&&natV().currentTime>.1);
+  await f.page.evaluate(()=>natV().dispatchEvent(new Event('ended')));assert.deepEqual(await f.page.evaluate(()=>globalCommands),[]);
+  await f.page.evaluate(()=>{window.sourceGeneration=natV().__slrNative.generation;natV().currentTime=natV().duration-.08});await f.page.waitForFunction(()=>globalCommands.length===1);
+  await f.page.evaluate(()=>{for(let i=0;i<10;i++)reNat()});assert.equal(await f.page.evaluate(()=>globalCommands.length),1);assert(await f.page.locator('video').evaluate(v=>v.paused));results.push('A genuine end advances once; stale ended events and polls cannot restart the finished song');
+  await f.page.evaluate(()=>{CS.timeline_revision++;expectedPosition=0;reNat()});await f.page.waitForFunction(()=>!natV().paused&&natV().currentTime>.1&&natV().currentTime<natV().duration-1);assert(await f.page.evaluate(()=>natV().__slrNative.generation===sourceGeneration));results.push('Authoritative repeat restarts the buffered file without a new source or a first-second retry loop');await f.context.close();
+  f=await setup(candidate);await f.page.waitForSelector('.r-native-start');await f.page.evaluate(()=>{CS.playing=false;CS.timeline_revision++;reNat()});assert.equal(await f.page.locator('.r-native-start').count(),0);await f.page.evaluate(()=>{CS.playing=true;CS.timeline_revision++;reNat()});await f.page.waitForSelector('.r-native-start');results.push('Authoritative pause/resume preserves the local unlock button');await f.context.close();
+  f=await setup(candidate,()=>root().classList.add('r-music'));await f.page.waitForSelector('.r-native-audio');assert.equal(await f.page.locator('.r-stw .r-native-start').count(),0);await f.page.locator('.r-native-audio').click();await f.page.waitForFunction(()=>!natV().paused&&!natV().muted&&natV().currentTime>.1);assert.deepEqual(await f.page.evaluate(()=>globalCommands),[]);results.push('Audio-only salon keeps its unlock button visible outside the hidden stage');await f.context.close();
+  f=await setup(candidate,()=>{CS.media.formats[0].url='https://untrusted.invalid/api/app/rooms/ROOM/video?vid='+CS.vid+'&lease=fixture'});assert.equal(await f.page.locator('video.r-nv').count(),0);assert.equal(f.requests.length,0);results.push('Untrusted media host is still rejected');await f.context.close();
+  fs.writeFileSync(base+'/client-playback/BROWSER-RESULT.json',JSON.stringify({passed:results,native_installer_built:false,physical_phone_test:false},null,2));for(const result of results)console.log('PASS '+result);
+ }finally{await browser.close()}
+})().catch(error=>{console.error(error);process.exitCode=1});
