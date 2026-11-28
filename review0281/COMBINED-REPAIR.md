@@ -1,0 +1,13 @@
+# Combined server repair, 2026-11-28
+
+Evidence: complete-review ZIP SHA256 ebb33757006be3c10f81cf83c56b083b3f21000545f700daca244f07cc8e4dfd.
+
+The private browser service was active with only its Python parent. Chrome and Xvfb were absent, while the old authenticated health endpoint still returned HTTP 200. An independent temporary-profile launch failed to connect to the display/CDP. Database integrity, application health and available resources passed. There was no current cgroup OOM event; historical OOM does not establish the current cause.
+
+`repair-complete.py --apply` verifies the reviewed source/service contracts, creates a private source-only backup, installs the pinned helper, and restarts only its existing systemd unit. It preserves the Chrome sandbox, service policy, original profile and keys. A temporary browser profile avoids stale-lock reuse; Xvfb uses authenticated `-noreset` mode. Unhealthy children cause the parent to exit so the existing systemd restart policy recovers both children. Unhealthy health responses use HTTP 503.
+
+After three consecutive readiness responses, a temporary read-only candidate checks the real signed CDN response and FFmpeg audio decoding. Only success permits the frozen application updater to apply the six reviewed server files plus private runtime configuration and movie-worker import. That updater separately checks the actual application audio route and restores application source on failure. A failed transport check retains the verified helper recovery and reports the unresolved playback stage. Success never follows metadata alone.
+
+The command prints a private result ZIP, backup path and an offline source-only rollback command. It does not build or publish native clients, rewind user databases, or change SSH, VPN, firewall, authentication keys, SMTP or Android signing. It does not establish that every historical client or security issue is fixed.
+
+Validation before publication: 10 coordinator tests on Python 3.12 and the default interpreter; seven helper tests on both interpreters; real Chromium/CDP synthetic token binding/cache/cleanup; five transport tests including actual HTTP Range and FFmpeg decoding. The helper tests cover child death, startup failure, true health, authentication, request validation and retained sandbox/display authorization. Coordinator tests cover recovery failure rollback, blocked transport, source drift, application failure, reruns, offline rollback, existing-source live verification, child launchers, and preservation of user data. No production systemd/Xvfb or phone audio test has been run from this workspace.
