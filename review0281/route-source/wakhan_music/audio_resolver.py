@@ -196,8 +196,8 @@ def resolve_audio(url, provider, options, workspace=None, source_root=None):
         return result
 
 
-async def run_worker(url, provider, options, timeout=12, command=None, source_root=None):
-    if provider=='youtube':timeout=max(timeout,32)
+async def run_worker(url, provider, options, timeout=None, command=None, source_root=None):
+    if timeout is None:timeout=32 if provider=='youtube' else 12
     command = command or [sys.executable, str(Path(__file__).resolve()), '--worker']
     # The parent owns this folder, so timeout/cancellation also removes the cookie copy.
     with tempfile.TemporaryDirectory(prefix='wakhan-audio-worker-')as workspace:
