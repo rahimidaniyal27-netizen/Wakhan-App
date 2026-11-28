@@ -48,7 +48,8 @@ def agent_kind(value):
  if 'lavf' in value or 'ffmpeg' in value:return 'ffmpeg'
  return 'other'
 def route_kind(raw):
- path=urllib.parse.urlsplit(raw).path
+ try:path=urllib.parse.urlsplit(raw).path
+ except ValueError:return None
  if path=='/api/app/music/audio-start':return 'personal_prepare'
  if path.startswith('/api/app/music/play/'):return 'personal_media'
  if re.fullmatch('/api/app/rooms/[^/]+/video',path):return 'salon_media'
@@ -97,14 +98,14 @@ def check_media(probe,base,raw):
  return result
 
 def fixed_error(data):
- value=data.get('err');allowed={'auth','subscription','subscription_required','audio_timeout','audio_unavailable','source_busy','audio_resolver_unavailable','youtube_setup','audio_not_ready','forbidden','not_found'};return value if value in allowed else 'other' if value else None
+ value=data.get('err');allowed={'auth','subscription','subscription_required','audio_timeout','audio_unavailable','source_busy','audio_resolver_unavailable','youtube_setup','audio_not_ready','forbidden','not_found'};return value if isinstance(value,str) and value in allowed else 'other' if value else None
 
 def run(module,probe):
  base,token=probe.context(APP);result={'code_changed':False,'service_changed':False,'new_session_created':False,'tests':[],'recent_phone_requests':access_summary(),'server_error_counts':journal_summary()}
  status,home=probe.api(base,token,'/api/app/salon/home');mine=home.get('mine') or {};code=mine.get('code');room={}
  if status==200 and isinstance(code,str) and re.fullmatch('[A-Z0-9]{4,8}',code):
   status,room=probe.api(base,token,'/api/c/'+code+'?v=-1');media=room.get('media') or {}
-  result['salon']={'state_status':status,'owner_present':isinstance(room.get('mine'),int) and room['mine']>=0,'playing':room.get('playing') is True,'music_mode':room.get('wkm_music') is True,'media_kind':media.get('kind') if media.get('kind') in ('native','soundcloud','youtube') else 'other'}
+  result['salon']={'state_status':status,'owner_present':isinstance(room.get('mine'),int) and room['mine']>=0,'playing':room.get('playing') is True,'music_mode':room.get('wkm_music') if type(room.get('wkm_music')) is bool else None,'media_kind':media.get('kind') if media.get('kind') in ('native','soundcloud','youtube') else 'other'}
   if status==200 and result['salon']['owner_present'] and media.get('kind')=='native' and media.get('formats'):
    result['tests'].append(dict(label='salon.current',**check_media(probe,base,media['formats'][0].get('url'))))
  videos=[('personal.reference','HKDb1xi2uGE')];vid=room.get('vid')
