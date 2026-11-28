@@ -11,10 +11,10 @@ ASSETS={
 'transport.py':('acfcedd19a595d9d631497cb69bd8053c95c4aaa','review0281/check-youtube-transport-v3.py','7e67551a883f4c122d41adc3e767c9b59ee64731e49eeb5f04c2930ae8109e28'),
 'coordinator.py':('686d70a861335ae09632346746fc265f17af1172','review0281/repair-complete.py','d2d4e488392c80a0cdb1e1361a496a0e889c7a258d0461aa2ea33ca467e3fd65'),
 }
-PAYLOAD_COMMIT='ab50bebc7f0e16ea4155f238dd2debca73d6f05c'
+PAYLOAD_COMMIT='37a8466786b8c4b10f6482bd1607620c4f90d96f'
 CHANGES={
 'native_room_video.py':'8913f6e8d729992f4cd5bd51882f2d5e23bca9cdb1991a45698d241fb7d075fa',
-'wakhan_music/audio_resolver.py':'c30087776862d01c9a869a3ddb588907c2941e8ce2dc5dad743741d0be3ef111',
+'wakhan_music/audio_resolver.py':'be4aed400c1447c1d73203aa8c3094e9f92b04380945746d16291e5210b0ac25',
 'wakhan_music/playback.py':'c756a1c9283708888dd9caa806add0406b49277830eccdbc16728530efc770f6',
 }
 CONFIG_BEFORE='70877678abc1a36e0200120ebb09eb40d5d0b23202f2d54f9fe302157d6463b7'
